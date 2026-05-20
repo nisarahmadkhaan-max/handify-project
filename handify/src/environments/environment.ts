@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.100.205:3000/api',
+  apiUrl: 'https://handify-project.vercel.app/api',
   googleMapsApiKey: 'YOUR_GOOGLE_MAPS_API_KEY'
 };

@@ -16,7 +16,8 @@ import { TopupList } from './wallet/TopupList';
 import { TopupEdit } from './wallet/TopupEdit';
 import { Dashboard } from './Dashboard';
 
-const apiUrl = 'http://localhost:3000/api';
+// Backend URL updated to Vercel
+const apiUrl = 'https://handify-project.vercel.app/api';
 
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
