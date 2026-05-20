@@ -1,0 +1,115 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-title>Employee Dashboard</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="switchToUser()">
+        <ion-icon name="swap-horizontal-outline" slot="start"></ion-icon>
+        User Mode
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="welcome-card">
+    <h2>Hello, {{ employeeName }}!</h2>
+    <p class="profession-subtitle" *ngIf="employeeProfession">
+      <ion-icon name="construct-outline"></ion-icon> {{ employeeProfession }}
+    </p>
+    <p>Your professional profile is active.</p>
+    <div class="status-badge" [class.verified]="isVerified">
+      {{ isVerified ? 'VERIFIED' : 'PENDING VERIFICATION' }}
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box">
+      <ion-icon name="list-outline"></ion-icon>
+      <h3>{{ totalJobs }}</h3>
+      <p>Total Jobs</p>
+    </div>
+    <div class="stat-box" (click)="openWallet()">
+      <ion-icon name="wallet-outline"></ion-icon>
+      <h3>Rs.{{ walletBalance }}</h3>
+      <p>Wallet Balance</p>
+    </div>
+  </div>
+
+  <!-- New Jobs / My Bookings Section -->
+  <div class="section-header">
+    <h3 class="ion-no-margin">Active Requests & Jobs</h3>
+    <ion-spinner *ngIf="loadingBookings" name="dots" size="small"></ion-spinner>
+  </div>
+
+  <div *ngIf="!loadingBookings && bookings.length === 0" class="no-data">
+    <ion-icon name="calendar-clear-outline"></ion-icon>
+    <p>No requests available right now.</p>
+  </div>
+
+  <ion-list lines="none" class="bookings-list">
+    <ion-card *ngFor="let b of bookings" class="booking-card" (click)="viewDetails(b._id)">
+      <ion-card-content>
+        <div class="booking-header">
+          <span class="service-tag">{{ b.service }}</span>
+          <span class="status-chip" [class]="b.status">{{ b.status | uppercase }}</span>
+        </div>
+        <div class="booking-body">
+          <h3>{{ b.userId?.fullName || 'Customer' }}</h3>
+          <p><ion-icon name="location-outline"></ion-icon> {{ b.location }}</p>
+          <div class="booking-footer">
+            <span class="price">Rs.{{ b.finalPrice }}</span>
+            <span class="date">{{ b.date }} | {{ b.time }}</span>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <h3 class="section-title">Account Menu</h3>
+  <ion-list lines="none" class="menu-list">
+    <ion-item button detail="true" (click)="openSchedule()">
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+      <ion-label>
+        <h3>My Schedule</h3>
+        <p>{{ availableFrom }} to {{ availableTo }}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item button detail="true" (click)="openWallet()">
+      <ion-icon name="cash-outline" slot="start"></ion-icon>
+      <ion-label>Recharge Wallet / Top-up</ion-label>
+    </ion-item>
+
+    <ion-item button detail="true" (click)="logout()">
+      <ion-icon name="log-out-outline" slot="start" color="danger"></ion-icon>
+      <ion-label color="danger">Logout</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Edit Schedule Modal -->
+  <ion-modal [isOpen]="showTimeEditModal" (didDismiss)="showTimeEditModal = false" class="datetime-modal">
+    <ng-template>
+      <div class="modal-wrapper edit-schedule-content">
+        <h3>Edit Availability</h3>
+        <p>Change your working hours below:</p>
+
+        <div class="time-edit-row">
+          <div class="time-box" (click)="pickingFor = 'from'">
+            <span>From:</span>
+            <ion-datetime presentation="time" (ionChange)="onTimeChange($event)" [value]="tempFrom"></ion-datetime>
+          </div>
+          <div class="time-box" (click)="pickingFor = 'to'">
+            <span>To:</span>
+            <ion-datetime presentation="time" (ionChange)="onTimeChange($event)" [value]="tempTo"></ion-datetime>
+          </div>
+        </div>
+
+        <div class="modal-footer-btns">
+          <ion-button fill="clear" color="medium" (click)="showTimeEditModal = false">CANCEL</ion-button>
+          <ion-button fill="solid" color="primary" (click)="saveSchedule()">SAVE & SYNC</ion-button>
+        </div>
+      </div>
+    </ng-template>
+  </ion-modal>
+
+</ion-content>

@@ -1,0 +1,93 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Booking Confirmed</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="confirmation-page">
+  <div class="confirmation-container">
+    <div class="success-card">
+      <div class="success-message">
+        <div>
+          <h2>Thank You! Your Booking Has Been Successfully Confirmed.</h2>
+        </div>
+        <div class="success-image">
+          <img src="/assets/tutorial5.png" alt="Confirmation" />
+        </div>
+      </div>
+    </div>
+
+    <div class="notification-text">
+      <p>You Will Receive A Confirmation Call And SMS Shortly.</p>
+    </div>
+
+    <div class="summary-section">
+      <h2>Booking Summary</h2>
+      
+      <div class="summary-item">
+        <span class="label">Category:</span>
+        <span class="value">{{ bookingDetails.category }}</span>
+      </div>
+      
+      <div class="summary-item">
+        <span class="label">Service:</span>
+        <span class="value">{{ bookingDetails.service }}</span>
+      </div>
+      
+      <div class="summary-item">
+        <span class="label">Date:</span>
+        <span class="value">{{ formatDate(bookingDetails.date) }}</span>
+      </div>
+
+      <div class="summary-item">
+        <span class="label">Time:</span>
+        <span class="value">{{ formatTime(bookingDetails.time) }}</span>
+      </div>
+      
+      <div class="summary-item">
+        <span class="label">Booking ID:</span>
+        <span class="value">#{{ bookingDetails._id }}</span>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <h2>Location Details</h2>
+      
+      <div class="summary-item">
+        <span class="label">Address:</span>
+        <span class="value">{{ bookingDetails.location }}</span>
+      </div>
+    </div>
+
+    <div class="summary-section">
+      <h2>Cost Details</h2>
+      
+      <div class="summary-item">
+        <span class="label">Estimated Cost:</span>
+        <span class="value">Rs.{{ bookingDetails.estimatedCost }}</span>
+      </div>
+    </div>
+
+    <div class="summary-section" *ngIf="bookingDetails.additionalInstructions">
+      <h2>Additional Instructions</h2>
+      <p class="instructions-text">
+        {{ bookingDetails.additionalInstructions }}
+      </p>
+    </div>
+
+    <div class="summary-section">
+      <h2>Booking Status</h2>
+      <div class="summary-item">
+        <span class="label">Status:</span>
+        <span class="value">{{ bookingDetails.status }}</span>
+      </div>
+    </div>
+
+    <ion-button expand="block" class="submit-btn" (click)="gobackhome()">
+      Back To Home
+    </ion-button>
+  </div>
+</ion-content>

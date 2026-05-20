@@ -1,0 +1,107 @@
+<ion-header class="custom-header">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button (click)="closeDetails()" text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Request Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading details...</p>
+  </div>
+
+  <ng-container *ngIf="booking && !loading">
+    <!-- Main Service Card -->
+    <div class="details-card">
+      <div class="header-row">
+        <h2 class="card-title">{{ booking.service }}</h2>
+        <ion-badge [color]="getStatusColor(booking.status)">{{ booking.status | uppercase }}</ion-badge>
+      </div>
+      
+      <div class="info-row">
+        <ion-icon name="calendar-outline" color="primary"></ion-icon>
+        <div class="info-content">
+          <label>Date & Time</label>
+          <p>{{ booking.date }} | {{ booking.time }}</p>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <ion-icon name="location-outline" color="primary"></ion-icon>
+        <div class="info-content">
+          <label>Location</label>
+          <p>{{ booking.location }}</p>
+        </div>
+      </div>
+
+      <div class="instructions-box" *ngIf="booking.additionalInstructions">
+        <label>Additional Instructions:</label>
+        <p>{{ booking.additionalInstructions }}</p>
+      </div>
+    </div>
+
+    <!-- Payment Information -->
+    <div class="details-card pricing-card">
+      <div class="price-row">
+        <span class="label">Total Booking Price</span>
+        <span class="price-amount">Rs. {{ booking.finalPrice }}</span>
+      </div>
+      <p class="payment-method-tag">Cash on Delivery</p>
+    </div>
+
+    <!-- Contact Details Card (Visible only when Confirmed or Completed) -->
+    <div class="details-card contact-card" *ngIf="booking.status === 'confirmed' || booking.status === 'completed'">
+      <h3 class="section-title">Contact Information</h3>
+
+      <div class="contact-flex">
+        <div class="person-details">
+          <!-- Show for Employee -->
+          <ng-container *ngIf="userRole === 'employee'">
+            <p class="role-badge">CUSTOMER</p>
+            <h4 class="person-name">{{ booking.userId?.fullName }}</h4>
+            <p class="phone-text">{{ booking.userId?.phoneNumber }}</p>
+          </ng-container>
+
+          <!-- Show for User -->
+          <ng-container *ngIf="userRole === 'user'">
+            <p class="role-badge">PROFESSIONAL</p>
+            <h4 class="person-name">{{ booking.employeeId?.name }}</h4>
+            <p class="profession-text"><ion-icon name="construct-outline"></ion-icon> {{ booking.category }} Specialist</p>
+            <p class="phone-text">{{ booking.employeeId?.userId?.phoneNumber }}</p>
+          </ng-container>
+        </div>
+
+        <div class="communication-actions">
+          <ion-button color="success" shape="round" [href]="'tel:' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
+            <ion-icon name="call" slot="icon-only"></ion-icon>
+          </ion-button>
+          <ion-button color="primary" shape="round" (click)="goToChat()">
+            <ion-icon name="chatbubble-ellipses" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OTP Display for User -->
+    <div class="otp-display-card" *ngIf="userRole === 'user' && booking.status === 'confirmed'">
+      <div class="otp-label">COMPLETION OTP</div>
+      <div class="otp-number">{{ booking.completionOTP }}</div>
+      <p>Give this code to the professional only when the job is done.</p>
+    </div>
+
+    <!-- Action Buttons for Employee -->
+    <div class="footer-actions" *ngIf="userRole === 'employee'">
+      <ion-button *ngIf="booking.status === 'pending'" expand="block" color="success" (click)="acceptJob()" class="confirm-btn">
+        ACCEPT JOB
+      </ion-button>
+
+      <ion-button *ngIf="booking.status === 'confirmed'" expand="block" color="primary" (click)="finishJob()" class="confirm-btn">
+        COMPLETE JOB (ENTER OTP)
+      </ion-button>
+    </div>
+
+  </ng-container>
+</ion-content>

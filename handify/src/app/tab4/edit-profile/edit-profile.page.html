@@ -1,0 +1,41 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-title class="ion-text-center">{{ translationService.getTranslation('editProfile') }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="profile-content">
+  <div class="profile-info">
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="info-item">
+        <div class="label">{{ translationService.getTranslation('fullName') }}</div>
+        <ion-input formControlName="fullName" [placeholder]="translationService.getTranslation('enterFullName')"></ion-input>
+      </div>
+      <div class="info-item">
+        <div class="label">{{ translationService.getTranslation('emailAddress') }}</div>
+        <ion-input formControlName="email" type="email" [placeholder]="translationService.getTranslation('enterEmail')"></ion-input>
+      </div>
+      <div class="info-item">
+        <div class="label">{{ translationService.getTranslation('phoneNumber') }}</div>
+        <ion-input formControlName="phoneNumber" [placeholder]="translationService.getTranslation('enterPhoneNumber')"></ion-input>
+      </div>
+      <div class="info-item">
+        <div class="label">{{ translationService.getTranslation('location') }}</div>
+        <ion-input formControlName="location" [placeholder]="translationService.getTranslation('enterLocation')"></ion-input>
+      </div>
+      <div *ngIf="error" class="ion-text-center ion-padding">
+        <ion-text color="danger">{{ error }}</ion-text>
+      </div>
+      <ion-button expand="block" type="submit">
+        <ion-spinner *ngIf="loading" name="dots"></ion-spinner>
+        <span *ngIf="!loading">{{ translationService.getTranslation('save') }}</span>
+      </ion-button>
+      <ion-button expand="block" color="medium" (click)="cancel()" type="button">{{ translationService.getTranslation('cancel') }}</ion-button>
+    </form>
+  </div>
+</ion-content> 

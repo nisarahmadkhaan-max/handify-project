@@ -1,0 +1,31 @@
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build outputs and cache
+dist/
+build/
+www/
+android/
+.angular/
+**/.angular/
+**/cache/
+
+# Environment variables (SECURITY!)
+.env
+**/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+__MACOSX/
+**/__MACOSX/
+
+# Capacitor/Ionic specific
+capacitor.config.json

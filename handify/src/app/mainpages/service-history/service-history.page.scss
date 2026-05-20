@@ -1,0 +1,140 @@
+/* Custom Header Styles */
+.custom-header {
+  ion-toolbar {
+    --background: #2F3083;
+    --color: white;
+    padding: 12px 0;
+    box-shadow: 0 6px 12px rgba(47, 48, 131, 0.25);
+  }
+
+  ion-icon {
+    color: white;
+    font-size: 24px;
+  }
+
+  ion-title {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
+  
+  /* History Content */
+.history-content {
+  --background: #f6f7fb;
+}
+  
+  /* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  padding: 20px 15px;
+  gap: 10px;
+}
+
+.filter-tab {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #c6c7ff;
+  border-radius: 12px;
+  background-color: white;
+  font-size: 16px;
+  font-weight: 500;
+  color: #2F3083;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  
+  &.active {
+    background-color: #2F3083;
+    border-color: #2F3083;
+    color: #fff;
+    box-shadow: 5px 5px 0px 0px #1d1e57;
+  }
+}
+  
+  /* History List */
+  .history-list {
+    padding: 0 15px 15px;
+  }
+  
+.history-item {
+  padding: 18px;
+  margin-bottom: 15px;
+  border: 2px solid #2F3083;
+  border-radius: 15px;
+  background-color: white;
+  cursor: pointer;
+  box-shadow: 5px 5px 0px 0px #e0e1ff;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+  
+  .service-name {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    color: #000;
+  }
+  
+  .service-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .detail-column {
+    flex: 1;
+    
+    &:first-child {
+      margin-right: 10px;
+    }
+  }
+  
+.label {
+  font-size: 14px;
+  color: #2F3083;
+  margin-bottom: 5px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+  
+  .value {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .status {
+    display: flex;
+    align-items: center;
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+  }
+  
+  .stars {
+    display: flex;
+    margin-left: 5px;
+    
+    ion-icon {
+      color: #ffc107;
+      font-size: 18px;
+    }
+  }

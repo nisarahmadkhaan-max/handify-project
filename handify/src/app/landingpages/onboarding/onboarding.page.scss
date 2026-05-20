@@ -1,0 +1,136 @@
+.language-selection {
+    color: white;
+    text-align: center;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 85vh;
+        background-color: #2F3083;
+        margin-top: 5vh;
+        border-radius: 20px 20px 0px 0px;
+    }
+
+    .title {
+        font-size: 25px;
+        margin-bottom: 60px;
+        font-family: "Poppins", sans-serif;
+        color: #fff;
+        margin-top: 5px;
+    }
+
+    .language-box {
+        width: 90%;
+        max-width: 360px;
+        border: 2px solid #EDF2F8;
+        /* Light green border */
+        border-radius: 12px;
+        // padding: 5px;
+        margin-bottom: 15px;
+        margin-left: 5%;
+    }
+
+    .language-item {
+        width: 90%;
+        color: white;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-left: 5%;
+        --background: #2F3083;
+
+        [dir="rtl"] & {
+            margin-left: 0;
+            margin-right: 5%;
+        }
+    }
+
+    ion-radio::part(container) {
+        border: 2px solid #EDF2F8;
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+    }
+
+    ion-radio::part(mark) {
+        background: #EDF2F8;
+
+    }
+
+    .info-text {
+        font-size: 0.95rem;
+        color: #d3d3d3;
+        margin-top: 1rem;
+    }
+
+    .confirm-btn {
+        margin-top: 2rem;
+        background: #EDF2F8;
+        color: black;
+        font-weight: bold;
+        width: 90%;
+        max-width: 360px;
+        border-radius: 12px;
+        font-size: 12px !important;
+        margin-left: 5%;
+
+        [dir="rtl"] & {
+            margin-left: 0;
+            margin-right: 5%;
+        }
+    }
+
+    .confirm-btn1 {
+        background: #ffffff;
+        color: black;
+        font-weight: bold;
+        width: 90%;
+        max-width: 360px;
+        border-radius: 12px;
+        font-size: 12px !important;
+        margin-left: 5%;
+
+        [dir="rtl"] & {
+            margin-left: 0;
+            margin-right: 5%;
+        }
+    }
+
+    .confirm-btn-tp {
+        color: white;
+        font-weight: bold;
+        width: 90%;
+        max-width: 360px;
+        // border-radius: 12px;
+        font-size: 12px !important;
+        margin-left: 5%;
+        border:solid 1px #fff;
+        margin-top: 10px;
+
+        [dir="rtl"] & {
+            margin-left: 0;
+            margin-right: 5%;
+        }
+    }
+
+    .confirm-btn::part(native) {
+        background: #EDF2F8;
+    }
+
+    .confirm-btn-tp::part(native) {
+        background: transparent;
+    }
+
+    .confirm-btn1::part(native) {
+        background: #fff;
+    }
+
+    .main-onboarding{
+        width: 50%;
+        margin-top: 35px;       
+    }
+    .sub-div{
+        width: 100%;
+    }
+}       

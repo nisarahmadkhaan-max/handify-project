@@ -1,0 +1,88 @@
+.details-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    .card-title { margin: 0; font-size: 18px; font-weight: 700; color: #2F3083; }
+  }
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  ion-icon { font-size: 20px; margin-right: 12px; margin-top: 2px; }
+  .info-content {
+    label { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+    p { margin: 2px 0 0; font-size: 14px; color: #333; font-weight: 500; }
+  }
+}
+
+.instructions-box {
+  margin-top: 15px;
+  padding: 10px;
+  background: #f9f9ff;
+  border-radius: 8px;
+  label { font-size: 12px; font-weight: 600; color: #2F3083; }
+  p { margin: 5px 0 0; font-size: 13px; color: #666; font-style: italic; }
+}
+
+.pricing-card {
+  background: #2F3083;
+  color: white;
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .label { font-size: 14px; opacity: 0.9; }
+    .price-amount { font-size: 20px; font-weight: 800; }
+  }
+  .payment-method-tag { margin: 10px 0 0; font-size: 12px; opacity: 0.8; text-align: right; }
+}
+
+.contact-card {
+  border-left: 4px solid #4caf50;
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 15px; color: #333; }
+  .contact-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .person-details {
+      .role-badge { font-size: 9px; background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 4px; display: inline-block; font-weight: bold; }
+      .person-name { margin: 5px 0; font-size: 16px; font-weight: 700; }
+      .phone-text { margin: 0; font-size: 13px; color: #666; }
+      .profession-text { margin: 2px 0; font-size: 12px; color: #2F3083; font-weight: 500; }
+    }
+
+    .communication-actions {
+      display: flex;
+      gap: 8px;
+      ion-button { --padding-start: 10px; --padding-end: 10px; height: 40px; }
+    }
+  }
+}
+
+.otp-display-card {
+  background: #fff8e1;
+  border: 1px dashed #ffc107;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 16px;
+  .otp-label { font-size: 12px; font-weight: bold; color: #856404; }
+  .otp-number { font-size: 28px; font-weight: 900; color: #000; letter-spacing: 5px; margin: 5px 0; }
+  p { font-size: 11px; color: #856404; margin: 0; }
+}
+
+.footer-actions {
+  margin-top: 20px;
+  .confirm-btn { --border-radius: 12px; height: 50px; font-weight: bold; font-size: 16px; }
+}

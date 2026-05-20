@@ -1,0 +1,146 @@
+/* Custom Header Styles */
+.custom-header {
+    ion-toolbar {
+      --background: #000000;
+      --color: white;
+      padding: 10px 0;
+    }
+  
+    ion-icon {
+      color: white;
+      font-size: 24px;
+    }
+  
+    ion-title {
+      font-size: 24px;
+      font-weight: 500;
+    }
+  }
+  
+  /* Confirmation Banner */
+  .confirmation-banner {
+    background-color: #e8f5e9;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+  }
+  
+  .banner-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .banner-image {
+    flex: 0 0 100px;
+    
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+  
+  .banner-text {
+    flex: 1;
+    padding-left: 15px;
+    
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 5px 0;
+      color: #000;
+    }
+    
+    p {
+      font-size: 18px;
+      margin: 0;
+      color: #000;
+    }
+    
+    .check-icon {
+      margin-bottom: 10px;
+      
+      ion-icon {
+        font-size: 32px;
+        color: #4caf50;
+      }
+    }
+  }
+  
+  /* Confirmation Message */
+  .confirmation-message {
+    padding: 0 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    
+    p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #000;
+    }
+  }
+  
+  /* Details Section */
+  .details-section {
+    padding: 0 15px;
+    margin-bottom: 20px;
+    color: #000;
+  }
+
+  
+  .section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    color: #000;
+  }
+  
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    
+    .detail-label {
+      font-weight: 500;
+      color: #000;
+    }
+    
+    .detail-value {
+      text-align: right;
+    }
+  }
+  
+  /* Additional Information */
+  .additional-info {
+    padding: 0 15px;
+    margin-bottom: 20px;
+    
+    p {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #000;
+    }
+  }
+  
+  /* Button Container */
+  .button-container {
+    padding: 0 15px;
+    margin-bottom: 30px;
+  }
+  
+  /* Button Styles */
+  .action-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #e8f5e9;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+    &:hover {
+      background-color: #dceddc; /* Manually darkened instead of darken() function */
+    }
+  }

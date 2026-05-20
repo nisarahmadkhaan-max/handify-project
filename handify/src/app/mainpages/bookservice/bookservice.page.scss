@@ -1,0 +1,52 @@
+.booking-page {
+  --background: #f6f7fb;
+}
+
+.custom-header {
+  ion-toolbar {
+    --background: #2F3083;
+    --color: white;
+    ion-title { font-weight: 600; font-size: 18px; }
+  }
+}
+
+.form-group {
+  margin-bottom: 20px;
+  ion-label {
+    font-weight: 600;
+    color: #2F3083;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 14px;
+  }
+}
+
+.custom-select {
+  background: #fff;
+  border: 1px solid #c7c9ff;
+  border-radius: 10px;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  cursor: pointer;
+  ion-label { margin: 0; color: #333; font-weight: 500; font-size: 14px; }
+}
+
+.location-btn {
+  --border-radius: 12px;
+  --color: #2F3083;
+  --border-color: #2F3083;
+  font-weight: 600;
+  margin: 10px 0 20px 0;
+  height: 45px;
+}
+
+.submit-btn {
+  --background: #2F3083;
+  --border-radius: 12px;
+  --height: 50px;
+  font-weight: bold;
+  margin-top: 25px;
+}

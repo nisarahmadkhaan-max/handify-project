@@ -1,0 +1,85 @@
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="container-header">
+      <!-- Greeting -->
+      <div class="greeting-section">
+        <div class="back-button" (click)="goBack()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </div>
+        <div class="greeting-text">
+          <h2>{{ selectedCategory?.name || translationService.getTranslation('services') }}</h2>
+        </div>
+        <div class="notification-icons">
+          <div class="icon-container" (click)="toggleSearchBar()">
+            <ion-icon name="search"></ion-icon>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Show search bar if toggled -->
+      <div *ngIf="showSearchBar" class="search-container">
+        <ion-searchbar 
+          [placeholder]="translationService.getTranslation('searchForServices')" 
+          class="custom-searchbar"
+          [(ngModel)]="searchTerm"
+          (ionInput)="onSearchChange($event)">
+        </ion-searchbar>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>{{ translationService.getTranslation('loadingServices') }}</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="error-container">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>{{ error }}</p>
+    </div>
+
+    <!-- Services Grid -->
+    <div *ngIf="!loading && !error" style="padding: 20px 16px;">
+      <div class="categories-grid">
+        <div *ngFor="let service of filteredServices">
+          <div class="category-card">
+            <img [src]="service.imageUrl" [alt]="service.name" />
+          </div>
+          <p class="service-name">{{ service.name }}</p>
+          <p class="service-desc">{{ service.description }}</p>
+          <p class="service-price">Rs.{{ getFinalPrice(service.price) }}</p>
+          <button class="book-now-btn" (click)="bookservice(service)">{{ translationService.getTranslation('bookNow') }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+    <ion-tab-button tab="home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Home</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="grid">
+      <ion-icon name="grid-outline"></ion-icon>
+    </ion-tab-button>
+
+    <div class="add-button-container">
+      <div class="add-button">
+        <ion-icon name="add"></ion-icon>
+      </div>
+    </div>
+
+    <ion-tab-button tab="document">
+      <ion-icon name="document-text-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="profile">
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-content>

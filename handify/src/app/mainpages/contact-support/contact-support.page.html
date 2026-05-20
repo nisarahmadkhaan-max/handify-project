@@ -1,0 +1,59 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">{{ translationService.getTranslation('contactSupport') }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="support-content">
+  <!-- Help Banner -->
+  <div class="support-banner">
+    <div class="banner-content">
+      <div class="banner-image">
+        <img src="assets/Group12.png" alt="Support Person">
+      </div>
+      <div class="banner-text">
+        <h2>{{ translationService.getTranslation('howCanWeHelpYouToday') }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call Support Section -->
+  <div class="support-section">
+    <h2 class="section-title">{{ translationService.getTranslation('callSupport') }}</h2>
+    <div class="contact-item">
+      <ion-icon name="call-outline"></ion-icon>
+      <span>{{ phoneNumber }}</span>
+    </div>
+    <button class="action-button" (click)="callNow()">{{ translationService.getTranslation('callNow') }}</button>
+  </div>
+
+  <!-- Email Us Section -->
+  <div class="support-section">
+    <h2 class="section-title">{{ translationService.getTranslation('emailUs') }}</h2>
+    <div class="contact-item">
+      <ion-icon name="mail-outline"></ion-icon>
+      <span>{{ emailAddress }}</span>
+    </div>
+    <button class="action-button" (click)="sendEmail()">{{ translationService.getTranslation('sendEmail') }}</button>
+  </div>
+
+  <!-- Support Request Form -->
+  <div class="support-section">
+    <h2 class="section-title">{{ translationService.getTranslation('sendASupportRequest') }}</h2>
+    
+    <div class="form-group">
+      <label>{{ translationService.getTranslation('subject') }}:</label>
+      <input type="text" [placeholder]="translationService.getTranslation('egIssueWithBooking')" class="bg_main" [(ngModel)]="supportRequest.subject">
+    </div>
+    
+    <div class="form-group">
+      <label>{{ translationService.getTranslation('message') }}:</label>
+      <textarea rows="5" [placeholder]="translationService.getTranslation('enterYourMessageHere')" class="bg_main" [(ngModel)]="supportRequest.message"></textarea>
+    </div>
+    
+    <button class="action-button submit-button" (click)="submitRequest()">{{ translationService.getTranslation('submitRequest') }}</button>
+  </div>
+</ion-content>

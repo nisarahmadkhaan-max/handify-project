@@ -1,0 +1,40 @@
+<ion-header class="custom-header">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button (click)="goBack()" text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">{{ receiverName }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="chat-content">
+  <div class="chat-container">
+    <div class="messages-container">
+      <div *ngFor="let message of messages"
+           [ngClass]="{'message-container': true, 'user-message': message.senderId === currentUserId, 'agent-message': message.senderId !== currentUserId}">
+        
+        <div class="message-bubble">
+          {{ message.text }}
+          <div class="message-time">{{ message.timestamp | date:'shortTime' }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div *ngIf="!loading && messages.length === 0" class="welcome-container">
+      <div class="welcome-bubble">
+        <div class="welcome-text">Hi! Start chatting about your booking here.</div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<div class="input-container">
+  <div class="input-wrapper">
+    <input style="color: #000; background-color: #fff;"
+           type="text"
+           [placeholder]="translationService.translate('typeYourMessageHere')"
+           [(ngModel)]="newMessage"
+           (keyup.enter)="sendMessage()">
+    <ion-icon name="send-outline" class="input-icon send-icon" (click)="sendMessage()"></ion-icon>
+  </div>
+</div>

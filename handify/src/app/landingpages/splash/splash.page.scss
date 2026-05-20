@@ -1,0 +1,189 @@
+.logo-container img {
+     width: 70%;
+    height: 25%;
+    margin-top: 50px;
+    margin-bottom: -90px;
+}
+
+.welcome-page {
+  --background: #EDF2F8;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+}
+
+.logo-container {
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  margin-top: 40px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.bold {
+  font-weight: 900;
+}
+
+.welcome-text {
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: 30px;
+  color: #000;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #222;
+  margin-bottom: 40px;
+  width: 80%;
+  margin-left: 10%;
+}
+
+.slide-button__container {
+  position: relative;
+  width: 300px;
+  margin-top: 20px;
+}
+
+.swipe-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.swipe-track {
+  position: relative;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.swipe-thumb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  background: #2F3083;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  cursor: grab;
+  user-select: none;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  will-change: transform;
+  transform: translateX(0);
+  transition: transform 0.1s ease-out;
+}
+
+.swipe-thumb:active {
+  cursor: grabbing;
+  background: #1F2069;
+}
+
+.swipe-text {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1;
+  font-size: 16px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.slide-button__text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+
+.vertical-swipe-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  height: 260px;
+  margin-top: 32px;
+}
+
+.vertical-swipe-track {
+  position: relative;
+  width: 65px;
+  height: 100px;
+  background: linear-gradient(180deg, #c4c4c4 10%, #000000 100%);
+  border-radius: 0px 0px 45px 45px;
+  // box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.vertical-swipe-thumb {
+  position: absolute;
+  left: 8%;
+  bottom: 30px;
+  transform: translate(-50%, 0);
+  width: 55px;
+  height: 55px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #222;
+  font-size: 40px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.22);
+  cursor: grab;
+  user-select: none;
+  z-index: 2;
+  transition: box-shadow 0.2s, background 0.2s, transform 0.1s;
+}
+
+.vertical-swipe-thumb:active {
+  background: #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.vertical-swipe-thumb ion-icon {
+  font-size: 40px;
+  color: #222;
+  font-weight: bold;
+}
+
+.vertical-swipe-text {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #222;
+  text-align: center;
+}

@@ -1,0 +1,215 @@
+/* Custom Header Styles */
+.custom-header {
+  ion-toolbar {
+    --background: #2F3083;
+    --color: white;
+    padding: 12px 0;
+    box-shadow: 0 6px 12px rgba(47, 48, 131, 0.25);
+  }
+
+  ion-back-button {
+    --color: white;
+  }
+
+  ion-title {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
+  
+  /* Settings Content */
+.settings-content {
+  --background: #f6f7fb;
+}
+  
+  /* Settings Section */
+.settings-section {
+  padding: 15px;
+  margin-bottom: 15px;
+}
+  
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  color: #2F3083;
+}
+  
+  /* Setting Button */
+.setting-button {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: #EDF2F8;
+  border: 1px solid #2F3083;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #0d0f25;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease;
+  box-shadow: 5px 5px 0px 0px #d6d9ff;
+  
+  &:hover {
+    background-color: #fff;
+    transform: translateY(-2px);
+  }
+  
+  &.with-icon {
+    display: flex;
+    align-items: center;
+    
+    ion-icon {
+      font-size: 24px;
+      margin-right: 10px;
+      color: #2F3083;
+    }
+  }
+}
+  
+  /* Setting Item */
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+  
+.setting-item-column {
+  margin-bottom: 15px;
+  
+  input {
+    width: 100%;
+    padding: 15px;
+    margin-top: 5px;
+    border: 1px solid #c7c9ff;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #fff;
+    
+    &::placeholder {
+      color: #999;
+    }
+    
+    &:disabled {
+      background-color: #f1f1fb;
+      color: #999;
+    }
+    
+    &:focus {
+      border-color: #2F3083;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(47, 48, 131, 0.15);
+    }
+  }
+}
+  
+.setting-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2F3083;
+}
+  
+  /* Toggle Switch */
+  .toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      
+      &:checked + .toggle-slider {
+        background-color: #2F3083;
+      }
+      
+      &:checked + .toggle-slider:before {
+        transform: translateX(26px);
+      }
+      
+      &:disabled + .toggle-slider {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+  
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+  
+  &:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+}
+
+/* Dynamic Forms for Settings */
+.dynamic-form {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #edf0ff;
+  padding: 16px 12px 12px 12px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  margin-bottom: 14px;
+
+  label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #2F3083;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #c7c9ff;
+    border-radius: 6px;
+    font-size: 15px;
+    margin-top: 2px;
+    background: #f8f8ff;
+
+    &:focus {
+      outline: none;
+      border-color: #2F3083;
+      box-shadow: 0 0 0 2px rgba(47, 48, 131, 0.15);
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.form-message {
+  margin-top: 10px;
+  color: #2F3083;
+  font-weight: 600;
+  font-size: 15px;
+}

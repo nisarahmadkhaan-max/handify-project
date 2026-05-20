@@ -1,0 +1,35 @@
+<ion-content class="language-selection">
+  <img class="main-onboarding" src="assets/logo_onboarding.png" alt="onboarding" />
+  <div class="container">
+    <!-- Screen 1: Welcome & Intro (Replaces Language) -->
+    <div *ngIf="selected_onboard == 'first'" class="sub-div">
+      <h2 class="title">Welcome to Handify</h2>
+      <p class="info-text" style="margin-bottom: 2rem;">
+        Your one-stop solution for all professional home services.
+        Connecting you with the best experts in your area.
+      </p>
+      <ion-button expand="full" class="confirm-btn" (click)="confirmSelection('second')">
+        Get Started
+      </ion-button>
+    </div>
+
+    <!-- Screen 2: Notifications -->
+    <div *ngIf="selected_onboard == 'second'" class="sub-div">
+      <img style="width: 10%;" src="assets/bell.png" />
+      <h2 class="title">{{ translate('ONBOARDING.NOTIFICATION.TITLE') }}</h2>
+      <p class="info-text">{{ translate('ONBOARDING.NOTIFICATION.INFO') }}</p>
+      <ion-button expand="full" class="confirm-btn" (click)="confirmSelection('third')">{{ translate('ONBOARDING.NOTIFICATION.ALLOW') }}</ion-button>
+      <ion-button expand="full" class="confirm-btn-tp" (click)="confirmSelectionnotallow('third')">{{ translate('ONBOARDING.NOTIFICATION.DONT_ALLOW') }}</ion-button>
+    </div>
+
+    <!-- Screen 3: Location -->
+    <div *ngIf="selected_onboard == 'third'" class="sub-div">
+      <img style="width: 10%;" src="assets/location.png" />
+      <h2 class="title">{{ translate('ONBOARDING.LOCATION.TITLE') }}</h2>
+      <p class="info-text">{{ translate('ONBOARDING.LOCATION.INFO') }}</p>
+      <ion-button expand="full" class="confirm-btn" (click)="confirmSelection('four')">{{ translate('ONBOARDING.LOCATION.WHILE_USING') }}</ion-button>
+      <ion-button expand="full" class="confirm-btn1" (click)="confirmSelection('four')">{{ translate('ONBOARDING.LOCATION.ONLY_ONCE') }}</ion-button>
+      <ion-button expand="full" class="confirm-btn-tp" (click)="confirmSelectionnotallow('four')">{{ translate('ONBOARDING.LOCATION.DENY') }}</ion-button>
+    </div>
+  </div>
+</ion-content>

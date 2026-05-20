@@ -1,0 +1,105 @@
+<ion-header class="ion-no-border custom-header">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">{{ translationService.translate('bookYourService') }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="booking-page ion-padding">
+  <div *ngIf="selectedService; else noService" class="service-details">
+    <h2>{{ selectedService.name }}</h2>
+    <p>{{ selectedService.description }}</p>
+  </div>
+
+  <ng-template #noService>
+    <div class="service-details">
+      <p>{{ translationService.translate('noServiceDataAvailable') }}</p>
+    </div>
+  </ng-template>
+
+  <div class="form-container" *ngIf="selectedService">
+    <!-- Final Price Display (Transparency) -->
+    <div class="form-group pricing-box">
+      <ion-label>{{ translationService.translate('finalPrice') || 'Total Price' }}:</ion-label>
+      <div class="price-display">
+        <span class="currency">Rs.</span>
+        <span class="amount">{{ finalPrice }}</span>
+      </div>
+      <p class="tax-info">Inclusive of all service charges</p>
+    </div>
+
+    <!-- Date Picker Popup -->
+    <div class="form-group">
+      <ion-label>{{ translationService.translate('date') }}:</ion-label>
+      <div class="custom-select" (click)="openDatePicker()">
+        <ion-label>{{ bookingData.date || 'SELECT DATE' }}</ion-label>
+        <ion-icon name="calendar-outline" color="primary"></ion-icon>
+      </div>
+
+      <ion-modal [isOpen]="showDatePicker" (didDismiss)="showDatePicker = false" class="datetime-modal">
+        <ng-template>
+          <div class="modal-wrapper">
+            <ion-datetime
+              presentation="date"
+              (ionChange)="onDateChange($event)"
+              [showDefaultButtons]="true"
+              doneText="DONE"
+              cancelText="CANCEL"
+              (ionCancel)="showDatePicker = false"
+              (ionConfirm)="showDatePicker = false">
+            </ion-datetime>
+          </div>
+        </ng-template>
+      </ion-modal>
+    </div>
+
+    <!-- Time Picker Popup -->
+    <div class="form-group">
+      <ion-label>{{ translationService.translate('time') }}:</ion-label>
+      <div class="custom-select" (click)="openTimePicker()">
+        <ion-label>{{ bookingData.time || 'SELECT TIME' }}</ion-label>
+        <ion-icon name="time-outline" color="primary"></ion-icon>
+      </div>
+
+      <ion-modal [isOpen]="showTimePicker" (didDismiss)="showTimePicker = false" class="datetime-modal">
+        <ng-template>
+          <div class="modal-wrapper">
+            <ion-datetime
+              presentation="time"
+              (ionChange)="onTimeChange($event)"
+              [showDefaultButtons]="true"
+              doneText="DONE"
+              cancelText="CANCEL"
+              (ionCancel)="showTimePicker = false"
+              (ionConfirm)="showTimePicker = false">
+            </ion-datetime>
+          </div>
+        </ng-template>
+      </ion-modal>
+    </div>
+
+    <div class="form-group">
+      <ion-label>{{ translationService.translate('location') }}:</ion-label>
+      <ion-item lines="none" class="custom-input">
+        <ion-textarea [placeholder]="translationService.translate('enterYourAddressHere')" [(ngModel)]="bookingData.location" rows="2"></ion-textarea>
+      </ion-item>
+    </div>
+
+    <ion-button expand="block" fill="outline" (click)="getCurrentLocation()" class="location-btn">
+      USE CURRENT LOCATION <ion-icon name="location-outline" slot="end"></ion-icon>
+    </ion-button>
+
+    <div class="form-group">
+      <ion-label>{{ translationService.translate('additionalInstructions') }}:</ion-label>
+      <ion-item lines="none" class="custom-textarea">
+        <ion-textarea [placeholder]="'Enter any special requests...'" rows="3" [(ngModel)]="bookingData.additionalInstructions"></ion-textarea>
+      </ion-item>
+    </div>
+
+    <ion-button expand="block" class="submit-btn" (click)="confirmBooking()" [disabled]="!bookingData.date || !bookingData.time || !bookingData.location">
+      BOOK NOW
+    </ion-button>
+  </div>
+</ion-content>

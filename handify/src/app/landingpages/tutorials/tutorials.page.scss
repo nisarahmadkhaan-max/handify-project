@@ -1,0 +1,121 @@
+ion-content {
+  // --background: #000000;
+  --color: #ffffff;
+}
+
+.swiper-container {
+  height: 100%;
+  width: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.slide-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  // padding: 16px;
+}
+
+.logo-container {
+  padding: 20px 0;
+  text-align: left;
+  width: 100%;
+}
+
+.logo {
+  width: 180px;
+  height: auto;
+}
+
+.illustration-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(173, 216, 173, 0.15);
+  border-radius: 50%;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1/1;
+}
+
+.illustration {
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  margin-top: 20px;
+}
+
+.content {
+  padding: 20px 0;
+  text-align: center;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 24px;
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 20px 0;
+}
+
+.next-button {
+  --background: #EDF2F8;
+  --color: #000000;
+  --border-radius: 8px;
+  margin: 0;
+  flex: 1;
+}
+
+.back-button {
+  --background: transparent;
+  --color: #ffffff;
+  --border-color: #ffffff;
+  --border-radius: 8px;
+  margin: 0;
+  flex: 1;
+}
+
+// Progress indicators
+.swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.swiper-pagination-bullet-active {
+  background: #c1e1c1;
+}
+
+.bg-radius {
+  background-color: #2F3083;
+  border-radius: 15px 15px 0px 0px;
+  padding: 10px;
+}
+
+.tuto-steps{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.tuto-steps img{
+  width: 30%;
+}

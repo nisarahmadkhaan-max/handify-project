@@ -1,0 +1,54 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="employee-dashboard"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Wallet Top-up</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="info-card">
+    <ion-icon name="information-circle-outline"></ion-icon>
+    <p>Transfer the amount to our official EasyPaisa account below and upload the screenshot with Transaction ID.</p>
+  </div>
+
+  <div class="account-details">
+    <div class="detail-item">
+      <span class="label">EasyPaisa Number:</span>
+      <span class="value">{{ easypaisaNumber }}</span>
+      <ion-button fill="clear" size="small" (click)="copyNumber()">
+        <ion-icon name="copy-outline"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="detail-item">
+      <span class="label">Account Name:</span>
+      <span class="value">{{ accountName }}</span>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Amount (Rs.)</ion-label>
+      <ion-input type="number" [(ngModel)]="amount" placeholder="Enter amount sent"></ion-input>
+    </ion-item>
+
+    <ion-item lines="none" class="custom-input">
+      <ion-label position="stacked">Transaction ID</ion-label>
+      <ion-input type="text" [(ngModel)]="transactionId" placeholder="Paste Transaction ID here"></ion-input>
+    </ion-item>
+
+    <div class="upload-container">
+      <p>Payment Screenshot</p>
+      <div class="upload-box" (click)="selectScreenshot()">
+        <ion-icon name="cloud-upload-outline" *ngIf="!screenshot"></ion-icon>
+        <img [src]="screenshot" *ngIf="screenshot" />
+        <span *ngIf="!screenshot">Tap to Upload Receipt</span>
+      </div>
+    </div>
+  </div>
+
+  <ion-button expand="block" class="submit-btn" (click)="submitRequest()">
+    SUBMIT FOR VERIFICATION
+  </ion-button>
+</ion-content>

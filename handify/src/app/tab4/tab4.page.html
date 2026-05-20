@@ -1,0 +1,82 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-title class="ion-text-center">{{ translationService.getTranslation('myProfile') }}</ion-title>
+    <ion-buttons slot="end">
+     <ion-button (click)="editProfile()">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="profile-content">
+  <!-- User Information -->
+  <div class="profile-info">
+    <div class="info-item">
+      <div class="label">{{ translationService.getTranslation('userName') }}</div>
+      <div class="value">{{ userProfile.name }}</div>
+    </div>
+    
+    <div class="info-item">
+      <div class="label">{{ translationService.getTranslation('tagline') }}</div>
+      <div class="value">{{ userProfile.tagline }}</div>
+    </div>
+    
+    <div class="info-item">
+      <div class="label">{{ translationService.getTranslation('emailAddress') }}</div>
+      <div class="value">{{ userProfile.email }}</div>
+    </div>
+    
+    <div class="info-item">
+      <div class="label">{{ translationService.getTranslation('phoneNumber') }}</div>
+      <div class="value">{{ userProfile.phone }}</div>
+    </div>
+    
+    <div class="info-item">
+      <div class="label">{{ translationService.getTranslation('location') }}</div>
+      <div class="value">{{ userProfile.location }}</div>
+    </div>
+  </div>
+  
+  <!-- Menu Options -->
+  <div class="menu-options">
+    <button class="menu-item" (click)="navigateTo('tabs/tab3')">
+      <ion-icon name="document-text-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('myRequests') }}</span>
+    </button>
+    
+    <button class="menu-item" (click)="navigateTo('notification')">
+      <ion-icon name="notifications-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('notifications') }}</span>
+    </button>
+    
+    <button class="menu-item" (click)="navigateTo('settings')">
+      <ion-icon name="settings-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('appSettings') }}</span>
+    </button>
+    
+    <button class="menu-item" (click)="navigateTo('contact-support')">
+      <ion-icon name="headset-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('contactSupport') }}</span>
+    </button>
+    
+    <button class="menu-item logout" (click)="logout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('logout') }}</span>
+    </button>
+
+    <!-- Employee Mode Button - Icon color set to light (white) -->
+    <button class="menu-item employee-mode" (click)="navigateTo('employee-auth')">
+      <ion-icon name="briefcase-outline" color="light"></ion-icon>
+      <span>Employee Mode</span>
+    </button>
+  </div>
+  
+  <!-- Footer -->
+  <div class="profile-footer">
+    <div class="version">{{ translationService.getTranslation('appVersion') }}: {{ appVersion }}</div>
+    <div class="links">
+      <a (click)="openTerms()">{{ translationService.getTranslation('termsOfService') }}</a> | <a (click)="openPrivacy()">{{ translationService.getTranslation('privacy') }}</a>
+    </div>
+  </div>
+</ion-content>

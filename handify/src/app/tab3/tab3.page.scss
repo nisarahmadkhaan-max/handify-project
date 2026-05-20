@@ -1,0 +1,134 @@
+.custom-header {
+  ion-toolbar {
+    --background: #2F3083;
+    --color: white;
+    padding: 12px 0;
+  }
+  ion-title { font-weight: 600; }
+  ion-back-button { --color: white; }
+}
+
+.requests-content {
+  --background: #f6f7fb;
+}
+
+.filter-tabs {
+  display: flex;
+  padding: 15px;
+  gap: 10px;
+
+  .filter-tab {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #2F3083;
+    background: white;
+    color: #2F3083;
+    font-weight: 600;
+    transition: 0.3s;
+
+    &.active {
+      background: #2F3083;
+      color: white;
+      box-shadow: 0 4px 8px rgba(47, 48, 131, 0.3);
+    }
+  }
+}
+
+.loader {
+  display: block;
+  margin: 20px auto;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: #92949c;
+
+  ion-icon {
+    font-size: 80px;
+    margin-bottom: 10px;
+  }
+}
+
+.request-list {
+  padding: 10px 15px;
+}
+
+.request-item {
+  background: white;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+
+  .request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+
+    .booking-id {
+      font-weight: bold;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+  }
+
+  .request-body {
+    .main-info {
+      margin-bottom: 10px;
+
+      .service-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #2F3083;
+      }
+
+      .date-time {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+
+    .customer-info, .location-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 14px;
+      color: #444;
+
+      ion-icon {
+        color: #2F3083;
+        font-size: 18px;
+      }
+    }
+  }
+
+  .action-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+
+    ion-button {
+      flex: 1;
+      --border-radius: 8px;
+      font-weight: bold;
+    }
+  }
+}

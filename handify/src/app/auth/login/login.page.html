@@ -1,0 +1,64 @@
+<ion-content class="login-page">
+  <img class="logo" src="assets/logo_onboarding.png" alt="Local Connect Logo" />
+  
+  <div class="auth-container">
+    <div class="auth-header">
+      <span class="tab" [ngClass]="{'active': !isSignIn, 'inactive': isSignIn}" (click)="isSignIn = false">{{ translate('AUTH.SIGNUP.SIGN_UP') }}</span>
+      <span class="tab" [ngClass]="{'active': isSignIn, 'inactive': !isSignIn}" (click)="isSignIn = true">{{ translate('AUTH.LOGIN.SIGN_IN') }}</span>
+    </div>
+    
+    <!-- Sign In View -->
+    <div *ngIf="isSignIn" class="main-section">
+      <h2 class="welcome-title">{{ translate('AUTH.LOGIN.TITLE') }}</h2>
+      <p class="subtitle">{{ translate('AUTH.LOGIN.SUBTITLE') }}</p>
+
+      <div class="input-container">
+        <ion-icon name="call-outline"></ion-icon>
+        <ion-input [(ngModel)]="phoneNumber" [placeholder]="translate('AUTH.LOGIN.PHONE')" type="tel"></ion-input>
+      </div>
+      
+      <div class="input-container">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <ion-input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" [placeholder]="translate('AUTH.LOGIN.PASSWORD')"></ion-input>
+        <ion-icon class="eye-icon" [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" (click)="togglePasswordVisibility()"></ion-icon>
+      </div>
+      
+      <p class="forgot-password" (click)="forgotpass()">{{ translate('AUTH.LOGIN.FORGOT_PASSWORD') }}</p>
+      
+      <ion-button expand="full" class="login-btn" (click)="loginBtn()">{{ translate('AUTH.LOGIN.LOGIN_BUTTON') }}</ion-button>
+      
+      <p class="signup-text">{{ translate('AUTH.LOGIN.NO_ACCOUNT') }} <span class="signup-link" (click)="isSignIn = false">{{ translate('AUTH.LOGIN.SIGN_UP') }}</span></p>
+    </div>
+    
+    <!-- Sign Up View -->
+    <div *ngIf="!isSignIn" class="main-section">
+      <h2 class="welcome-title">{{ translate('AUTH.SIGNUP.TITLE') }}</h2>
+      <p class="subtitle">{{ translate('AUTH.SIGNUP.SUBTITLE') }}</p>
+      
+      <div class="input-container">
+        <ion-icon name="person-outline"></ion-icon>
+        <ion-input [(ngModel)]="fullName" [placeholder]="translate('AUTH.SIGNUP.FULL_NAME')"></ion-input>
+      </div>
+      
+      <div class="input-container">
+        <ion-icon name="mail-outline"></ion-icon>
+        <ion-input [(ngModel)]="email" [placeholder]="translate('AUTH.SIGNUP.EMAIL')" type="email"></ion-input>
+      </div>
+      
+      <div class="input-container">
+        <ion-icon name="call-outline"></ion-icon>
+        <ion-input [(ngModel)]="phoneNumber" [placeholder]="translate('AUTH.SIGNUP.PHONE')" type="tel"></ion-input>
+      </div>
+      
+      <div class="input-container">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <ion-input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" [placeholder]="translate('AUTH.SIGNUP.PASSWORD')"></ion-input>
+        <ion-icon class="eye-icon" [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" (click)="togglePasswordVisibility()"></ion-icon>
+      </div>
+      
+      <ion-button expand="full" class="login-btn" (click)="loginBtn()">{{ translate('AUTH.SIGNUP.SIGNUP_BUTTON') }}</ion-button>
+      
+      <p class="signup-text">{{ translate('AUTH.SIGNUP.HAVE_ACCOUNT') }} <span class="signup-link" (click)="isSignIn = true">{{ translate('AUTH.SIGNUP.SIGN_IN') }}</span></p>
+    </div>
+  </div>
+</ion-content>

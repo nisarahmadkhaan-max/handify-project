@@ -1,0 +1,70 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">{{ translationService.getTranslation('requestSubmitted') }}</ion-title>
+   
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Confirmation Banner -->
+  <div class="confirmation-banner">
+    <div class="banner-content">
+      <div class="banner-image">
+        <img src="assets/Group13.png" alt="Confirmation Person">
+      </div>
+      <div class="banner-text">
+        <h2>{{ translationService.getTranslation('thankYou') }}</h2>
+        <p>{{ translationService.getTranslation('yourRequestSubmitted') }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Message -->
+  <div class="confirmation-message">
+    <p>{{ translationService.getTranslation('supportTeamReviewMessage') }}</p>
+  </div>
+
+  <!-- Request Details -->
+  <div class="details-section" *ngIf="requestDetails">
+    <h2 class="section-title">{{ translationService.getTranslation('requestDetailsSummary') }}</h2>
+
+    <div class="detail-item" *ngIf="requestDetails.id">
+      <span class="detail-label">{{ translationService.getTranslation('requestId') }}:</span>
+      <span class="detail-value">{{ requestDetails.id }}</span>
+    </div>
+    <div class="detail-item" *ngIf="requestDetails.ticketNumber && !requestDetails.id">
+      <span class="detail-label">{{ translationService.getTranslation('ticketNumber') }}:</span>
+      <span class="detail-value">{{ requestDetails.ticketNumber }}</span>
+    </div>
+    <div class="detail-item" *ngIf="requestDetails.submitted">
+      <span class="detail-label">{{ translationService.getTranslation('submitted') }}:</span>
+      <span class="detail-value">{{ requestDetails.submitted }}</span>
+    </div>
+    <div class="detail-item" *ngIf="requestDetails.description">
+      <span class="detail-label">{{ translationService.getTranslation('description') }}:</span>
+      <span class="detail-value">"{{ requestDetails.description }}"</span>
+    </div>
+    <div class="detail-item" *ngIf="requestDetails.status">
+      <span class="detail-label">{{ translationService.getTranslation('status') }}:</span>
+      <span class="detail-value">{{ requestDetails.status }}</span>
+    </div>
+    <div class="detail-item" *ngIf="requestDetails.message">
+      <span class="detail-label">{{ translationService.getTranslation('message') }}:</span>
+      <span class="detail-value">{{ requestDetails.message }}</span>
+    </div>
+  </div>
+
+  <!-- Additional Information -->
+  <div class="additional-info">
+    <p>{{ translationService.getTranslation('urgentInquiriesCall') }} {{ phoneNumber }}</p>
+    <p>{{ translationService.getTranslation('trackRequestMyRequests') }}</p>
+  </div>
+
+  <!-- Back to Home Button -->
+  <div class="button-container">
+    <button class="action-button" (click)="backToHome()">{{ translationService.getTranslation('backToHome') }}</button>
+  </div>
+</ion-content>

@@ -1,0 +1,154 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">{{ translationService.getTranslation('settings') }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="settings-content">
+  <!-- Account & General Settings -->
+  <div class="settings-section">
+    <h2 class="section-title">{{ translationService.getTranslation('accountGeneralSettings') }}</h2>
+
+    <button class="setting-button" (click)="changePassword()">
+      {{ translationService.getTranslation('changePassword') }}
+    </button>
+    <!-- Change Password Form -->
+    <div *ngIf="showChangePassword" class="dynamic-form">
+      <form (ngSubmit)="submitPasswordChange()">
+        <div class="form-group">
+          <label>{{ translationService.getTranslation('currentPassword') }}</label>
+          <input type="password" [(ngModel)]="currentPassword" name="currentPassword" required />
+        </div>
+        <div class="form-group">
+          <label>{{ translationService.getTranslation('newPassword') }}</label>
+          <input type="password" [(ngModel)]="newPassword" name="newPassword" required />
+        </div>
+        <div class="form-group">
+          <label>{{ translationService.getTranslation('confirmNewPassword') }}</label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="setting-button">{{ translationService.getTranslation('submit') }}</button>
+          <button type="button" class="setting-button" (click)="showChangePassword = false">{{ translationService.getTranslation('cancel') }}</button>
+        </div>
+        <div class="form-message" *ngIf="passwordChangeMessage">{{ passwordChangeMessage }}</div>
+      </form>
+    </div>
+
+    <button class="setting-button" (click)="changeLanguage()">
+      {{ translationService.getTranslation('languagePreferences') }}
+    </button>
+    <!-- Language Preferences Form -->
+    <div *ngIf="showLanguagePreferences" class="dynamic-form">
+      <form (ngSubmit)="submitLanguageChange()">
+        <div class="form-group">
+          <label>{{ translationService.getTranslation('selectLanguage') }}</label>
+          <select [(ngModel)]="selectedLanguage" name="selectedLanguage" required>
+            <option *ngFor="let lang of availableLanguages" [value]="lang.code">{{ lang.label }}</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="setting-button">{{ translationService.getTranslation('save') }}</button>
+          <button type="button" class="setting-button" (click)="showLanguagePreferences = false">{{ translationService.getTranslation('cancel') }}</button>
+        </div>
+        <div class="form-message" *ngIf="languageChangeMessage">{{ languageChangeMessage }}</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Settings -->
+  <div class="settings-section">
+    <h2 class="section-title">{{ translationService.getTranslation('notificationSettings') }}</h2>
+
+    <div class="setting-item">
+      <div class="setting-label">{{ translationService.getTranslation('enableNotifications') }}</div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="settings.notifications.enabled"
+          (change)="toggleSetting('notifications', 'enabled')">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-label">{{ translationService.getTranslation('serviceUpdates') }}</div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="settings.notifications.serviceUpdates"
+          [disabled]="!settings.notifications.enabled" (change)="toggleSetting('notifications', 'serviceUpdates')">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-label">{{ translationService.getTranslation('promotions') }}</div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="settings.notifications.promotions"
+          [disabled]="!settings.notifications.enabled" (change)="toggleSetting('notifications', 'promotions')">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-label">{{ translationService.getTranslation('bookingReminders') }}</div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="settings.notifications.bookingReminders"
+          [disabled]="!settings.notifications.enabled" (change)="toggleSetting('notifications', 'bookingReminders')">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Location Settings -->
+  <div class="settings-section">
+    <h2 class="section-title">{{ translationService.getTranslation('locationSettings') }}</h2>
+
+    <div class="setting-item">
+      <div class="setting-label">{{ translationService.getTranslation('enableLocationServices') }}</div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="settings.location.enabled" (change)="toggleSetting('location', 'enabled')">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-label">{{ translationService.getTranslation('useCurrentLocation') }}</div>
+      <label class="toggle">
+        <input type="checkbox" [checked]="settings.location.useCurrentLocation" [disabled]="!settings.location.enabled"
+          (change)="toggleSetting('location', 'useCurrentLocation')">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="setting-item-column">
+      <div class="setting-label">{{ translationService.getTranslation('manualAddressEntry') }}</div>
+      <input type="text" [placeholder]="translationService.getTranslation('enterYourAddressHere')" [(ngModel)]="settings.location.manualAddress"
+        [disabled]="!settings.location.enabled || settings.location.useCurrentLocation">
+    </div>
+  </div>
+
+  <!-- Miscellaneous -->
+  <div class="settings-section">
+    <h2 class="section-title">{{ translationService.getTranslation('miscellaneous') }}</h2>
+
+    <button class="setting-button with-icon" (click)="aboutApp()">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('aboutTheApp') }}</span>
+    </button>
+    <div *ngIf="showAboutApp" class="about-app-section">
+      <h3 style="    text-align: center;">{{ translationService.getTranslation('aboutThisApp') }}</h3>
+      <p style="    text-align: center;">
+        {{ translationService.getTranslation('welcomeToMyIonicApp') }}<br>
+        {{ translationService.getTranslation('version') }}: 1.0.0<br>
+        {{ translationService.getTranslation('developedBy') }}: Your Company Name<br>
+        {{ translationService.getTranslation('forSupportContactUs') }}
+      </p>
+    </div>
+
+    <button class="setting-button with-icon" (click)="contactSupport()">
+      <ion-icon name="headset-outline"></ion-icon>
+      <span>{{ translationService.getTranslation('contactSupport') }}</span>
+    </button>
+  </div>
+</ion-content>

@@ -1,0 +1,130 @@
+ion-content {
+    --background: #f8f3ee;
+}
+
+.info-card {
+    background: #e3f2fd;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #bbdefb;
+
+    ion-icon {
+        font-size: 24px;
+        color: #1976d2;
+    }
+
+    p {
+        margin: 0;
+        font-size: 13px;
+        color: #0d47a1;
+        line-height: 1.4;
+    }
+}
+
+.account-details {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+
+    .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+        &:last-child { margin-bottom: 0; }
+
+        .label {
+            font-size: 14px;
+            color: #666;
+            width: 130px;
+        }
+
+        .value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+        }
+
+        ion-button {
+            --padding-start: 5px;
+            --padding-end: 5px;
+            margin: 0;
+            height: 30px;
+        }
+    }
+}
+
+.input-section {
+    .custom-input {
+        background: white;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        --padding-start: 15px;
+
+        ion-label {
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 5px;
+        }
+    }
+}
+
+.upload-container {
+    margin-top: 20px;
+
+    p {
+        font-weight: bold;
+        color: #444;
+        margin-left: 5px;
+        margin-bottom: 10px;
+    }
+
+    .upload-box {
+        width: 100%;
+        height: 180px;
+        border: 2px dashed #ccc;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #fafafa;
+        overflow: hidden;
+        cursor: pointer;
+
+        ion-icon {
+            font-size: 40px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        span {
+            font-size: 14px;
+            color: #777;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+}
+
+.submit-btn {
+    --background: #388e3c;
+    --border-radius: 12px;
+    margin-top: 30px;
+    height: 50px;
+    font-weight: bold;
+    font-size: 16px;
+    --box-shadow: 0 4px 10px rgba(56, 142, 60, 0.3);
+}

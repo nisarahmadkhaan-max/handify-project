@@ -1,0 +1,97 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">
+      {{ userRole === 'employee' ? 'Job Requests' : translationService.getTranslation('myRequests') }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="requests-content">
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button 
+      class="filter-tab" 
+      [ngClass]="{'active': activeFilter === 'All'}" 
+      (click)="filterRequests('All')">
+      All
+    </button>
+    <button 
+      class="filter-tab" 
+      [ngClass]="{'active': activeFilter === 'Confirmed'}" 
+      (click)="filterRequests('Confirmed')">
+      Confirmed
+    </button>
+    <button 
+      class="filter-tab" 
+      [ngClass]="{'active': activeFilter === 'Pending'}" 
+      (click)="filterRequests('Pending')">
+      Pending
+    </button>
+  </div>
+
+  <ion-refresher slot="fixed" (ionRefresh)="fetchRequests()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-spinner *ngIf="loading" class="loader"></ion-spinner>
+
+  <!-- No Requests Message -->
+  <div *ngIf="!loading && !hasRequests()" class="empty-state">
+    <ion-icon name="document-outline"></ion-icon>
+    <h3>No Requests Found</h3>
+    <p>New job requests will appear here.</p>
+  </div>
+
+  <!-- Request List -->
+  <div class="request-list" *ngIf="!loading && hasFilteredRequests()">
+    <div class="request-item" *ngFor="let request of filteredRequests" (click)="viewRequestDetails(request)">
+
+      <div class="request-header">
+        <span class="booking-id">#{{ getBookingId(request) }}</span>
+        <span class="status-badge" [style.background-color]="getStatusColor(request.status)">
+          {{ request.status }}
+        </span>
+      </div>
+
+      <div class="request-body">
+        <div class="main-info">
+          <div class="service-name">{{ getServiceName(request) }}</div>
+          <div class="date-time">{{ getDateTime(request) }}</div>
+        </div>
+
+        <!-- Customer Info for Employee -->
+        <div class="customer-info" *ngIf="userRole === 'employee' && request.userId">
+          <ion-icon name="person-outline"></ion-icon>
+          <span>Customer: <strong>{{ request.userId.fullName }}</strong></span>
+        </div>
+
+        <div class="location-info">
+          <ion-icon name="location-outline"></ion-icon>
+          <span>{{ request.location }}</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons for Employee -->
+      <div class="action-footer" *ngIf="userRole === 'employee' && request.status === 'pending'">
+        <ion-button color="danger" fill="outline" size="small" (click)="rejectJob(request, $event)">
+          Ignore
+        </ion-button>
+        <ion-button color="success" size="small" (click)="acceptJob(request, $event)">
+          Accept Job
+        </ion-button>
+      </div>
+
+      <!-- Contact Button if Confirmed -->
+      <div class="action-footer" *ngIf="userRole === 'employee' && request.status === 'confirmed'">
+        <ion-button color="primary" fill="solid" expand="block" (click)="$event.stopPropagation();">
+          <ion-icon name="call-outline" slot="start"></ion-icon>
+          Call Customer ({{ request.userId?.phoneNumber }})
+        </ion-button>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

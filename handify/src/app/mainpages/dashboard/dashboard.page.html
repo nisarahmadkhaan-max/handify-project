@@ -1,0 +1,126 @@
+<ion-content [fullscreen]="true" class="dashboard-content">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">dashboard</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="container-header">
+      <!-- Greeting -->
+      <div class="greeting-section">
+        <div class="greeting-text">
+          <h2>Hi, John!</h2>
+          <h1>Good Morning..</h1>
+        </div>
+        <div class="notification-icons">
+          <div class="icon-container">
+            <ion-icon name="chatbubble-outline"></ion-icon>
+            <span class="notification-dot"></span>
+          </div>
+          <div class="icon-container">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <span class="notification-dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-container">
+        <ion-searchbar placeholder="Search for services..." class="custom-searchbar"></ion-searchbar>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <!-- Quick Actions -->
+      <div class="section-title">
+        <h2>Quick Actions</h2>
+      </div>
+
+      <div class="quick-actions-grid">
+        <div class="action-card" (click)="bookService()">
+          <div class="icon-bg">
+            <img src="assets/dash1.png" alt="Book a Service">
+          </div>
+          <p>Book a Service</p>
+        </div>
+
+        <div class="action-card" (click)="viewHistory()">
+          <div class="icon-bg">
+            <img src="assets/dash2.png" alt="View History">
+          </div>
+          <p>View History</p>
+        </div>
+
+        <div class="action-card" (click)="bookingDetails()">
+          <div class="icon-bg">
+            <img src="assets/dash3.png" alt="Booking Details">
+          </div>
+          <p>Booking Details</p>
+        </div>
+
+        <div class="action-card" (click)="contactSupport()">
+          <div class="icon-bg">
+            <img src="assets/dash4.png" alt="Contact Support">
+          </div>
+          <p>Contact Support</p>
+        </div>
+      </div>
+
+      <!-- Promo Banner -->
+      <div class="promo-banner">
+        <div class="promo-content">
+          <h3>Get</h3>
+          <div class="discount">20%</div>
+          <p>Off On Your<br>First Service!</p>
+          <button class="book-now-btn" (click)="bookNow()">Book Now</button>
+        </div>
+        <div class="promo-image">
+          <img src="assets/Frame1.png" alt="Promo">
+        </div>
+      </div>
+
+      <!-- Explore Categories -->
+      <div class="categories-header">
+        <h2>Explore Categories</h2>
+        <a href="#" class="view-all">View All</a>
+      </div>
+
+      <div class="categories-grid">
+        <div *ngFor="let i of [1,2,3]">
+          <div class="category-card">
+            <Img src="assets/cat1.png" />
+          </div>
+          <p class="cat-name">Welding</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+    <ion-tab-button tab="home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Home</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="grid">
+      <ion-icon name="grid-outline"></ion-icon>
+    </ion-tab-button>
+
+    <div class="add-button-container">
+      <div class="add-button">
+        <ion-icon name="add"></ion-icon>
+      </div>
+    </div>
+
+    <ion-tab-button tab="document">
+      <ion-icon name="document-text-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="profile">
+      <ion-icon name="person-outline"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-content>

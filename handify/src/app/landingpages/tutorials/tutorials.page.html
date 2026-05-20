@@ -1,0 +1,63 @@
+<ion-content>
+  <div *ngIf="currentSlide === 0" class="slide-container">
+    <div class="illustration-container">
+      <img src="assets/tutorial1.png" alt="Service Requests" class="illustration" />
+    </div>
+    <div class="bg-radius">
+      <div class="tuto-steps">
+        <img src="assets/tut1.png" />
+        <img src="assets/tut2.png" />
+        <img src="assets/tut2.png" />
+      </div>
+      <div class="content">
+        <h1>{{ translate('TUTORIALS.SLIDE1.TITLE') }}</h1>
+        <p>{{ translate('TUTORIALS.SLIDE1.DESCRIPTION') }}</p>
+      </div>
+      <div class="navigation-buttons">
+        <ion-button expand="block" class="next-button" (click)="next()">{{ translate('TUTORIALS.NEXT') }}</ion-button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="currentSlide === 1" class="slide-container">
+    <div class="illustration-container">
+      <img src="assets/tutorial2.png" alt="Vetted Professionals" class="illustration" />
+    </div>
+    <div class="bg-radius">
+      <div class="tuto-steps">
+        <img src="assets/tut2.png" />
+        <img src="assets/tut1.png" />
+        <img src="assets/tut2.png" />
+      </div>
+      <div class="content">
+        <h1>{{ translate('TUTORIALS.SLIDE2.TITLE') }}</h1>
+        <p>{{ translate('TUTORIALS.SLIDE2.DESCRIPTION') }}</p>
+      </div>
+      <div class="navigation-buttons">
+        <ion-button expand="block" fill="outline" class="back-button" (click)="back()">{{ translate('TUTORIALS.BACK') }}</ion-button>
+        <ion-button expand="block" class="next-button" (click)="next()">{{ translate('TUTORIALS.NEXT') }}</ion-button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="currentSlide === 2" class="slide-container">
+    <div class="illustration-container">
+      <img src="assets/tutorial3.png" alt="Safe Payments" class="illustration" />
+    </div>
+    <div class="bg-radius">
+      <div class="tuto-steps">
+        <img src="assets/tut2.png" />
+        <img src="assets/tut2.png" />
+        <img src="assets/tut1.png" />
+      </div>
+      <div class="content">
+        <h1>{{ translate('TUTORIALS.SLIDE3.TITLE') }}</h1>
+        <p>{{ translate('TUTORIALS.SLIDE3.DESCRIPTION') }}</p>
+      </div>
+      <div class="navigation-buttons">
+        <ion-button expand="block" fill="outline" class="back-button" (click)="back()">{{ translate('TUTORIALS.BACK') }}</ion-button>
+        <ion-button expand="block" class="next-button" (click)="finish()">{{ translate('TUTORIALS.FINISH') }}</ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

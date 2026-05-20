@@ -1,0 +1,40 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="employee-auth"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Employee Sign In</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <div class="header-section">
+      <h3>Welcome Back!</h3>
+      <p>Enter your credentials to access your employee dashboard.</p>
+    </div>
+
+    <ion-list lines="none">
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Phone Number</ion-label>
+        <ion-input type="tel" [(ngModel)]="loginData.phone" placeholder="03XXXXXXXXX"></ion-input>
+      </ion-item>
+
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Password</ion-label>
+        <ion-input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginData.password" placeholder="Enter password"></ion-input>
+        <ion-button slot="end" fill="clear" (click)="showPassword = !showPassword">
+          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" class="login-btn" (click)="login()">
+      LOGIN
+    </ion-button>
+
+    <div class="footer-link">
+      <p>Don't have an account? <span (click)="goToSignup()">Sign Up</span></p>
+    </div>
+  </div>
+</ion-content>

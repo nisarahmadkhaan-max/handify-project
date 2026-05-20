@@ -1,0 +1,34 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="tabs/tab4"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Employee Mode</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding ion-text-center">
+  <div class="landing-container">
+    <div class="icon-section">
+      <ion-icon name="briefcase-outline"></ion-icon>
+    </div>
+
+    <h2>Welcome to Employee Mode</h2>
+    <p>Earn money by providing your professional services. Join our community of experts.</p>
+
+    <div class="button-section">
+      <ion-button expand="block" class="main-btn" (click)="goToLogin()">
+        SIGN IN
+      </ion-button>
+
+      <ion-button expand="block" fill="outline" class="outline-btn" (click)="goToSignup()">
+        SIGN UP (CREATE PROFILE)
+      </ion-button>
+    </div>
+
+    <div class="info-footer">
+      <ion-icon name="shield-checkmark-outline"></ion-icon>
+      <span>Verified & Secure Platform</span>
+    </div>
+  </div>
+</ion-content>

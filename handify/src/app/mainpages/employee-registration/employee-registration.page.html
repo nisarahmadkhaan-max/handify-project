@@ -1,0 +1,203 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="employee-auth"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Employee Registration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="stepper-container">
+    <div class="step-indicator">
+      <div [class.active]="currentStep >= 1" class="step">1</div>
+      <div class="line"></div>
+      <div [class.active]="currentStep >= 2" class="step">2</div>
+      <div class="line"></div>
+      <div [class.active]="currentStep >= 3" class="step">3</div>
+      <div class="line"></div>
+      <div [class.active]="currentStep >= 4" class="step">4</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Account Info -->
+  <div *ngIf="currentStep === 1" class="step-content">
+    <h3>Create Account</h3>
+    <ion-list lines="none">
+      <ion-item class="custom-input">
+        <ion-label position="stacked">User Name</ion-label>
+        <ion-input type="text" [(ngModel)]="employeeData.username"></ion-input>
+      </ion-item>
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Employee Email</ion-label>
+        <ion-input type="email" [(ngModel)]="employeeData.email"></ion-input>
+      </ion-item>
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Phone Number</ion-label>
+        <ion-input type="tel" [(ngModel)]="employeeData.phone"></ion-input>
+      </ion-item>
+
+      <!-- Password with View Toggle -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Password</ion-label>
+        <div class="password-wrapper" style="display: flex; width: 100%; align-items: center;">
+          <ion-input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="employeeData.password"></ion-input>
+          <ion-icon
+            [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+            (click)="togglePassword()"
+            style="font-size: 1.5rem; margin-top: 10px; cursor: pointer;">
+          </ion-icon>
+        </div>
+      </ion-item>
+
+      <!-- Confirm Password with View Toggle -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Confirm Password</ion-label>
+        <div class="password-wrapper" style="display: flex; width: 100%; align-items: center;">
+          <ion-input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="employeeData.confirmPassword"></ion-input>
+          <ion-icon
+            [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"
+            (click)="toggleConfirmPassword()"
+            style="font-size: 1.5rem; margin-top: 10px; cursor: pointer;">
+          </ion-icon>
+        </div>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="block" (click)="nextStep()" class="next-btn" [disabled]="!isStep1Valid()">Next</ion-button>
+  </div>
+
+  <!-- Step 2: Profession & Time Range -->
+  <div *ngIf="currentStep === 2" class="step-content">
+    <h3>Work Details</h3>
+    <ion-list lines="none">
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Employee Specialization</ion-label>
+        <ion-select [(ngModel)]="employeeData.specialization" placeholder="Select Profession">
+          <ion-select-option value="Welding">Welding</ion-select-option>
+          <ion-select-option value="House Keeping">House Keeping</ion-select-option>
+          <ion-select-option value="Painting">Painting</ion-select-option>
+          <ion-select-option value="Plumbing">Plumbing</ion-select-option>
+          <ion-select-option value="Electrical">Electrical</ion-select-option>
+          <ion-select-option value="Carpentry">Carpentry</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <div class="time-range-box">
+        <p class="label-text">Availability Time:</p>
+        <div class="picker-row">
+          <div class="time-item" (click)="openPicker('from')">
+            <span>From:</span>
+            <strong>{{ employeeData.availableFrom || '--:--' }}</strong>
+          </div>
+          <div class="time-item" (click)="openPicker('to')">
+            <span>To:</span>
+            <strong>{{ employeeData.availableTo || '--:--' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <ion-modal [isOpen]="showTimePicker" (didDismiss)="showTimePicker = false" class="datetime-modal">
+        <ng-template>
+          <div class="modal-wrapper">
+            <ion-datetime
+              presentation="time"
+              (ionChange)="onTimeRangeChange($event)"
+              [showDefaultButtons]="true"
+              doneText="DONE"
+              cancelText="CANCEL"
+              (ionCancel)="showTimePicker = false"
+              (ionConfirm)="showTimePicker = false">
+            </ion-datetime>
+          </div>
+        </ng-template>
+      </ion-modal>
+    </ion-list>
+    <div class="btn-group">
+      <ion-button fill="outline" (click)="prevStep()" class="action-btn-outline">Back</ion-button>
+      <ion-button (click)="nextStep()" [disabled]="!isStep2Valid()" class="action-btn-solid">Next</ion-button>
+    </div>
+  </div>
+
+  <!-- Step 3: Verification -->
+  <div *ngIf="currentStep === 3" class="step-content">
+    <h3>Verification</h3>
+
+    <!-- CNIC Number Field -->
+    <ion-item class="custom-input" style="margin-bottom: 20px;">
+      <ion-label position="stacked">CNIC Number</ion-label>
+      <ion-input type="number" placeholder="Enter 13 digit CNIC number" [(ngModel)]="employeeData.cnicNumber"></ion-input>
+    </ion-item>
+
+    <div class="upload-area">
+      <div class="upload-item">
+        <p>1. CNIC Front (Gallery)</p>
+        <div class="box" (click)="uploadFromGallery('cnicFront')">
+          <ion-icon name="image-outline" *ngIf="!employeeData.cnicFront"></ion-icon>
+          <img [src]="employeeData.cnicFront" *ngIf="employeeData.cnicFront" />
+        </div>
+      </div>
+      <div class="upload-item">
+        <p>2. CNIC Back (Gallery)</p>
+        <div class="box" (click)="uploadFromGallery('cnicBack')">
+          <ion-icon name="image-outline" *ngIf="!employeeData.cnicBack"></ion-icon>
+          <img [src]="employeeData.cnicBack" *ngIf="employeeData.cnicBack" />
+        </div>
+      </div>
+      <div class="upload-item camera-item">
+        <p>3. Selfie with CNIC (Camera)</p>
+        <div class="box" (click)="takeSelfie()">
+          <ion-icon name="camera-outline" *ngIf="!employeeData.selfie"></ion-icon>
+          <img [src]="employeeData.selfie" *ngIf="employeeData.selfie" />
+        </div>
+        <p class="info-text">Capture a clear photo. CNIC text must be readable.</p>
+      </div>
+    </div>
+
+    <!-- PHOTO REVIEW MODAL -->
+    <ion-modal [isOpen]="showReviewModal" class="review-modal-custom">
+      <ng-template>
+        <div class="review-screen">
+          <div class="review-header">
+            <h4>Review Selfie Clarity</h4>
+            <p>Make sure CNIC number and details are visible</p>
+          </div>
+          <div class="image-box">
+            <img [src]="tempImage" />
+          </div>
+          <div class="warning-msg">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span>Important: Blurry text will lead to account rejection by Admin.</span>
+          </div>
+          <div class="action-btns">
+            <ion-button fill="outline" color="danger" (click)="retakePhoto()">RETAKE</ion-button>
+            <ion-button fill="solid" color="success" (click)="confirmPhoto()">LOOKS CLEAR</ion-button>
+          </div>
+        </div>
+      </ng-template>
+    </ion-modal>
+
+    <div class="btn-group">
+      <ion-button fill="outline" (click)="prevStep()" class="action-btn-outline">Back</ion-button>
+      <ion-button (click)="nextStep()" [disabled]="!isStep3Valid()" class="action-btn-solid">Next</ion-button>
+    </div>
+  </div>
+
+  <!-- Step 4: Emergency Contacts -->
+  <div *ngIf="currentStep === 4" class="step-content">
+    <h3>Emergency Contacts</h3>
+    <ion-list lines="none">
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Contact Name</ion-label>
+        <ion-input type="text" [(ngModel)]="employeeData.emergencyName"></ion-input>
+      </ion-item>
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Emergency Phone</ion-label>
+        <ion-input type="tel" [(ngModel)]="employeeData.emergencyPhone"></ion-input>
+      </ion-item>
+    </ion-list>
+    <div class="btn-group">
+      <ion-button fill="outline" (click)="prevStep()" class="back-btn-small">Back</ion-button>
+      <ion-button (click)="createAccount()" class="finish-btn" [disabled]="!isStep4Valid()">Finish</ion-button>
+    </div>
+  </div>
+</ion-content>

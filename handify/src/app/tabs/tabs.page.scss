@@ -1,0 +1,45 @@
+ion-tab-bar {
+  --background: #fff;
+  --color: #000;
+  padding: 5px 0;
+  height: 60px; /* a bit more height to look like the image */
+  position: relative;
+  z-index: 1;
+  justify-content: space-between;
+}
+
+.center-tab-container {
+  position: absolute;
+  bottom: 25px; /* adjust for how much you want it to float */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+ion-tab-button.center-tab {
+  background: transparent;
+  --background: transparent;
+  position: relative;
+  height: auto;
+  width: auto;
+  contain: none;
+  box-shadow: none;
+}
+
+.plus-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #2F3083;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.center-tab-label {
+  text-align: center;
+  font-size: 10px;
+  margin-top: 4px;
+  display: block;
+}
