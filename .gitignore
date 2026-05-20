@@ -29,3 +29,7 @@ __MACOSX/
 
 # Capacitor/Ionic specific
 capacitor.config.json
+
+# Personal Files (Not for GitHub)
+VIVA_PREPARATION.md
+**/VIVA_PREPARATION.md
