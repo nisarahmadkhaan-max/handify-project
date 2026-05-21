@@ -34,14 +34,27 @@ app.use(cors({
   exposedHeaders: ['Content-Range', 'X-Total-Count']
 }));
 
-app.use(express.json({ limit: '50mb' })); // Increased limit for base64 images
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve Static Files (Important for seeder images)
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Routes
-app.get('/', (req, res) => res.send('Server is running'));
+// Basic Routes
+app.get('/', (req, res) => res.send('Handify Backend is running!'));
+
+// Debug/Seed Route - Ye admin create karne mein madad karega
+app.get('/api/force-seed', async (req, res) => {
+  try {
+    await seedAdmin();
+    await seedCategories();
+    await seedServices();
+    await seedSettings();
+    res.json({ message: 'Database Seeded Successfully! Admin is ready.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/services', serviceRoutes);
@@ -56,26 +69,17 @@ app.use('/api/wallet', topupRoutes);
 app.use('/api/settings', settingsRoutes);
 
 const mongoUri = process.env.MONGODB_URI;
-const enableAutoSeed = process.env.ENABLE_AUTO_SEED === 'true';
 
 if (mongoUri) {
   mongoose.connect(mongoUri)
-  .then(async () => {
+  .then(() => {
     console.log('⭐⭐⭐ SUCCESS: Connected to MongoDB ⭐⭐⭐');
-    if (enableAutoSeed) {
-      await seedAdmin();
-      await seedCategories();
-      await seedServices();
-      await seedEmployees();
-      await seedSettings();
-    }
   })
   .catch(err => {
     console.error('❌ MONGODB CONNECTION ERROR:', err.message);
   });
 }
 
-// Only listen if not running as a serverless function
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, '0.0.0.0', () => {
