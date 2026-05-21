@@ -18,6 +18,10 @@ export class EmployeeRegistrationPage implements OnInit {
   showReviewModal = false;
   tempImage: string = '';
 
+  // Added missing properties to fix build errors
+  showPassword = false;
+  showConfirmPassword = false;
+
   employeeData: any = {
     username: '',
     email: '',
