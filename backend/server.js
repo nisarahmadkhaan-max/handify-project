@@ -42,16 +42,50 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 // Basic Routes
 app.get('/', (req, res) => res.send('Handify Backend is running!'));
 
-// Debug/Seed Route - Ye admin create karne mein madad karega
+// Database Connection Helper
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) {
+    console.error('❌ MONGODB_URI is missing in environment variables');
+    return;
+  }
+
+  try {
+    await mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    console.log('⭐⭐⭐ SUCCESS: Connected to MongoDB ⭐⭐⭐');
+  } catch (err) {
+    console.error('❌ MONGODB CONNECTION ERROR:', err.message);
+    throw err;
+  }
+};
+
+// Debug/Seed Route
 app.get('/api/force-seed', async (req, res) => {
   try {
+    await connectDB();
     await seedAdmin();
     await seedCategories();
     await seedServices();
     await seedSettings();
     res.json({ message: 'Database Seeded Successfully! Admin is ready.' });
   } catch (err) {
+    console.error('Seed Error:', err);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// Middleware to ensure DB connection for all API routes
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Database connection failed' });
   }
 });
 
@@ -67,18 +101,6 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/wallet', topupRoutes);
 app.use('/api/settings', settingsRoutes);
-
-const mongoUri = process.env.MONGODB_URI;
-
-if (mongoUri) {
-  mongoose.connect(mongoUri)
-  .then(() => {
-    console.log('⭐⭐⭐ SUCCESS: Connected to MongoDB ⭐⭐⭐');
-  })
-  .catch(err => {
-    console.error('❌ MONGODB CONNECTION ERROR:', err.message);
-  });
-}
 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
