@@ -30,122 +30,68 @@ export class ForgotPasswordPage implements OnInit {
     private toastController: ToastController,
     private translationService: TranslationService,
     private authService: AuthService,
-    public router: Router // Changed from private to public
+    public router: Router
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  translate(key: string, params?: any): string {
-    let translation = this.translationService.translate(key);
-    if (params) {
-      Object.keys(params).forEach(param => {
-        translation = translation.replace(`{${param}}`, params[param]);
-      });
-    }
-    return translation;
-  }
-  
-  goBack() {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
-  }
-  
   validatePhone() {
-    this.isPhoneValid = Boolean(this.phoneNumber && this.phoneNumber.replace(/\D/g, '').length >= 10);
+    // 11 digits validation as requested
+    const phoneRegex = /^[0-9]{11}$/;
+    this.isPhoneValid = phoneRegex.test(this.phoneNumber);
   }
   
   async requestOTP() {
+    if (!this.phoneNumber || this.phoneNumber.length !== 11) {
+      await this.showToast('Please insert your number (11 digits required)');
+      return;
+    }
+
     const loading = await this.loadingController.create({
-      message: this.translate('FORGOT_PASSWORD.SENDING_OTP')
+      message: 'Sending OTP...'
     });
     await loading.present();
     
     try {
       await this.authService.forgotPassword(this.phoneNumber).toPromise();
-      const digits = this.phoneNumber.replace(/\D/g, '');
-      this.maskedPhone = '+' + digits.substring(0, 2) + ' ' + 
-                         digits.substring(2, 5) + ' ' + 
-                         digits.substring(5, 8) + digits.substring(8);
+      this.maskedPhone = this.phoneNumber.substring(0, 4) + ' **** ' + this.phoneNumber.substring(8);
       this.currentStep = 2;
       setTimeout(() => {
-        this.otpInputs.first.nativeElement.focus();
+        if (this.otpInputs && this.otpInputs.first) {
+          this.otpInputs.first.nativeElement.focus();
+        }
       }, 300);
-      await this.showToast(this.translate('FORGOT_PASSWORD.OTP_SENT'));
+      await this.showToast('OTP has been sent to your number');
     } catch (error: any) {
-      await this.showToast(error.error?.message || this.translate('COMMON.ERROR'));
+      await this.showToast(error.error?.message || 'Failed to send OTP. Check your number.');
     } finally {
       await loading.dismiss();
     }
   }
-  
-  onOtpChange(event: any, index: number) {
-    const value = event.target.value;
-    if (value && index < 3) {
-      setTimeout(() => {
-        this.otpInputs.toArray()[index + 1].nativeElement.focus();
-      }, 10);
-    }
-    if (value === '' && index > 0) {
-      setTimeout(() => {
-        this.otpInputs.toArray()[index - 1].nativeElement.focus();
-      }, 10);
-    }
-  }
-  
-  isOtpValid(): boolean {
-    return this.otpDigits.every(digit => digit !== '');
-  }
-  
-  async resendOTP() {
-    const loading = await this.loadingController.create({
-      message: this.translate('FORGOT_PASSWORD.SENDING_OTP')
-    });
-    await loading.present();
-    try {
-      await this.authService.forgotPassword(this.phoneNumber).toPromise();
-      await this.showToast(this.translate('FORGOT_PASSWORD.OTP_RESENT'));
-    } catch (error: any) {
-      await this.showToast(error.error?.message || this.translate('COMMON.ERROR'));
-    } finally {
-      await loading.dismiss();
-    }
-  }
-  
+
   async verifyOTP() {
-    const loading = await this.loadingController.create({
-      message: this.translate('FORGOT_PASSWORD.VERIFYING_OTP')
-    });
-    await loading.present();
-    try {
-      this.currentStep = 3;
-    } catch (error: any) {
-      await this.showToast(error.error?.message || this.translate('COMMON.ERROR'));
-    } finally {
-      await loading.dismiss();
+    const otp = this.otpDigits.join('');
+    if (otp.length < 4) {
+      await this.showToast('Please enter complete OTP');
+      return;
     }
+    // Moving to password reset step
+    this.currentStep = 3;
   }
-  
-  validatePassword() {
-    const isLengthValid = this.newPassword.length >= 8;
-    const doPasswordsMatch = this.newPassword === this.confirmPassword;
-    this.isPasswordValid = isLengthValid && doPasswordsMatch && this.newPassword !== '';
-  }
-  
-  togglePasswordVisibility(field: 'password' | 'confirm') {
-    if (field === 'password') {
-      this.showPassword = !this.showPassword;
-    } else {
-      this.showConfirmPassword = !this.showConfirmPassword;
-    }
-  }
-  
+
   async resetPassword() {
-    const loading = await this.loadingController.create({
-      message: this.translate('FORGOT_PASSWORD.RESETTING_PASSWORD')
-    });
+    if (this.newPassword !== this.confirmPassword) {
+      await this.showToast('Passwords do not match');
+      return;
+    }
+    if (this.newPassword.length < 6) {
+      await this.showToast('Password must be at least 6 characters');
+      return;
+    }
+
+    const loading = await this.loadingController.create({ message: 'Resetting Password...' });
     await loading.present();
+
     try {
       const otp = this.otpDigits.join('');
       await this.authService.resetPassword({
@@ -153,31 +99,38 @@ export class ForgotPasswordPage implements OnInit {
         otp,
         newPassword: this.newPassword
       }).toPromise();
+
       const alert = await this.alertController.create({
-        header: this.translate('FORGOT_PASSWORD.SUCCESS'),
-        message: this.translate('FORGOT_PASSWORD.PASSWORD_RESET_SUCCESS'),
-        buttons: [
-          {
-            text: this.translate('FORGOT_PASSWORD.LOGIN'),
-            handler: () => {
-              this.router.navigateByUrl('/login');
-            }
-          }
-        ]
+        header: 'Success',
+        message: 'Password reset successfully!',
+        buttons: [{ text: 'Login', handler: () => this.router.navigate(['/login']) }]
       });
       await alert.present();
     } catch (error: any) {
-      await this.showToast(error.error?.message || this.translate('COMMON.ERROR'));
+      await this.showToast(error.error?.message || 'Invalid OTP or session expired');
     } finally {
       await loading.dismiss();
     }
   }
 
+  onOtpChange(event: any, index: number) {
+    const value = event.target.value;
+    if (value && index < 3) {
+      this.otpInputs.toArray()[index + 1].nativeElement.focus();
+    }
+  }
+
+  togglePasswordVisibility(field: 'password' | 'confirm') {
+    if (field === 'password') this.showPassword = !this.showPassword;
+    else this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
   private async showToast(message: string) {
     const toast = await this.toastController.create({
       message,
-      duration: 2000,
-      position: 'bottom'
+      duration: 3000,
+      position: 'bottom',
+      color: 'dark'
     });
     await toast.present();
   }
