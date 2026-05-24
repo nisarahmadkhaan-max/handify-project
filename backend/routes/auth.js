@@ -8,21 +8,21 @@ const Employee = require('../models/Employee');
 const userController = require('../controllers/userController');
 const auth = require('../middleware/auth');
 
-// Nodemailer Setup for Email OTP
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER, // Your Gmail
-    pass: process.env.EMAIL_PASS  // Your App Password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
-// Signup route
 router.post('/signup', async (req, res) => {
   try {
-    const { fullName, email, phoneNumber, password, location } = req.body;
+    let { fullName, email, phoneNumber, password, location } = req.body;
+    email = email.trim().toLowerCase();
+
     const existingUser = await User.findOne({ $or: [{ email }, { phoneNumber }] });
-    if (existingUser) return res.status(400).json({ message: 'Account with this email/phone already exists' });
+    if (existingUser) return res.status(400).json({ message: 'Account already exists' });
 
     const user = new User({ fullName, email, phoneNumber, password, role: 'user', location: location || '' });
     await user.save();
@@ -34,16 +34,12 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-// Login route (Updated to support Email/Password)
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+    email = email.trim().toLowerCase();
 
-    if (!email || !email.endsWith('@gmail.com')) {
-      return res.status(400).json({ message: 'Please provide a valid Gmail address' });
-    }
-
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -56,17 +52,18 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
-    res.json({ message: 'Login successful', token, user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role } });
+    res.json({ message: 'Login successful', token, user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// FORGOT PASSWORD - Send OTP to Email (FREE)
 router.post('/forgot-password', async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase() });
+    let { email } = req.body;
+    email = email.trim().toLowerCase(); // Removing spaces
+
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found with this email' });
@@ -76,38 +73,33 @@ router.post('/forgot-password', async (req, res) => {
     user.resetPasswordOTP = { code: otp, expiresAt: new Date(Date.now() + 15 * 60000) };
     await user.save();
 
-    // Send Email
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Handify - Password Reset OTP',
-      text: `Your OTP for password reset is: ${otp}. It will expire in 15 minutes.`
+      subject: 'Handify - OTP Code',
+      text: `Your OTP is: ${otp}`
     };
 
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       await transporter.sendMail(mailOptions);
       res.json({ message: 'OTP sent to your email' });
     } else {
-      console.log('🔑 EMAIL OTP (Demo Mode):', otp);
-      res.json({ message: 'OTP generated (Check server logs in demo mode)' });
+      res.status(500).json({ message: 'Email service not configured' });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// RESET PASSWORD
 router.post('/reset-password', async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
-    const user = await User.findOne({ email: email.toLowerCase() });
+    let { email, otp, newPassword } = req.body;
+    email = email.trim().toLowerCase();
+
+    const user = await User.findOne({ email });
 
     if (!user || !user.resetPasswordOTP || user.resetPasswordOTP.code !== otp) {
       return res.status(400).json({ message: 'Invalid OTP' });
-    }
-
-    if (new Date() > user.resetPasswordOTP.expiresAt) {
-      return res.status(400).json({ message: 'OTP has expired' });
     }
 
     user.password = newPassword;
