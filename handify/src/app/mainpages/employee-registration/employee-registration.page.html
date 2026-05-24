@@ -30,14 +30,13 @@
       </ion-item>
       <ion-item class="custom-input">
         <ion-label position="stacked">Employee Email</ion-label>
-        <ion-input type="email" [(ngModel)]="employeeData.email"></ion-input>
+        <ion-input type="email" [(ngModel)]="employeeData.email" placeholder="name@gmail.com"></ion-input>
       </ion-item>
       <ion-item class="custom-input">
         <ion-label position="stacked">Phone Number</ion-label>
-        <ion-input type="tel" [(ngModel)]="employeeData.phone"></ion-input>
+        <ion-input type="tel" [(ngModel)]="employeeData.phone" placeholder="03XXXXXXXXX"></ion-input>
       </ion-item>
 
-      <!-- Password with View Toggle -->
       <ion-item class="custom-input">
         <ion-label position="stacked">Password</ion-label>
         <div class="password-wrapper" style="display: flex; width: 100%; align-items: center;">
@@ -50,7 +49,6 @@
         </div>
       </ion-item>
 
-      <!-- Confirm Password with View Toggle -->
       <ion-item class="custom-input">
         <ion-label position="stacked">Confirm Password</ion-label>
         <div class="password-wrapper" style="display: flex; width: 100%; align-items: center;">
@@ -63,7 +61,7 @@
         </div>
       </ion-item>
     </ion-list>
-    <ion-button expand="block" (click)="nextStep()" class="next-btn" [disabled]="!isStep1Valid()">Next</ion-button>
+    <ion-button expand="block" (click)="nextStep()" class="next-btn">Next</ion-button>
   </div>
 
   <!-- Step 2: Profession & Time Range -->
@@ -114,15 +112,13 @@
     </ion-list>
     <div class="btn-group">
       <ion-button fill="outline" (click)="prevStep()" class="action-btn-outline">Back</ion-button>
-      <ion-button (click)="nextStep()" [disabled]="!isStep2Valid()" class="action-btn-solid">Next</ion-button>
+      <ion-button (click)="nextStep()" class="action-btn-solid">Next</ion-button>
     </div>
   </div>
 
   <!-- Step 3: Verification -->
   <div *ngIf="currentStep === 3" class="step-content">
     <h3>Verification</h3>
-
-    <!-- CNIC Number Field -->
     <ion-item class="custom-input" style="margin-bottom: 20px;">
       <ion-label position="stacked">CNIC Number</ion-label>
       <ion-input type="number" placeholder="Enter 13 digit CNIC number" [(ngModel)]="employeeData.cnicNumber"></ion-input>
@@ -130,43 +126,36 @@
 
     <div class="upload-area">
       <div class="upload-item">
-        <p>1. CNIC Front (Gallery)</p>
+        <p>1. CNIC Front</p>
         <div class="box" (click)="uploadFromGallery('cnicFront')">
           <ion-icon name="image-outline" *ngIf="!employeeData.cnicFront"></ion-icon>
           <img [src]="employeeData.cnicFront" *ngIf="employeeData.cnicFront" />
         </div>
       </div>
       <div class="upload-item">
-        <p>2. CNIC Back (Gallery)</p>
+        <p>2. CNIC Back</p>
         <div class="box" (click)="uploadFromGallery('cnicBack')">
           <ion-icon name="image-outline" *ngIf="!employeeData.cnicBack"></ion-icon>
           <img [src]="employeeData.cnicBack" *ngIf="employeeData.cnicBack" />
         </div>
       </div>
       <div class="upload-item camera-item">
-        <p>3. Selfie with CNIC (Camera)</p>
+        <p>3. Selfie with CNIC</p>
         <div class="box" (click)="takeSelfie()">
           <ion-icon name="camera-outline" *ngIf="!employeeData.selfie"></ion-icon>
           <img [src]="employeeData.selfie" *ngIf="employeeData.selfie" />
         </div>
-        <p class="info-text">Capture a clear photo. CNIC text must be readable.</p>
       </div>
     </div>
 
-    <!-- PHOTO REVIEW MODAL -->
     <ion-modal [isOpen]="showReviewModal" class="review-modal-custom">
       <ng-template>
         <div class="review-screen">
           <div class="review-header">
             <h4>Review Selfie Clarity</h4>
-            <p>Make sure CNIC number and details are visible</p>
           </div>
           <div class="image-box">
             <img [src]="tempImage" />
-          </div>
-          <div class="warning-msg">
-            <ion-icon name="alert-circle-outline"></ion-icon>
-            <span>Important: Blurry text will lead to account rejection by Admin.</span>
           </div>
           <div class="action-btns">
             <ion-button fill="outline" color="danger" (click)="retakePhoto()">RETAKE</ion-button>
@@ -178,7 +167,7 @@
 
     <div class="btn-group">
       <ion-button fill="outline" (click)="prevStep()" class="action-btn-outline">Back</ion-button>
-      <ion-button (click)="nextStep()" [disabled]="!isStep3Valid()" class="action-btn-solid">Next</ion-button>
+      <ion-button (click)="nextStep()" class="action-btn-solid">Next</ion-button>
     </div>
   </div>
 
@@ -192,12 +181,12 @@
       </ion-item>
       <ion-item class="custom-input">
         <ion-label position="stacked">Emergency Phone</ion-label>
-        <ion-input type="tel" [(ngModel)]="employeeData.emergencyPhone"></ion-input>
+        <ion-input type="tel" [(ngModel)]="employeeData.emergencyPhone" placeholder="03XXXXXXXXX"></ion-input>
       </ion-item>
     </ion-list>
     <div class="btn-group">
       <ion-button fill="outline" (click)="prevStep()" class="back-btn-small">Back</ion-button>
-      <ion-button (click)="createAccount()" class="finish-btn" [disabled]="!isStep4Valid()">Finish</ion-button>
+      <ion-button (click)="createAccount()" class="finish-btn">Finish</ion-button>
     </div>
   </div>
 </ion-content>

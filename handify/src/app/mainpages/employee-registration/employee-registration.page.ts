@@ -17,8 +17,6 @@ export class EmployeeRegistrationPage implements OnInit {
   pickingFor: 'from' | 'to' = 'from';
   showReviewModal = false;
   tempImage: string = '';
-
-  // Added missing properties to fix build errors
   showPassword = false;
   showConfirmPassword = false;
 
@@ -61,12 +59,34 @@ export class EmployeeRegistrationPage implements OnInit {
     }
   }
 
-  nextStep() { if (this.currentStep < 4) this.currentStep++; }
+  async nextStep() {
+    if (this.currentStep === 1) {
+      // Email Validation
+      if (!this.employeeData.email || !this.employeeData.email.toLowerCase().endsWith('@gmail.com')) {
+        await this.showToast('Please fill the email (e.g. name@gmail.com)', 'warning');
+        return;
+      }
+      // Phone Validation
+      const phoneRegex = /^[0-9]{11}$/;
+      if (!this.employeeData.phone || !phoneRegex.test(this.employeeData.phone)) {
+        await this.showToast('Please insert your number (11 digits required)', 'warning');
+        return;
+      }
+      // Password Match
+      if (this.employeeData.password !== this.employeeData.confirmPassword) {
+        await this.showToast('Passwords do not match', 'danger');
+        return;
+      }
+    }
+
+    if (this.currentStep < 4) this.currentStep++;
+  }
+
   prevStep() { if (this.currentStep > 1) this.currentStep--; }
 
   isStep1Valid() {
     return this.employeeData.username && this.employeeData.email && this.employeeData.phone &&
-           this.employeeData.password === this.employeeData.confirmPassword && this.employeeData.password !== '';
+           this.employeeData.password && this.employeeData.confirmPassword;
   }
 
   isStep2Valid() {
@@ -74,7 +94,7 @@ export class EmployeeRegistrationPage implements OnInit {
   }
 
   isStep3Valid() {
-    return this.employeeData.cnicNumber && this.employeeData.cnicNumber.length >= 13 &&
+    return this.employeeData.cnicNumber && this.employeeData.cnicNumber.toString().length >= 13 &&
            this.employeeData.cnicFront && this.employeeData.cnicBack && this.employeeData.selfie;
   }
 
@@ -113,8 +133,15 @@ export class EmployeeRegistrationPage implements OnInit {
   }
 
   async createAccount() {
+    // Final Phone Validation for Step 4
+    const phoneRegex = /^[0-9]{11}$/;
+    if (!this.employeeData.emergencyPhone || !phoneRegex.test(this.employeeData.emergencyPhone)) {
+      await this.showToast('Please insert a valid 11-digit emergency contact number', 'warning');
+      return;
+    }
+
     const loading = await this.loadingController.create({
-      message: 'Verifying Documents... Our system is reading your CNIC details. Please wait.'
+      message: 'Verifying Documents... Please wait.'
     });
     await loading.present();
 
@@ -134,7 +161,7 @@ export class EmployeeRegistrationPage implements OnInit {
         await loading.dismiss();
         const alert = await this.alertController.create({
           header: 'Verification Failed',
-          message: err.error?.message || 'Automatic verification failed. Please ensure the image is clear and try again.',
+          message: err.error?.message || 'Automatic verification failed. Please ensure the image is clear.',
           buttons: ['Try Again']
         });
         await alert.present();
@@ -142,8 +169,8 @@ export class EmployeeRegistrationPage implements OnInit {
     });
   }
 
-  async showToast(m: string, c: string) {
-    const t = await this.toastController.create({ message: m, duration: 2000, color: c });
+  async showToast(m: string, c: string = 'dark') {
+    const t = await this.toastController.create({ message: m, duration: 2500, color: c, position: 'bottom' });
     t.present();
   }
 

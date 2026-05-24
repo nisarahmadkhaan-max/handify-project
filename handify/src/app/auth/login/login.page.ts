@@ -32,14 +32,11 @@ export class LoginPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    // Disable back button
     this.platform.backButton.subscribeWithPriority(100, () => {
-      // Do nothing - effectively disabling the back button
     });
   }
 
   ionViewWillLeave() {
-    // Re-enable back button when leaving the page
     this.platform.backButton.unsubscribe();
   }
 
@@ -60,6 +57,32 @@ export class LoginPage implements OnInit {
   }
 
   async loginBtn() {
+    const phoneRegex = /^[0-9]{11}$/;
+
+    if (this.isSignIn) {
+      if (!this.phoneNumber || !phoneRegex.test(this.phoneNumber)) {
+        await this.showToast('Please insert your valid 11-digit number');
+        return;
+      }
+      if (!this.password) {
+        await this.showToast('Please enter your password');
+        return;
+      }
+    } else {
+      if (!this.email || !this.email.toLowerCase().endsWith('@gmail.com')) {
+        await this.showToast('Please fill the email (e.g. name@gmail.com)');
+        return;
+      }
+      if (!this.phoneNumber || !phoneRegex.test(this.phoneNumber)) {
+        await this.showToast('Please insert your number (11 digits required)');
+        return;
+      }
+      if (!this.fullName || !this.password) {
+        await this.showToast('Please fill all fields');
+        return;
+      }
+    }
+
     const loading = await this.loadingCtrl.create({
       message: this.translate('COMMON.LOADING')
     });
@@ -67,30 +90,32 @@ export class LoginPage implements OnInit {
 
     try {
       if (this.isSignIn) {
-        // Sign In
         const response1 = await this.authService.login({
           phoneNumber: this.phoneNumber,
           password: this.password
         }).toPromise();
-        console.log(response1);
         await this.showToast(response1.message);
         this.router.navigateByUrl('/tabs/tab1');
       } else {
-        // Sign Up
         const response = await this.authService.signup({
           fullName: this.fullName,
           email: this.email,
           phoneNumber: this.phoneNumber,
           password: this.password
         }).toPromise();
-        console.log(response);
         await this.showToast(response.message);
         this.router.navigateByUrl('/tabs/tab1');
       }
     } catch (error: any) {
       console.log(error);
       const errorMessage = error?.error?.message || this.translate('COMMON.ERROR');
-      await this.showToast(errorMessage);
+
+      // Verification check validation
+      if (error.status === 403 || errorMessage.toLowerCase().includes('verify')) {
+        await this.showToast('Please verify your self');
+      } else {
+        await this.showToast(errorMessage);
+      }
     } finally {
       await loading.dismiss();
     }
@@ -99,8 +124,9 @@ export class LoginPage implements OnInit {
   private async showToast(message: string) {
     const toast = await this.toastCtrl.create({
       message,
-      duration: 2000,
-      position: 'bottom'
+      duration: 3000,
+      position: 'bottom',
+      color: 'dark'
     });
     await toast.present();
   }

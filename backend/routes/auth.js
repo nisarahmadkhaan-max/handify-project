@@ -18,7 +18,6 @@ router.post('/signup', async (req, res) => {
 
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
 
-    // Return complete user data
     res.status(201).json({
       message: 'User created successfully',
       token,
@@ -58,7 +57,7 @@ router.post('/employee-signup', async (req, res) => {
       userId: user._id,
       name: fullName,
       service: specialization,
-      availability: availability,
+      availability: availability || [],
       cnic: { frontImage: cnicFront, backImage: cnicBack },
       emergencyContact: emergencyContact,
       isAvailable: true,
@@ -86,7 +85,7 @@ router.post('/employee-signup', async (req, res) => {
   }
 });
 
-// Login route
+// Login route with Verification Check
 router.post('/login', async (req, res) => {
   try {
     const { email, phoneNumber, password } = req.body;
@@ -94,6 +93,14 @@ router.post('/login', async (req, res) => {
     let user = email ? await User.findOne({ email }) : await User.findOne({ phoneNumber });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Check if user is an Employee and is Verified
+    if (user.role === 'employee') {
+      const employee = await Employee.findOne({ userId: user._id });
+      if (!employee || !employee.isVerified) {
+        return res.status(403).json({ message: 'Please verify your self' });
+      }
     }
 
     const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET || 'your-secret-key', { expiresIn: '7d' });
