@@ -14,12 +14,11 @@ export class ForgotPasswordPage implements OnInit {
   @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
   
   currentStep = 1;
-  phoneNumber = '';
-  maskedPhone = '';
+  email = '';
   otpDigits: string[] = ['', '', '', ''];
   newPassword = '';
   confirmPassword = '';
-  isPhoneValid = false;
+  isEmailValid = false;
   isPasswordValid = false;
   showPassword = false;
   showConfirmPassword = false;
@@ -35,7 +34,6 @@ export class ForgotPasswordPage implements OnInit {
 
   ngOnInit() {}
 
-  // Added back missing translate method for HTML template
   translate(key: string, params?: any): string {
     let translation = this.translationService.translate(key);
     if (params) {
@@ -46,46 +44,42 @@ export class ForgotPasswordPage implements OnInit {
     return translation;
   }
 
-  validatePhone() {
-    // 11 digits validation as requested
-    const phoneRegex = /^[0-9]{11}$/;
-    this.isPhoneValid = phoneRegex.test(this.phoneNumber);
+  validateEmail() {
+    // Email must end with @gmail.com as requested
+    this.isEmailValid = this.email.toLowerCase().endsWith('@gmail.com');
   }
   
   async requestOTP() {
-    if (!this.phoneNumber || this.phoneNumber.length !== 11) {
-      await this.showToast('Please insert your number (11 digits required)');
+    if (!this.isEmailValid) {
+      await this.showToast('Please fill the email (must be @gmail.com)');
       return;
     }
 
     const loading = await this.loadingController.create({
-      message: this.translate('FORGOT_PASSWORD.SENDING_OTP')
+      message: 'Sending OTP to your email...'
     });
     await loading.present();
     
     try {
-      await this.authService.forgotPassword(this.phoneNumber).toPromise();
-      this.maskedPhone = this.phoneNumber.substring(0, 4) + ' **** ' + this.phoneNumber.substring(8);
+      await this.authService.forgotPassword(this.email).toPromise();
       this.currentStep = 2;
       setTimeout(() => {
         if (this.otpInputs && this.otpInputs.first) {
           this.otpInputs.first.nativeElement.focus();
         }
       }, 300);
-      await this.showToast('OTP has been sent to your number');
+      await this.showToast('OTP has been sent to your email');
     } catch (error: any) {
-      await this.showToast(error.error?.message || 'Failed to send OTP. Check your number.');
+      await this.showToast(error.error?.message || 'Error sending OTP. Make sure your email is registered.');
     } finally {
       await loading.dismiss();
     }
   }
 
-  // Added back missing resendOTP method
   async resendOTP() {
     await this.requestOTP();
   }
 
-  // Added back missing isOtpValid method
   isOtpValid(): boolean {
     return this.otpDigits.every(digit => digit !== '');
   }
@@ -93,16 +87,14 @@ export class ForgotPasswordPage implements OnInit {
   async verifyOTP() {
     const otp = this.otpDigits.join('');
     if (otp.length < 4) {
-      await this.showToast('Please enter complete OTP');
+      await this.showToast('Please enter 4-digit OTP');
       return;
     }
-    // Moving to password reset step
     this.currentStep = 3;
   }
 
-  // Added back missing validatePassword method
   validatePassword() {
-    const isLengthValid = this.newPassword.length >= 8;
+    const isLengthValid = this.newPassword.length >= 6;
     const doPasswordsMatch = this.newPassword === this.confirmPassword;
     this.isPasswordValid = isLengthValid && doPasswordsMatch && this.newPassword !== '';
   }
@@ -112,18 +104,18 @@ export class ForgotPasswordPage implements OnInit {
       if (this.newPassword !== this.confirmPassword) {
         await this.showToast('Passwords do not match');
       } else {
-        await this.showToast('Password must be at least 8 characters');
+        await this.showToast('Password must be at least 6 characters');
       }
       return;
     }
 
-    const loading = await this.loadingController.create({ message: this.translate('FORGOT_PASSWORD.RESETTING_PASSWORD') });
+    const loading = await this.loadingController.create({ message: 'Resetting Password...' });
     await loading.present();
 
     try {
       const otp = this.otpDigits.join('');
       await this.authService.resetPassword({
-        phoneNumber: this.phoneNumber,
+        email: this.email,
         otp,
         newPassword: this.newPassword
       }).toPromise();

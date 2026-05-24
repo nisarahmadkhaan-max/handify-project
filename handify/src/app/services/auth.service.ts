@@ -21,7 +21,8 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(credentials: { phoneNumber: string; password: string }) {
+  // Updated to use email
+  login(credentials: { email: string; password: string }) {
     return this.http.post<any>(`${this.apiUrl}/auth/login`, credentials)
       .pipe(map(response => {
         localStorage.setItem('currentUser', JSON.stringify(response));
@@ -39,16 +40,13 @@ export class AuthService {
       }));
   }
 
-  // Method to update location on the fly (App Open hone par)
   updateLocation(location: string) {
     const current = this.currentUserValue;
     if (current && current.user) {
-      // 1. Update Locally
       current.user.location = location;
       localStorage.setItem('currentUser', JSON.stringify(current));
       this.currentUserSubject.next(current);
 
-      // 2. Update on Server (Backend)
       this.http.put(`${this.apiUrl}/auth/profile`, { location }).subscribe({
         next: () => console.log('Location synced with server'),
         error: (err) => console.error('Failed to sync location', err)
@@ -56,12 +54,10 @@ export class AuthService {
     }
   }
 
-  // Check if user has seen onboarding
   async hasSeenOnboarding(): Promise<boolean> {
     return localStorage.getItem('hasSeenOnboarding') === 'true';
   }
 
-  // Mark onboarding as seen
   async setHasSeenOnboarding(): Promise<void> {
     localStorage.setItem('hasSeenOnboarding', 'true');
   }
@@ -84,11 +80,12 @@ export class AuthService {
     }
   }
 
-  forgotPassword(phoneNumber: string) {
-    return this.http.post<any>(`${this.apiUrl}/auth/forgot-password`, { phoneNumber });
+  // Updated to use email
+  forgotPassword(email: string) {
+    return this.http.post<any>(`${this.apiUrl}/auth/forgot-password`, { email });
   }
 
-  resetPassword(data: any) {
+  resetPassword(data: { email: string; otp: string; newPassword: any }) {
     return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, data);
   }
 }

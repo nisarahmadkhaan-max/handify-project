@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class EmployeeLoginPage implements OnInit {
   loginData = {
-    phone: '',
+    email: '',
     password: ''
   };
   showPassword = false;
@@ -27,23 +27,23 @@ export class EmployeeLoginPage implements OnInit {
   ngOnInit() { }
 
   async login() {
-    const phoneRegex = /^[0-9]{11}$/;
-
-    if (!this.loginData.phone || !phoneRegex.test(this.loginData.phone)) {
-      this.showToast('Please insert your valid 11-digit number', 'warning');
+    // Email Validation (@gmail.com check)
+    if (!this.loginData.email || !this.loginData.email.toLowerCase().endsWith('@gmail.com')) {
+      await this.showToast('Please fill the email (must be @gmail.com)', 'warning');
       return;
     }
 
     if (!this.loginData.password) {
-      this.showToast('Please enter your password', 'warning');
+      await this.showToast('Please enter your password', 'warning');
       return;
     }
 
     const loading = await this.loadingCtrl.create({ message: 'Authenticating...' });
     await loading.present();
 
+    // Now sending 'email' instead of 'phoneNumber' to match AuthService type
     this.authService.login({
-      phoneNumber: this.loginData.phone,
+      email: this.loginData.email,
       password: this.loginData.password
     }).subscribe({
       next: async (res) => {
@@ -54,11 +54,11 @@ export class EmployeeLoginPage implements OnInit {
       error: async (err) => {
         await loading.dismiss();
 
-        // Handling the Verification error specifically
         let errorMessage = err.error?.message || 'Login failed';
 
-        if (err.status === 403 || errorMessage.includes('verify')) {
-          await this.showToast('Please verify your self', 'danger'); // Exact wording as requested
+        // Handling the "Please verify your self" error from backend
+        if (err.status === 403 || errorMessage.toLowerCase().includes('verify')) {
+          await this.showToast('Please verify your self', 'danger');
         } else {
           await this.showToast(errorMessage, 'danger');
         }

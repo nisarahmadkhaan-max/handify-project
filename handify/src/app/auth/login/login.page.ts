@@ -60,8 +60,9 @@ export class LoginPage implements OnInit {
     const phoneRegex = /^[0-9]{11}$/;
 
     if (this.isSignIn) {
-      if (!this.phoneNumber || !phoneRegex.test(this.phoneNumber)) {
-        await this.showToast('Please insert your valid 11-digit number');
+      // Sign In Validation - Now using Email
+      if (!this.email || !this.email.toLowerCase().endsWith('@gmail.com')) {
+        await this.showToast('Please fill the email (must be @gmail.com)');
         return;
       }
       if (!this.password) {
@@ -69,15 +70,22 @@ export class LoginPage implements OnInit {
         return;
       }
     } else {
-      if (!this.email || !this.email.toLowerCase().endsWith('@gmail.com')) {
-        await this.showToast('Please fill the email (e.g. name@gmail.com)');
+      // Sign Up Validation
+      if (!this.fullName) {
+        await this.showToast('Please enter your full name');
         return;
       }
+      // Email Check
+      if (!this.email || !this.email.toLowerCase().endsWith('@gmail.com')) {
+        await this.showToast('Please fill the email (must be @gmail.com)');
+        return;
+      }
+      // Phone Check (Still kept for record as requested earlier)
       if (!this.phoneNumber || !phoneRegex.test(this.phoneNumber)) {
         await this.showToast('Please insert your number (11 digits required)');
         return;
       }
-      if (!this.fullName || !this.password) {
+      if (!this.password) {
         await this.showToast('Please fill all fields');
         return;
       }
@@ -90,13 +98,15 @@ export class LoginPage implements OnInit {
 
     try {
       if (this.isSignIn) {
+        // Sign In with Email
         const response1 = await this.authService.login({
-          phoneNumber: this.phoneNumber,
+          email: this.email,
           password: this.password
         }).toPromise();
         await this.showToast(response1.message);
         this.router.navigateByUrl('/tabs/tab1');
       } else {
+        // Sign Up with both
         const response = await this.authService.signup({
           fullName: this.fullName,
           email: this.email,
@@ -110,7 +120,6 @@ export class LoginPage implements OnInit {
       console.log(error);
       const errorMessage = error?.error?.message || this.translate('COMMON.ERROR');
 
-      // Verification check validation
       if (error.status === 403 || errorMessage.toLowerCase().includes('verify')) {
         await this.showToast('Please verify your self');
       } else {
