@@ -35,6 +35,17 @@ export class ForgotPasswordPage implements OnInit {
 
   ngOnInit() {}
 
+  // Added back missing translate method for HTML template
+  translate(key: string, params?: any): string {
+    let translation = this.translationService.translate(key);
+    if (params) {
+      Object.keys(params).forEach(param => {
+        translation = translation.replace(`{${param}}`, params[param]);
+      });
+    }
+    return translation;
+  }
+
   validatePhone() {
     // 11 digits validation as requested
     const phoneRegex = /^[0-9]{11}$/;
@@ -48,7 +59,7 @@ export class ForgotPasswordPage implements OnInit {
     }
 
     const loading = await this.loadingController.create({
-      message: 'Sending OTP...'
+      message: this.translate('FORGOT_PASSWORD.SENDING_OTP')
     });
     await loading.present();
     
@@ -69,6 +80,16 @@ export class ForgotPasswordPage implements OnInit {
     }
   }
 
+  // Added back missing resendOTP method
+  async resendOTP() {
+    await this.requestOTP();
+  }
+
+  // Added back missing isOtpValid method
+  isOtpValid(): boolean {
+    return this.otpDigits.every(digit => digit !== '');
+  }
+
   async verifyOTP() {
     const otp = this.otpDigits.join('');
     if (otp.length < 4) {
@@ -79,17 +100,24 @@ export class ForgotPasswordPage implements OnInit {
     this.currentStep = 3;
   }
 
+  // Added back missing validatePassword method
+  validatePassword() {
+    const isLengthValid = this.newPassword.length >= 8;
+    const doPasswordsMatch = this.newPassword === this.confirmPassword;
+    this.isPasswordValid = isLengthValid && doPasswordsMatch && this.newPassword !== '';
+  }
+
   async resetPassword() {
-    if (this.newPassword !== this.confirmPassword) {
-      await this.showToast('Passwords do not match');
-      return;
-    }
-    if (this.newPassword.length < 6) {
-      await this.showToast('Password must be at least 6 characters');
+    if (!this.isPasswordValid) {
+      if (this.newPassword !== this.confirmPassword) {
+        await this.showToast('Passwords do not match');
+      } else {
+        await this.showToast('Password must be at least 8 characters');
+      }
       return;
     }
 
-    const loading = await this.loadingController.create({ message: 'Resetting Password...' });
+    const loading = await this.loadingController.create({ message: this.translate('FORGOT_PASSWORD.RESETTING_PASSWORD') });
     await loading.present();
 
     try {
@@ -102,7 +130,7 @@ export class ForgotPasswordPage implements OnInit {
 
       const alert = await this.alertController.create({
         header: 'Success',
-        message: 'Password reset successfully!',
+        message: 'Your password has been reset successfully.',
         buttons: [{ text: 'Login', handler: () => this.router.navigate(['/login']) }]
       });
       await alert.present();
@@ -133,5 +161,13 @@ export class ForgotPasswordPage implements OnInit {
       color: 'dark'
     });
     await toast.present();
+  }
+
+  goBack() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 }
