@@ -20,7 +20,7 @@
   </ng-template>
 
   <div class="form-container" *ngIf="selectedService">
-    <!-- Final Price Display (Transparency) -->
+    <!-- Final Price Display -->
     <div class="form-group pricing-box">
       <ion-label>{{ translationService.translate('finalPrice') || 'Total Price' }}:</ion-label>
       <div class="price-display">
@@ -30,7 +30,7 @@
       <p class="tax-info">Inclusive of all service charges</p>
     </div>
 
-    <!-- Date Picker Popup -->
+    <!-- Date Picker -->
     <div class="form-group">
       <ion-label>{{ translationService.translate('date') }}:</ion-label>
       <div class="custom-select" (click)="openDatePicker()">
@@ -55,7 +55,7 @@
       </ion-modal>
     </div>
 
-    <!-- Time Picker Popup -->
+    <!-- Time Picker -->
     <div class="form-group">
       <ion-label>{{ translationService.translate('time') }}:</ion-label>
       <div class="custom-select" (click)="openTimePicker()">
@@ -80,10 +80,16 @@
       </ion-modal>
     </div>
 
+    <!-- Smart Location Input -->
     <div class="form-group">
       <ion-label>{{ translationService.translate('location') }}:</ion-label>
       <ion-item lines="none" class="custom-input">
-        <ion-textarea [placeholder]="translationService.translate('enterYourAddressHere')" [(ngModel)]="bookingData.location" rows="2"></ion-textarea>
+        <ion-textarea
+          [placeholder]="translationService.translate('enterYourAddressHere')"
+          [(ngModel)]="bookingData.location"
+          rows="2"
+          (click)="onLocationClick()">
+        </ion-textarea>
       </ion-item>
     </div>
 

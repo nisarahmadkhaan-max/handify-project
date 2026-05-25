@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { TranslationService } from '../../services/translation.service';
+import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { ToastController, LoadingController, AlertController } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
@@ -31,13 +32,13 @@ export class BookservicePage implements OnInit {
   showDatePicker = false;
   showTimePicker = false;
 
-  // Dynamic Commission Rates
   commissions = { low: 5, mid: 10, high: 15 };
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private bookingService: BookingService,
+    private authService: AuthService,
     private apiService: ApiService,
     private toastController: ToastController,
     private loadingController: LoadingController,
@@ -48,6 +49,16 @@ export class BookservicePage implements OnInit {
 
   ngOnInit() {
     this.loadCommissions();
+
+    // Auto-fill location from user profile if available
+    const currentUser = this.authService.currentUserValue;
+    if (currentUser && currentUser.user && currentUser.user.location) {
+      this.bookingData.location = currentUser.user.location;
+    } else {
+      // If profile location is not set, try to fetch it now quietly
+      this.getQuietLocation();
+    }
+
     this.route.queryParams.subscribe(params => {
       if (params['service']) {
         this.selectedService = JSON.parse(params['service']);
@@ -59,6 +70,28 @@ export class BookservicePage implements OnInit {
     });
   }
 
+  // Quietly fetch location without showing a big loading spinner
+  async getQuietLocation() {
+    try {
+      const coordinates = await Geolocation.getCurrentPosition();
+      const lat = coordinates.coords.latitude;
+      const lng = coordinates.coords.longitude;
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+      this.http.get(url).subscribe((res: any) => {
+        if (!this.bookingData.location) {
+          this.bookingData.location = res?.display_name || `${lat}, ${lng}`;
+        }
+      });
+    } catch (e) {}
+  }
+
+  // When user clicks the address box, if it's empty, suggest current location
+  async onLocationClick() {
+    if (!this.bookingData.location) {
+      await this.getCurrentLocation();
+    }
+  }
+
   loadCommissions() {
     this.apiService.getSetting('commission_low').subscribe({ next: (res: any) => { this.commissions.low = parseFloat(res.data); this.calculateFinalPriceDisplay(); } });
     this.apiService.getSetting('commission_mid').subscribe({ next: (res: any) => { this.commissions.mid = parseFloat(res.data); this.calculateFinalPriceDisplay(); } });
@@ -68,12 +101,7 @@ export class BookservicePage implements OnInit {
   calculateFinalPriceDisplay() {
     const base = this.bookingData.basePrice;
     if (!base) return;
-
-    let percentage = 0;
-    if (base <= 500) percentage = this.commissions.low / 100;
-    else if (base <= 800) percentage = this.commissions.mid / 100;
-    else percentage = this.commissions.high / 100;
-
+    let percentage = base <= 500 ? this.commissions.low / 100 : (base <= 800 ? this.commissions.mid / 100 : this.commissions.high / 100);
     this.finalPrice = Math.round(base + (base * percentage));
   }
 
