@@ -28,40 +28,52 @@ export class AppComponent {
     document.body.classList.remove('dark');
     document.body.classList.add('light');
     
-    // Handle Android status bar
     if (this.platform.is('android')) {
       document.body.style.setProperty('--ion-safe-area-top', '24px');
     }
 
     await this.checkInitialNavigation();
 
-    // App open hote hi location update karne ka logic
-    this.updateUserLocationOnStart();
+    // Watch for Auth changes: Whenever user logs in, trigger location update
+    this.authService.currentUser.subscribe(userData => {
+      if (userData && userData.token) {
+        // If user is logged in but location is not set, or we want to refresh it
+        this.updateUserLocation();
+      }
+    });
   }
 
-  async updateUserLocationOnStart() {
-    const isLoggedIn = await this.authService.isLoggedIn();
-    if (isLoggedIn) {
-      try {
-        const coordinates = await Geolocation.getCurrentPosition();
-        const lat = coordinates.coords.latitude;
-        const lng = coordinates.coords.longitude;
+  async updateUserLocation() {
+    try {
+      // This will trigger the "While using this app" permission dialog
+      const coordinates = await Geolocation.getCurrentPosition();
+      const lat = coordinates.coords.latitude;
+      const lng = coordinates.coords.longitude;
 
-        // Reverse Geocoding to get address
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-        this.http.get(url).subscribe((res: any) => {
-          const address = res?.display_name || `${lat}, ${lng}`;
-          this.authService.updateLocation(address);
-        });
-      } catch (error) {
-        console.error('Could not fetch location on start', error);
-      }
+      // Reverse Geocoding using OpenStreetMap (Free)
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+      this.http.get(url).subscribe((res: any) => {
+        if (res && res.address) {
+          const addr = res.address;
+          // Creating a clean readable address: "Area, City, Country"
+          const cleanAddress = [
+            addr.suburb || addr.neighbourhood || addr.road || '',
+            addr.city || addr.town || addr.village || '',
+            addr.country || ''
+          ].filter(val => !!val).join(', ');
+
+          // Update in AuthService (which syncs with Backend)
+          this.authService.updateLocation(cleanAddress || res.display_name);
+        }
+      });
+    } catch (error) {
+      console.warn('Location permission denied or error:', error);
     }
   }
 
   async checkInitialNavigation() {
     const isLoggedIn = await this.authService.isLoggedIn();
-    // Assuming hasSeenOnboarding is handled elsewhere or adding a default
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding') === 'true';
 
     if (isLoggedIn) {
