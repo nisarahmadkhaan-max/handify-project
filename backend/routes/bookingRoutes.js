@@ -19,7 +19,10 @@ router.get('/:id', auth, bookingController.getBooking);
 // Employee: Accept a booking
 router.post('/:id/accept', auth, bookingController.acceptBooking);
 
-// Employee: Complete a booking (OTP required)
+// Employee: Start working on a booking (Timer starts)
+router.post('/:id/start', auth, bookingController.startWork);
+
+// Employee: Complete a booking (OTP required, Timer stops)
 router.post('/:id/complete', auth, bookingController.completeBooking);
 
 // User: Rate a completed booking

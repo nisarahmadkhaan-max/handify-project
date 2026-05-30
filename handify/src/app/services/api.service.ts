@@ -24,6 +24,10 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/bookings/${bookingId}/accept`, {});
   }
 
+  startWork(bookingId: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/bookings/${bookingId}/start`, {});
+  }
+
   completeBooking(bookingId: string, otp: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/bookings/${bookingId}/complete`, { otp });
   }

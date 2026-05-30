@@ -18,14 +18,23 @@
     <div class="details-card">
       <div class="header-row">
         <h2 class="card-title">{{ booking.service }}</h2>
-        <ion-badge [color]="getStatusColor(booking.status)">{{ booking.status | uppercase }}</ion-badge>
+        <ion-badge [color]="getStatusColor(booking.status)">{{ booking.status.replace('_', ' ') | uppercase }}</ion-badge>
       </div>
       
       <div class="info-row">
         <ion-icon name="calendar-outline" color="primary"></ion-icon>
         <div class="info-content">
-          <label>Date & Time</label>
+          <label>Scheduled Date & Time</label>
           <p>{{ booking.date }} | {{ booking.time }}</p>
+        </div>
+      </div>
+
+      <!-- Live Work Status -->
+      <div class="work-status-box" *ngIf="booking.status === 'in_progress'">
+        <div class="pulse-indicator"></div>
+        <div class="status-text">
+          <label>WORK IN PROGRESS</label>
+          <p>Started at: {{ booking.workStartTime | date:'shortTime' }}</p>
         </div>
       </div>
 
@@ -43,7 +52,20 @@
       </div>
     </div>
 
-    <!-- Rating Display (if already rated) -->
+    <!-- Time-Based Summary (Only when completed) -->
+    <div class="details-card summary-card" *ngIf="booking.status === 'completed' && booking.totalHoursWorked > 0">
+      <h3 class="section-title">Job Summary</h3>
+      <div class="summary-row">
+        <span>Total Duration:</span>
+        <span class="val">{{ booking.totalHoursWorked }} Hour(s)</span>
+      </div>
+      <div class="summary-row" *ngIf="booking.extraTimeCharges > 0">
+        <span>Extra Time Charges:</span>
+        <span class="val">Rs. {{ booking.extraTimeCharges }}</span>
+      </div>
+    </div>
+
+    <!-- Rating Display -->
     <div class="details-card rating-card" *ngIf="booking.status === 'completed' && booking.rating > 0">
       <h3 class="section-title">Your Rating</h3>
       <div class="stars-display">
@@ -54,11 +76,10 @@
       <p class="review-text" *ngIf="booking.review">"{{ booking.review }}"</p>
     </div>
 
-    <!-- Give Rating Section (for User when completed and not yet rated) -->
+    <!-- Give Rating Section -->
     <div class="details-card rating-input-card" *ngIf="userRole === 'user' && booking.status === 'completed' && booking.rating === 0">
       <h3 class="section-title">Rate the Professional</h3>
       <p>How was your experience with {{ booking.employeeId?.name }}?</p>
-
       <div class="stars-input">
         <ion-icon *ngFor="let star of [1,2,3,4,5]"
                   [name]="star <= userRating ? 'star' : 'star-outline'"
@@ -66,32 +87,33 @@
                   color="warning"
                   size="large"></ion-icon>
       </div>
-
       <ion-item lines="none" class="review-item">
-        <ion-textarea placeholder="Write a brief review (optional)"
-                      [(ngModel)]="userReview"
-                      rows="3"
-                      class="custom-textarea"></ion-textarea>
+        <ion-textarea placeholder="Write a brief review (optional)" [(ngModel)]="userReview" rows="3" class="custom-textarea"></ion-textarea>
       </ion-item>
-
-      <ion-button expand="block" (click)="submitRating()" [disabled]="userRating === 0">
-        Submit Feedback
-      </ion-button>
+      <ion-button expand="block" (click)="submitRating()" [disabled]="userRating === 0">Submit Feedback</ion-button>
     </div>
 
-    <!-- Payment Information -->
+    <!-- Pricing Card -->
     <div class="details-card pricing-card">
       <div class="price-row">
-        <span class="label">Total Booking Price</span>
+        <span class="label">Base Price (1st Hour)</span>
+        <span class="price-amount">Rs. {{ booking.basePrice }}</span>
+      </div>
+      <div class="price-row extra-row" *ngIf="booking.extraTimeCharges > 0">
+        <span class="label">Extra Time Charges</span>
+        <span class="price-amount">+ Rs. {{ booking.extraTimeCharges }}</span>
+      </div>
+      <div class="total-divider" *ngIf="booking.extraTimeCharges > 0"></div>
+      <div class="price-row total-row">
+        <span class="label">Total Amount</span>
         <span class="price-amount">Rs. {{ booking.finalPrice }}</span>
       </div>
-      <p class="payment-method-tag">Cash on Delivery</p>
+      <p class="hourly-note">*Extra Rs. {{ booking.hourlyRate }}/hr applies after the first hour.</p>
     </div>
 
     <!-- Contact Details Card -->
-    <div class="details-card contact-card" *ngIf="booking.status === 'confirmed' || booking.status === 'completed'">
+    <div class="details-card contact-card" *ngIf="booking.status !== 'pending' && booking.status !== 'cancelled'">
       <h3 class="section-title">Contact Information</h3>
-
       <div class="contact-flex">
         <div class="person-details">
           <ng-container *ngIf="userRole === 'employee'">
@@ -99,7 +121,6 @@
             <h4 class="person-name">{{ booking.userId?.fullName }}</h4>
             <p class="phone-text">{{ booking.userId?.phoneNumber }}</p>
           </ng-container>
-
           <ng-container *ngIf="userRole === 'user'">
             <p class="role-badge">PROFESSIONAL</p>
             <h4 class="person-name">{{ booking.employeeId?.name }}</h4>
@@ -107,8 +128,7 @@
             <p class="phone-text">{{ booking.employeeId?.userId?.phoneNumber }}</p>
           </ng-container>
         </div>
-
-        <div class="communication-actions" *ngIf="booking.status === 'confirmed'">
+        <div class="communication-actions" *ngIf="booking.status !== 'completed'">
           <ion-button color="success" shape="round" [href]="'tel:' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
             <ion-icon name="call" slot="icon-only"></ion-icon>
           </ion-button>
@@ -120,10 +140,10 @@
     </div>
 
     <!-- OTP Display for User -->
-    <div class="otp-display-card" *ngIf="userRole === 'user' && booking.status === 'confirmed'">
+    <div class="otp-display-card" *ngIf="userRole === 'user' && (booking.status === 'confirmed' || booking.status === 'in_progress')">
       <div class="otp-label">COMPLETION OTP</div>
       <div class="otp-number">{{ booking.completionOTP }}</div>
-      <p>Give this code to the professional only when the job is done.</p>
+      <p>Share this only when the job is fully completed.</p>
     </div>
 
     <!-- Action Buttons for Employee -->
@@ -132,8 +152,12 @@
         ACCEPT JOB
       </ion-button>
 
-      <ion-button *ngIf="booking.status === 'confirmed'" expand="block" color="primary" (click)="finishJob()" class="confirm-btn">
-        COMPLETE JOB (ENTER OTP)
+      <ion-button *ngIf="booking.status === 'confirmed'" expand="block" color="tertiary" (click)="startWork()" class="confirm-btn">
+        <ion-icon name="play-outline" slot="start"></ion-icon> START WORK (START TIMER)
+      </ion-button>
+
+      <ion-button *ngIf="booking.status === 'in_progress'" expand="block" color="primary" (click)="finishJob()" class="confirm-btn">
+        <ion-icon name="checkmark-done-outline" slot="start"></ion-icon> FINISH JOB (ENTER OTP)
       </ion-button>
     </div>
 

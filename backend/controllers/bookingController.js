@@ -2,18 +2,19 @@ const Booking = require('../models/Booking');
 const Employee = require('../models/Employee');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const Service = require('../models/Service');
 
-// Helper: Commission Logic
-const calculateCommission = (basePrice) => {
+// Helper: Commission Logic (Recalculatable)
+const calculateCommission = (totalBaseAmount) => {
   let percentage = 0;
-  if (basePrice <= 500) percentage = 0.05;
-  else if (basePrice <= 800) percentage = 0.10;
+  if (totalBaseAmount <= 500) percentage = 0.05;
+  else if (totalBaseAmount <= 800) percentage = 0.10;
   else percentage = 0.15;
 
-  const commission = Math.round(basePrice * percentage);
+  const commission = Math.round(totalBaseAmount * percentage);
   return {
     commissionAmount: commission,
-    finalPrice: basePrice + commission
+    finalPrice: totalBaseAmount + commission
   };
 };
 
@@ -23,12 +24,17 @@ exports.createBooking = async (req, res) => {
     const { category, service, basePrice, date, time, location, additionalInstructions } = req.body;
     const userId = req.user.id || req.user._id;
 
+    // Fetch hourly rate from service model
+    const serviceDetails = await Service.findOne({ name: service });
+    const hourlyRate = serviceDetails ? serviceDetails.hourlyRate : 200;
+
     const { commissionAmount, finalPrice } = calculateCommission(basePrice || 0);
 
     const booking = new Booking({
       category,
       service,
       basePrice: basePrice || 0,
+      hourlyRate,
       commissionAmount,
       finalPrice,
       date,
@@ -47,7 +53,7 @@ exports.createBooking = async (req, res) => {
         const notification = new Notification({
             userId: emp.userId,
             title: 'New Job Available!',
-            message: `Service: ${service}. Final Price: Rs.${finalPrice}. Location: ${location}.`
+            message: `Service: ${service}. Base Price: Rs.${finalPrice}. Location: ${location}.`
         });
         await notification.save();
     }
@@ -56,6 +62,81 @@ exports.createBooking = async (req, res) => {
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
   }
+};
+
+// Start Work (Timer Starts)
+exports.startWork = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+    if (booking.status !== 'confirmed') return res.status(400).json({ success: false, message: 'Job must be confirmed first' });
+
+    booking.status = 'in_progress';
+    booking.workStartTime = new Date();
+    await booking.save();
+
+    res.json({ success: true, message: 'Work started! Timer is running.', data: booking });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Complete Booking (Calculates extra charges based on time)
+exports.completeBooking = async (req, res) => {
+    try {
+        const { otp } = req.body;
+        const booking = await Booking.findById(req.params.id).populate('employeeId');
+
+        if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+        if (booking.completionOTP !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid OTP.' });
+        }
+
+        // Logic for Time-Based Tiers
+        if (booking.workStartTime) {
+          booking.workEndTime = new Date();
+          const durationMs = booking.workEndTime - booking.workStartTime;
+          const durationHours = Math.ceil(durationMs / (1000 * 60 * 60)); // Round up to nearest hour
+
+          booking.totalHoursWorked = durationHours;
+
+          // If more than 1 hour, calculate extra charges
+          if (durationHours > 1) {
+            const extraHours = durationHours - 1;
+            booking.extraTimeCharges = extraHours * (booking.hourlyRate || 200);
+
+            // Recalculate Final Price and Commission
+            const newTotalBase = booking.basePrice + booking.extraTimeCharges;
+            const updatedPricing = calculateCommission(newTotalBase);
+
+            booking.commissionAmount = updatedPricing.commissionAmount;
+            booking.finalPrice = updatedPricing.finalPrice;
+          }
+        }
+
+        const employee = await Employee.findById(booking.employeeId);
+        if (employee.walletBalance < booking.commissionAmount) {
+           return res.status(400).json({ success: false, message: 'Insufficient wallet balance to pay commission for the final bill.' });
+        }
+
+        employee.walletBalance -= booking.commissionAmount;
+        await employee.save();
+
+        booking.status = 'completed';
+        await booking.save();
+
+        res.status(200).json({
+          success: true,
+          message: 'Job completed successfully!',
+          summary: {
+            totalHours: booking.totalHoursWorked,
+            extraCharges: booking.extraTimeCharges,
+            finalBill: booking.finalPrice
+          }
+        });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
 };
 
 // Rate a completed booking
@@ -123,30 +204,6 @@ exports.acceptBooking = async (req, res) => {
         await booking.save();
 
         res.status(200).json({ success: true, message: 'Booking accepted', data: booking });
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-};
-
-// Complete Booking
-exports.completeBooking = async (req, res) => {
-    try {
-        const { otp } = req.body;
-        const booking = await Booking.findById(req.params.id).populate('employeeId');
-
-        if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
-        if (booking.completionOTP !== otp) {
-            return res.status(400).json({ success: false, message: 'Invalid OTP.' });
-        }
-
-        const employee = await Employee.findById(booking.employeeId);
-        employee.walletBalance -= booking.commissionAmount;
-        await employee.save();
-
-        booking.status = 'completed';
-        await booking.save();
-
-        res.status(200).json({ success: true, message: 'Job completed successfully!' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }

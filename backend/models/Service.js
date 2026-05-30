@@ -19,7 +19,11 @@ const serviceSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: true
+    required: true // This will act as the Base Price for the first hour
+  },
+  hourlyRate: {
+    type: Number,
+    default: 200 // Default extra charge per hour after the first hour
   },
   createdAt: {
     type: Date,
@@ -27,4 +31,4 @@ const serviceSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Service', serviceSchema); 
+module.exports = mongoose.model('Service', serviceSchema);

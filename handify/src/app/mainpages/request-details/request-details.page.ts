@@ -21,6 +21,7 @@ export class RequestDetailsPage implements OnInit {
   // Rating properties
   userRating: number = 0;
   userReview: string = '';
+  completionSummary: any = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -98,6 +99,23 @@ export class RequestDetailsPage implements OnInit {
     });
   }
 
+  async startWork() {
+    const loading = await this.loadingController.create({ message: 'Starting timer...' });
+    await loading.present();
+
+    this.apiService.startWork(this.requestId).subscribe({
+      next: (res) => {
+        loading.dismiss();
+        this.showToast('Work started! Hourly billing is active.', 'success');
+        this.loadBookingDetails();
+      },
+      error: (err) => {
+        loading.dismiss();
+        this.showToast(err.error?.message || 'Error starting work', 'danger');
+      }
+    });
+  }
+
   async showInsufficientBalanceAlert() {
     const alert = await this.alertController.create({
       header: 'Insufficient Balance',
@@ -142,6 +160,9 @@ export class RequestDetailsPage implements OnInit {
       next: (res) => {
         loading.dismiss();
         this.showToast(res.message, 'success');
+        if (res.summary) {
+          this.completionSummary = res.summary;
+        }
         this.loadBookingDetails();
       },
       error: (err) => {
@@ -160,6 +181,7 @@ export class RequestDetailsPage implements OnInit {
     switch (status?.toLowerCase()) {
       case 'confirmed': return 'success';
       case 'pending': return 'warning';
+      case 'in_progress': return 'tertiary';
       case 'completed': return 'primary';
       case 'cancelled': return 'danger';
       default: return 'medium';
