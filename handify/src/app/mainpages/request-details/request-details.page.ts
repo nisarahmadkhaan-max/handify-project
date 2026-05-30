@@ -18,6 +18,10 @@ export class RequestDetailsPage implements OnInit {
   userRole = '';
   currentLang = 'en';
 
+  // Rating properties
+  userRating: number = 0;
+  userReview: string = '';
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -48,6 +52,27 @@ export class RequestDetailsPage implements OnInit {
       error: () => {
         this.loading = false;
         this.showToast('Failed to load details', 'danger');
+      }
+    });
+  }
+
+  setRating(star: number) {
+    this.userRating = star;
+  }
+
+  async submitRating() {
+    const loading = await this.loadingController.create({ message: 'Submitting feedback...' });
+    await loading.present();
+
+    this.apiService.rateBooking(this.requestId, this.userRating, this.userReview).subscribe({
+      next: (res) => {
+        loading.dismiss();
+        this.showToast(res.message, 'success');
+        this.loadBookingDetails(); // Refresh to show the rating display
+      },
+      error: (err) => {
+        loading.dismiss();
+        this.showToast(err.error?.message || 'Error submitting rating', 'danger');
       }
     });
   }

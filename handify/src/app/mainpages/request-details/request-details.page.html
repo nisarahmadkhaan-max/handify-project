@@ -43,6 +43,42 @@
       </div>
     </div>
 
+    <!-- Rating Display (if already rated) -->
+    <div class="details-card rating-card" *ngIf="booking.status === 'completed' && booking.rating > 0">
+      <h3 class="section-title">Your Rating</h3>
+      <div class="stars-display">
+        <ion-icon *ngFor="let s of [1,2,3,4,5]"
+                  [name]="s <= booking.rating ? 'star' : 'star-outline'"
+                  color="warning"></ion-icon>
+      </div>
+      <p class="review-text" *ngIf="booking.review">"{{ booking.review }}"</p>
+    </div>
+
+    <!-- Give Rating Section (for User when completed and not yet rated) -->
+    <div class="details-card rating-input-card" *ngIf="userRole === 'user' && booking.status === 'completed' && booking.rating === 0">
+      <h3 class="section-title">Rate the Professional</h3>
+      <p>How was your experience with {{ booking.employeeId?.name }}?</p>
+
+      <div class="stars-input">
+        <ion-icon *ngFor="let star of [1,2,3,4,5]"
+                  [name]="star <= userRating ? 'star' : 'star-outline'"
+                  (click)="setRating(star)"
+                  color="warning"
+                  size="large"></ion-icon>
+      </div>
+
+      <ion-item lines="none" class="review-item">
+        <ion-textarea placeholder="Write a brief review (optional)"
+                      [(ngModel)]="userReview"
+                      rows="3"
+                      class="custom-textarea"></ion-textarea>
+      </ion-item>
+
+      <ion-button expand="block" (click)="submitRating()" [disabled]="userRating === 0">
+        Submit Feedback
+      </ion-button>
+    </div>
+
     <!-- Payment Information -->
     <div class="details-card pricing-card">
       <div class="price-row">
@@ -52,20 +88,18 @@
       <p class="payment-method-tag">Cash on Delivery</p>
     </div>
 
-    <!-- Contact Details Card (Visible only when Confirmed or Completed) -->
+    <!-- Contact Details Card -->
     <div class="details-card contact-card" *ngIf="booking.status === 'confirmed' || booking.status === 'completed'">
       <h3 class="section-title">Contact Information</h3>
 
       <div class="contact-flex">
         <div class="person-details">
-          <!-- Show for Employee -->
           <ng-container *ngIf="userRole === 'employee'">
             <p class="role-badge">CUSTOMER</p>
             <h4 class="person-name">{{ booking.userId?.fullName }}</h4>
             <p class="phone-text">{{ booking.userId?.phoneNumber }}</p>
           </ng-container>
 
-          <!-- Show for User -->
           <ng-container *ngIf="userRole === 'user'">
             <p class="role-badge">PROFESSIONAL</p>
             <h4 class="person-name">{{ booking.employeeId?.name }}</h4>
@@ -74,7 +108,7 @@
           </ng-container>
         </div>
 
-        <div class="communication-actions">
+        <div class="communication-actions" *ngIf="booking.status === 'confirmed'">
           <ion-button color="success" shape="round" [href]="'tel:' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
             <ion-icon name="call" slot="icon-only"></ion-icon>
           </ion-button>

@@ -22,4 +22,7 @@ router.post('/:id/accept', auth, bookingController.acceptBooking);
 // Employee: Complete a booking (OTP required)
 router.post('/:id/complete', auth, bookingController.completeBooking);
 
+// User: Rate a completed booking
+router.post('/:id/rate', auth, bookingController.rateBooking);
+
 module.exports = router;

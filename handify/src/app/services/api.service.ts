@@ -28,6 +28,10 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/bookings/${bookingId}/complete`, { otp });
   }
 
+  rateBooking(bookingId: string, rating: number, review: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/bookings/${bookingId}/rate`, { rating, review });
+  }
+
   // Settings
   getSetting(key: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/settings/key/${key}`);

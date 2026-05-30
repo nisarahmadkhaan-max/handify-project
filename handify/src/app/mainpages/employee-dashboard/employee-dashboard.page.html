@@ -12,10 +12,20 @@
 
 <ion-content class="ion-padding">
   <div class="welcome-card">
-    <h2>Hello, {{ employeeName }}!</h2>
-    <p class="profession-subtitle" *ngIf="employeeProfession">
-      <ion-icon name="construct-outline"></ion-icon> {{ employeeProfession }}
-    </p>
+    <div class="profile-header">
+      <div class="header-text">
+        <h2>Hello, {{ employeeName }}!</h2>
+        <p class="profession-subtitle" *ngIf="employeeProfession">
+          <ion-icon name="construct-outline"></ion-icon> {{ employeeProfession }}
+        </p>
+      </div>
+      <div class="rating-badge" *ngIf="averageRating > 0">
+        <ion-icon name="star" color="warning"></ion-icon>
+        <span>{{ averageRating }}</span>
+        <small>({{ totalRatings }})</small>
+      </div>
+    </div>
+
     <p>Your professional profile is active.</p>
     <div class="status-badge" [class.verified]="isVerified">
       {{ isVerified ? 'VERIFIED' : 'PENDING VERIFICATION' }}

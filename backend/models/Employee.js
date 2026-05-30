@@ -45,6 +45,15 @@ const employeeSchema = new mongoose.Schema({
   walletBalance: {
     type: Number,
     default: 0
+  },
+  // Rating System Fields
+  averageRating: {
+    type: Number,
+    default: 0
+  },
+  totalRatings: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

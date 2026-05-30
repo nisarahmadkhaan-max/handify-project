@@ -12,10 +12,12 @@ import { ToastController, LoadingController } from '@ionic/angular';
 })
 export class EmployeeDashboardPage implements OnInit {
   employeeName = 'Professional';
-  employeeProfession = ''; // New field for profession
+  employeeProfession = '';
   isVerified = false;
   walletBalance = 0;
   totalJobs = 0;
+  averageRating = 0;
+  totalRatings = 0;
   availableFrom = '09:00 AM';
   availableTo = '06:00 PM';
 
@@ -55,8 +57,11 @@ export class EmployeeDashboardPage implements OnInit {
       next: (res: any) => {
         const emp = res.data || res;
         this.isVerified = emp.isVerified;
-        this.employeeProfession = emp.specialization || 'Professional'; // Set profession
+        this.employeeProfession = emp.service || 'Professional';
         this.walletBalance = emp.walletBalance || 0;
+        this.averageRating = emp.averageRating || 0;
+        this.totalRatings = emp.totalRatings || 0;
+
         if (emp.availability && emp.availability.length > 0) {
           this.availableFrom = emp.availability[0].startTime;
           this.availableTo = emp.availability[0].endTime;

@@ -22,9 +22,7 @@ exports.createBooking = async (req, res) => {
   try {
     const { category, service, basePrice, date, time, location, additionalInstructions } = req.body;
     const userId = req.user.id || req.user._id;
-    const customer = await User.findById(userId);
 
-    // Calculate Commission and Final Price
     const { commissionAmount, finalPrice } = calculateCommission(basePrice || 0);
 
     const booking = new Booking({
@@ -39,12 +37,11 @@ exports.createBooking = async (req, res) => {
       additionalInstructions,
       userId: userId,
       status: 'pending',
-      completionOTP: Math.floor(1000 + Math.random() * 9000).toString() // Generate 4-digit OTP
+      completionOTP: Math.floor(1000 + Math.random() * 9000).toString()
     });
 
     const savedBooking = await booking.save();
 
-    // Broadcast to relevant employees
     const allInCategory = await Employee.find({ service: category, isVerified: true });
     for (const emp of allInCategory) {
         const notification = new Notification({
@@ -61,7 +58,44 @@ exports.createBooking = async (req, res) => {
   }
 };
 
-// Employee accepts a booking (Wallet Check Added)
+// Rate a completed booking
+exports.rateBooking = async (req, res) => {
+  try {
+    const { rating, review } = req.body;
+    const bookingId = req.params.id;
+
+    const booking = await Booking.findById(bookingId);
+    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+    if (booking.status !== 'completed') return res.status(400).json({ success: false, message: 'Only completed bookings can be rated' });
+    if (booking.rating > 0) return res.status(400).json({ success: false, message: 'Booking already rated' });
+
+    booking.rating = rating;
+    booking.review = review || '';
+    await booking.save();
+
+    // Update Employee Average Rating
+    if (booking.employeeId) {
+      const employee = await Employee.findById(booking.employeeId);
+      const allRatedBookings = await Booking.find({
+        employeeId: booking.employeeId,
+        rating: { $gt: 0 }
+      });
+
+      const totalRatingsCount = allRatedBookings.length;
+      const sumRatings = allRatedBookings.reduce((acc, curr) => acc + curr.rating, 0);
+
+      employee.averageRating = parseFloat((sumRatings / totalRatingsCount).toFixed(1));
+      employee.totalRatings = totalRatingsCount;
+      await employee.save();
+    }
+
+    res.json({ success: true, message: 'Thank you for your feedback!' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Employee accepts a booking
 exports.acceptBooking = async (req, res) => {
     try {
         const userId = req.user.id || req.user._id;
@@ -76,12 +110,11 @@ exports.acceptBooking = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Booking no longer available.' });
         }
 
-        // WALLET CHECK: Check if employee has enough balance for commission
         if (employee.walletBalance < booking.commissionAmount) {
             return res.status(400).json({
                 success: false,
                 error_code: 'INSUFFICIENT_WALLET',
-                message: 'Please recharge your wallet so you can accept requests. Thank You.'
+                message: 'Please recharge your wallet so you can accept requests.'
             });
         }
 
@@ -95,19 +128,17 @@ exports.acceptBooking = async (req, res) => {
     }
 };
 
-// Complete Booking with OTP and Wallet Deduction
+// Complete Booking
 exports.completeBooking = async (req, res) => {
     try {
         const { otp } = req.body;
         const booking = await Booking.findById(req.params.id).populate('employeeId');
 
         if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
-
         if (booking.completionOTP !== otp) {
-            return res.status(400).json({ success: false, message: 'Invalid OTP. Please ask the customer for the correct code.' });
+            return res.status(400).json({ success: false, message: 'Invalid OTP.' });
         }
 
-        // Deduct Commission from Employee Wallet
         const employee = await Employee.findById(booking.employeeId);
         employee.walletBalance -= booking.commissionAmount;
         await employee.save();
@@ -115,13 +146,12 @@ exports.completeBooking = async (req, res) => {
         booking.status = 'completed';
         await booking.save();
 
-        res.status(200).json({ success: true, message: 'Job completed successfully! Commission deducted.' });
+        res.status(200).json({ success: true, message: 'Job completed successfully!' });
     } catch (error) {
         res.status(400).json({ success: false, error: error.message });
     }
 };
 
-// ... keep other methods (getAllBookings, getBookings, getBooking) ...
 exports.getAllBookings = async (req, res) => {
   try {
     const total = await Booking.countDocuments();
@@ -149,12 +179,7 @@ exports.getBookings = async (req, res) => {
     } else if (req.user.role === 'employee') {
       const employee = await Employee.findOne({ userId: userId });
       if (!employee) return res.status(200).json({ success: true, data: [] });
-      query = {
-        $or: [
-            { employeeId: employee._id },
-            { status: 'pending', category: employee.service, employeeId: null }
-        ]
-      };
+      query = { $or: [{ employeeId: employee._id }, { status: 'pending', category: employee.service, employeeId: null }] };
     }
     const bookings = await Booking.find(query).populate('userId', 'fullName email phoneNumber').populate({ path: 'employeeId', populate: { path: 'userId', select: 'fullName phoneNumber' } }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: bookings });
