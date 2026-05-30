@@ -1,72 +1,85 @@
 <ion-header class="custom-header">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
-      <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
+      <ion-back-button (click)="closeHistory()" text="" icon="chevron-back-outline"></ion-back-button>
     </ion-buttons>
     <ion-title class="ion-text-center">{{ translationService.getTranslation('serviceHistory') }}</ion-title>
-    <ion-buttons slot="end">
-     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="history-content">
+<ion-content [fullscreen]="true" class="history-content ion-padding">
   <!-- Filter Tabs -->
   <div class="filter-tabs">
     <button 
       class="filter-tab" 
       [ngClass]="{'active': activeFilter === 'All'}" 
       (click)="filterHistory('All')">
-      {{ translationService.getTranslation('all') }}
+      {{ translationService.getTranslation('all') || 'All' }}
     </button>
     <button 
       class="filter-tab" 
       [ngClass]="{'active': activeFilter === 'Completed'}" 
       (click)="filterHistory('Completed')">
-      {{ translationService.getTranslation('completed') }}
+      {{ translationService.getTranslation('completed') || 'Completed' }}
     </button>
     <button 
       class="filter-tab" 
       [ngClass]="{'active': activeFilter === 'Cancelled'}" 
       (click)="filterHistory('Cancelled')">
-      {{ translationService.getTranslation('cancelled') }}
+      {{ translationService.getTranslation('cancelled') || 'Cancelled' }}
     </button>
   </div>
 
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Loading History...</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && filteredHistory.length === 0" class="empty-state">
+    <ion-icon name="document-text-outline"></ion-icon>
+    <h3>No Service History</h3>
+    <p>Your booking history will appear here once you place a request.</p>
+    <ion-button fill="outline" (click)="closeHistory()">Go Back</ion-button>
+  </div>
+
   <!-- Service History List -->
-  <div class="history-list">
-    <div class="history-item" *ngFor="let service of filteredHistory" (click)="viewServiceDetails(service)">
-      <h2 class="service-name">{{ service.serviceName }}</h2>
+  <div class="history-list" *ngIf="!loading && filteredHistory.length > 0">
+    <div class="history-item" *ngFor="let booking of filteredHistory" (click)="viewServiceDetails(booking)">
+      <div class="item-header">
+        <h2 class="service-name">{{ booking.service }}</h2>
+        <span class="status-badge" [style.background-color]="getStatusColor(booking.status)">
+          {{ booking.status | uppercase }}
+        </span>
+      </div>
       
       <div class="service-details">
         <div class="detail-row">
           <div class="detail-column">
-            <div class="label">{{ translationService.getTranslation('dateTime') }}</div>
-            <div class="value">{{ service.dateTime }}</div>
+            <div class="label">DATE & TIME</div>
+            <div class="value">{{ booking.date }} | {{ booking.time }}</div>
           </div>
-          
           <div class="detail-column">
-            <div class="label">{{ translationService.getTranslation('status') }}</div>
-            <div class="value status">
-              <span class="status-dot" [style.background-color]="getStatusColor(service.status)"></span>
-              {{ service.status }}
-            </div>
+            <div class="label">PRICE</div>
+            <div class="value">Rs. {{ booking.finalPrice }}</div>
           </div>
         </div>
         
-        <div class="detail-row">
-          <div class="detail-column" *ngIf="service.rating !== undefined">
-            <div class="label">{{ translationService.getTranslation('rating') }}</div>
+        <div class="detail-row footer-row">
+          <div class="detail-column" *ngIf="booking.rating > 0">
+            <div class="label">YOUR RATING</div>
             <div class="value rating">
-              ({{ service.rating }}/5)
               <span class="stars">
-                <ion-icon *ngFor="let star of getRatingStars(service.rating)" [name]="star"></ion-icon>
+                <ion-icon *ngFor="let star of [1,2,3,4,5]"
+                          [name]="star <= booking.rating ? 'star' : 'star-outline'"
+                          color="warning"></ion-icon>
               </span>
             </div>
           </div>
           
           <div class="detail-column">
-            <div class="label">{{ translationService.getTranslation('bookingId') }}</div>
-            <div class="value">{{ service.bookingId }}</div>
+            <div class="label">BOOKING ID</div>
+            <div class="value">#{{ booking._id.substring(booking._id.length - 6).toUpperCase() }}</div>
           </div>
         </div>
       </div>

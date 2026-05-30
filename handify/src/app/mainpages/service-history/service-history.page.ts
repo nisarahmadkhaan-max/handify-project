@@ -1,15 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
-
-interface ServiceHistoryItem {
-  id: string;
-  serviceName: string;
-  status: 'Completed' | 'Cancelled' | 'Pending';
-  dateTime: string;
-  bookingId: string;
-  rating?: number; // Optional since cancelled services don't have ratings
-}
+import { ApiService } from '../../services/api.service';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-service-history',
@@ -19,109 +12,72 @@ interface ServiceHistoryItem {
 })
 export class ServiceHistoryPage implements OnInit {
   activeFilter: string = 'All';
-  serviceHistory: ServiceHistoryItem[] = [
-    {
-      id: '1',
-      serviceName: 'AC Repair',
-      status: 'Completed',
-      dateTime: 'May 10, 2:00 PM',
-      bookingId: '#AC789',
-      rating: 4.5
-    },
-    {
-      id: '2',
-      serviceName: 'Dry Cleaning',
-      status: 'Completed',
-      dateTime: 'May 8, 10:00 AM',
-      bookingId: '#DC456',
-      rating: 4
-    },
-    {
-      id: '3',
-      serviceName: 'Plumbing Service',
-      status: 'Cancelled',
-      dateTime: 'May 12, 1:00 PM',
-      bookingId: '#PL123'
-    }
-  ];
-  
-  filteredHistory: ServiceHistoryItem[] = [];
+  allBookings: any[] = [];
+  filteredHistory: any[] = [];
+  loading = false;
   currentLang = 'en';
 
-  constructor(public translationService: TranslationService, private router: Router) { }
+  constructor(
+    public translationService: TranslationService,
+    private router: Router,
+    private apiService: ApiService,
+    private loadingController: LoadingController
+  ) { }
 
   ngOnInit() {
     this.translationService.currentLang$.subscribe((lang: string) => {
       this.currentLang = lang;
     });
-    this.filterHistory('All');
+    this.loadHistory();
+  }
+
+  ionViewWillEnter() {
+    this.loadHistory();
+  }
+
+  async loadHistory() {
+    this.loading = true;
+    this.apiService.getMyBookings().subscribe({
+      next: (res: any) => {
+        this.allBookings = res.data || [];
+        this.filterHistory(this.activeFilter);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching history', err);
+        this.loading = false;
+      }
+    });
   }
 
   filterHistory(filter: string) {
     this.activeFilter = filter;
     
     if (filter === 'All') {
-      this.filteredHistory = [...this.serviceHistory];
+      this.filteredHistory = [...this.allBookings];
     } else {
-      this.filteredHistory = this.serviceHistory.filter(item => 
-        item.status === filter
+      this.filteredHistory = this.allBookings.filter(item =>
+        item.status.toLowerCase() === filter.toLowerCase()
       );
     }
   }
 
   getStatusColor(status: string): string {
-    switch (status) {
-      case 'Completed':
-        return 'blue';
-      case 'Cancelled':
-        return 'red';
-      case 'Pending':
-        return 'gold';
-      default:
-        return 'gray';
+    switch (status.toLowerCase()) {
+      case 'completed': return '#2dd36f';
+      case 'cancelled': return '#eb445a';
+      case 'pending': return '#ffc409';
+      case 'confirmed': return '#3880ff';
+      default: return '#92949c';
     }
   }
 
-  getRatingStars(rating: number): string[] {
-    const fullStars = Math.floor(rating);
-    const halfStar = rating % 1 >= 0.5;
-    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-    
-    const stars = [];
-    
-    // Add full stars
-    for (let i = 0; i < fullStars; i++) {
-      stars.push('star');
-    }
-    
-    // Add half star if needed
-    if (halfStar) {
-      stars.push('star-half');
-    }
-    
-    // Add empty stars
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push('star-outline');
-    }
-    
-    return stars;
-  }
-
-  viewServiceDetails(service: ServiceHistoryItem) {
-    // Navigate to service details page
-    this.router.navigate(['/service-details', service.id]);
+  viewServiceDetails(service: any) {
+    // Navigate to the unified request details page
+    this.router.navigate(['/request-details', service._id]);
   }
 
   closeHistory() {
-    this.router.navigate(['/home']);
-  }
-
-  openSearch() {
-    // Implement search functionality
-    alert('Search functionality would open here');
-  }
-
-  switchLanguage(lang: string) {
-    this.translationService.setLanguage(lang);
+    this.router.navigate(['/tabs/tab4']); // Usually opened from profile
   }
 }
