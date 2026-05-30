@@ -24,6 +24,7 @@ const seedCategories = require('./seeders/categorySeeder');
 const seedServices = require('./seeders/serviceSeeder');
 const seedEmployees = require('./seeders/employeeSeeder');
 const seedSettings = require('./seeders/settingsSeeder');
+const Booking = require('./models/Booking'); // Import Booking model to clear data
 
 const app = express();
 
@@ -45,13 +46,7 @@ app.get('/', (req, res) => res.send('Handify Backend is running!'));
 // Database Connection Helper
 const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) return;
-
   const mongoUri = process.env.MONGODB_URI;
-  if (!mongoUri) {
-    console.error('❌ MONGODB_URI is missing in environment variables');
-    return;
-  }
-
   try {
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000,
@@ -64,7 +59,7 @@ const connectDB = async () => {
   }
 };
 
-// Debug/Seed Route
+// Updated Debug/Seed Route - No more hardcoded bookings
 app.get('/api/force-seed', async (req, res) => {
   try {
     await connectDB();
@@ -72,14 +67,17 @@ app.get('/api/force-seed', async (req, res) => {
     await seedCategories();
     await seedServices();
     await seedSettings();
-    res.json({ message: 'Database Seeded Successfully! Admin is ready.' });
+
+    // Logic to clear hardcoded bookings for a fresh start
+    await Booking.deleteMany({});
+
+    res.json({ message: 'Database Cleaned & Seeded! No more hardcoded bookings.' });
   } catch (err) {
     console.error('Seed Error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Middleware to ensure DB connection for all API routes
 app.use(async (req, res, next) => {
   try {
     await connectDB();
