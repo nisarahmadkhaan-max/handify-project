@@ -51,9 +51,11 @@
 
 .location-group {
   position: relative;
+  z-index: 9999 !important; /* Extremely high to stay on top */
 
   .search-input-wrapper {
     position: relative;
+    z-index: 10000 !important;
   }
 }
 
@@ -63,27 +65,27 @@
   left: 0;
   right: 0;
   background: white;
-  z-index: 1000;
+  z-index: 99999 !important; /* Ensure it is above everything else */
   border-radius: 0 0 10px 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
   max-height: 250px;
   overflow-y: auto;
-  border: 1px solid #eee;
-  margin-top: -5px;
+  border: 1px solid #ddd;
+  margin-top: -2px;
 }
 
 .suggestion-item {
   display: flex;
   align-items: center;
-  padding: 12px 15px;
+  padding: 14px 15px;
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
 
   &:last-child { border-bottom: none; }
-  &:active { background: #f9f9ff; }
+  &:active { background: #f0f1ff; }
 
   ion-icon {
-    font-size: 20px;
+    font-size: 22px;
     color: #2F3083;
     margin-right: 12px;
     flex-shrink: 0;
@@ -96,7 +98,7 @@
 
     .main-text {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       color: #333;
       white-space: nowrap;
       overflow: hidden;
@@ -105,10 +107,11 @@
 
     .sub-text {
       font-size: 11px;
-      color: #999;
+      color: #666;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-top: 2px;
     }
   }
 }
@@ -120,6 +123,7 @@
   font-weight: 600;
   margin: 10px 0 20px 0;
   height: 45px;
+  z-index: 1; /* Lower than dropdown */
 }
 
 .custom-textarea {

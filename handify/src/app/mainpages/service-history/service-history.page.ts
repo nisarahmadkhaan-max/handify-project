@@ -28,7 +28,6 @@ export class ServiceHistoryPage implements OnInit {
     this.translationService.currentLang$.subscribe((lang: string) => {
       this.currentLang = lang;
     });
-    this.loadHistory();
   }
 
   ionViewWillEnter() {
@@ -37,6 +36,9 @@ export class ServiceHistoryPage implements OnInit {
 
   async loadHistory() {
     this.loading = true;
+    this.allBookings = []; // Pehle list saaf karein taake purana data na dikhe
+    this.filteredHistory = [];
+
     this.apiService.getMyBookings().subscribe({
       next: (res: any) => {
         this.allBookings = res.data || [];
@@ -46,6 +48,7 @@ export class ServiceHistoryPage implements OnInit {
       error: (err) => {
         console.error('Error fetching history', err);
         this.loading = false;
+        this.allBookings = []; // Error ki surat mein list khali rakhein
       }
     });
   }
@@ -63,21 +66,21 @@ export class ServiceHistoryPage implements OnInit {
   }
 
   getStatusColor(status: string): string {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'completed': return '#2dd36f';
       case 'cancelled': return '#eb445a';
       case 'pending': return '#ffc409';
       case 'confirmed': return '#3880ff';
+      case 'in_progress': return '#7044ff';
       default: return '#92949c';
     }
   }
 
   viewServiceDetails(service: any) {
-    // Navigate to the unified request details page
     this.router.navigate(['/request-details', service._id]);
   }
 
   closeHistory() {
-    this.router.navigate(['/tabs/tab4']); // Usually opened from profile
+    this.router.navigate(['/tabs/tab4']);
   }
 }
