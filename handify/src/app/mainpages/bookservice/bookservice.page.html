@@ -80,19 +80,31 @@
       </ion-modal>
     </div>
 
-    <!-- Smart Location Input -->
-    <div class="form-group">
+    <!-- Smart Location Input with Suggestions -->
+    <div class="form-group location-group">
       <ion-label>{{ translationService.translate('location') }}:</ion-label>
-      <ion-item lines="none" class="custom-input">
-        <ion-textarea
-          [placeholder]="translationService.translate('enterYourAddressHere')"
-          [(ngModel)]="bookingData.location"
-          rows="2"
-          (ionBlur)="onManualAddressBlur()">
-        </ion-textarea>
-        <ion-spinner name="dots" *ngIf="isSearchingLocation" slot="end"></ion-spinner>
-      </ion-item>
-      <p class="helper-text" *ngIf="isSearchingLocation">Finding professional address...</p>
+      <div class="search-input-wrapper">
+        <ion-item lines="none" class="custom-input">
+          <ion-textarea
+            [placeholder]="translationService.translate('enterYourAddressHere')"
+            [(ngModel)]="bookingData.location"
+            rows="2"
+            (ionInput)="onLocationInput($event)">
+          </ion-textarea>
+          <ion-spinner name="dots" *ngIf="isSearchingLocation" slot="end"></ion-spinner>
+        </ion-item>
+
+        <!-- Suggestions Dropdown -->
+        <div class="suggestions-list" *ngIf="locationSuggestions.length > 0">
+          <div class="suggestion-item" *ngFor="let suggestion of locationSuggestions" (click)="selectLocation(suggestion)">
+            <ion-icon name="location-outline"></ion-icon>
+            <div class="text-info">
+              <span class="main-text">{{ suggestion.name || suggestion.display_name.split(',')[0] }}</span>
+              <span class="sub-text">{{ suggestion.display_name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <ion-button expand="block" fill="outline" (click)="getCurrentLocation()" class="location-btn">

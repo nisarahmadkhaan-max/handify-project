@@ -7,6 +7,8 @@ import { ApiService } from '../../services/api.service';
 import { ToastController, LoadingController, AlertController } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
 import { HttpClient } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-bookservice',
@@ -32,6 +34,8 @@ export class BookservicePage implements OnInit {
   showDatePicker = false;
   showTimePicker = false;
   isSearchingLocation = false;
+  locationSuggestions: any[] = [];
+  private searchSubject = new Subject<string>();
 
   commissions = { low: 5, mid: 10, high: 15 };
 
@@ -46,12 +50,19 @@ export class BookservicePage implements OnInit {
     private alertController: AlertController,
     private http: HttpClient,
     public translationService: TranslationService
-  ) { }
+  ) {
+    // Set up debounced search for location suggestions
+    this.searchSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged()
+    ).subscribe(searchTerm => {
+      this.fetchSuggestions(searchTerm);
+    });
+  }
 
   ngOnInit() {
     this.loadCommissions();
 
-    // Auto-fill from profile on start
     const currentUser = this.authService.currentUserValue;
     if (currentUser && currentUser.user && currentUser.user.location) {
       this.bookingData.location = currentUser.user.location;
@@ -68,61 +79,78 @@ export class BookservicePage implements OnInit {
     });
   }
 
-  // Logic for Manual Type: Fetch professional address when user finishes typing
-  async onManualAddressBlur() {
-    if (!this.bookingData.location || this.bookingData.location.length < 5) return;
+  onLocationInput(event: any) {
+    const val = event.target.value;
+    if (val && val.length > 2) {
+      this.searchSubject.next(val);
+    } else {
+      this.locationSuggestions = [];
+    }
+  }
 
+  fetchSuggestions(searchTerm: string) {
     this.isSearchingLocation = true;
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.bookingData.location)}&addressdetails=1&limit=1`;
+    // Limit search to Karachi/Pakistan area for better relevance if needed, or keep it general
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchTerm)}&addressdetails=1&limit=5&countrycodes=pk`;
 
     this.http.get(url).subscribe((res: any) => {
       this.isSearchingLocation = false;
-      if (res && res.length > 0) {
-        const addr = res[0].address;
-        const professionalAddress = [
-          addr.road || '',
-          addr.suburb || addr.neighbourhood || '',
-          addr.city || addr.town || addr.village || '',
-          addr.state || ''
-        ].filter(val => !!val).join(', ');
-
-        this.bookingData.location = professionalAddress || res[0].display_name;
-      }
+      this.locationSuggestions = res;
     }, () => {
       this.isSearchingLocation = false;
     });
   }
 
-  // Improved Current Location Logic (No numbers, only readable words)
+  selectLocation(suggestion: any) {
+    const addr = suggestion.address;
+    const cleanAddress = [
+      suggestion.name || '',
+      addr.road || '',
+      addr.suburb || addr.neighbourhood || '',
+      addr.city || addr.town || addr.village || '',
+    ].filter((val, index, self) => val && self.indexOf(val) === index).join(', ');
+
+    this.bookingData.location = cleanAddress || suggestion.display_name;
+    this.locationSuggestions = [];
+  }
+
+  // Improved Current Location Logic with High Accuracy
   async getCurrentLocation() {
     const loading = await this.loadingController.create({
-      message: 'Fetching Readable Address...',
+      message: 'Fetching Exact Location...',
       spinner: 'crescent'
     });
     await loading.present();
 
     try {
-      const coordinates = await Geolocation.getCurrentPosition();
+      // Added enableHighAccuracy for better GPS precision
+      const coordinates = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000
+      });
+
       const lat = coordinates.coords.latitude;
       const lng = coordinates.coords.longitude;
 
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+      // zoom=18 for more specific details (house level)
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
 
       this.http.get(url).subscribe((res: any) => {
         loading.dismiss();
         if (res && res.address) {
           const addr = res.address;
+          // Priority building name or house number for exactness
           const cleanAddress = [
+            addr.building || addr.house_number || '',
             addr.road || '',
             addr.suburb || addr.neighbourhood || '',
             addr.city || addr.town || addr.village || '',
-            addr.state || ''
           ].filter(val => !!val).join(', ');
 
           this.bookingData.location = cleanAddress || res.display_name;
-          this.showToast('Professional Address Set!', 'success');
+          this.showToast('Exact Location Found!', 'success');
         } else {
-          this.bookingData.location = `Area near ${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+          this.bookingData.location = `Near ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
         }
       }, () => {
         loading.dismiss();
@@ -130,7 +158,7 @@ export class BookservicePage implements OnInit {
       });
     } catch (error) {
       loading.dismiss();
-      this.showToast('Please enable GPS', 'danger');
+      this.showToast('Please enable GPS & Permissions', 'danger');
     }
   }
 
