@@ -31,6 +31,7 @@ export class BookservicePage implements OnInit {
   selectedTime: string = '';
   showDatePicker = false;
   showTimePicker = false;
+  isSearchingLocation = false;
 
   commissions = { low: 5, mid: 10, high: 15 };
 
@@ -50,13 +51,10 @@ export class BookservicePage implements OnInit {
   ngOnInit() {
     this.loadCommissions();
 
-    // Auto-fill location from user profile if available
+    // Auto-fill from profile on start
     const currentUser = this.authService.currentUserValue;
     if (currentUser && currentUser.user && currentUser.user.location) {
       this.bookingData.location = currentUser.user.location;
-    } else {
-      // If profile location is not set, try to fetch it now quietly
-      this.getQuietLocation();
     }
 
     this.route.queryParams.subscribe(params => {
@@ -70,25 +68,69 @@ export class BookservicePage implements OnInit {
     });
   }
 
-  // Quietly fetch location without showing a big loading spinner
-  async getQuietLocation() {
+  // Logic for Manual Type: Fetch professional address when user finishes typing
+  async onManualAddressBlur() {
+    if (!this.bookingData.location || this.bookingData.location.length < 5) return;
+
+    this.isSearchingLocation = true;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.bookingData.location)}&addressdetails=1&limit=1`;
+
+    this.http.get(url).subscribe((res: any) => {
+      this.isSearchingLocation = false;
+      if (res && res.length > 0) {
+        const addr = res[0].address;
+        const professionalAddress = [
+          addr.road || '',
+          addr.suburb || addr.neighbourhood || '',
+          addr.city || addr.town || addr.village || '',
+          addr.state || ''
+        ].filter(val => !!val).join(', ');
+
+        this.bookingData.location = professionalAddress || res[0].display_name;
+      }
+    }, () => {
+      this.isSearchingLocation = false;
+    });
+  }
+
+  // Improved Current Location Logic (No numbers, only readable words)
+  async getCurrentLocation() {
+    const loading = await this.loadingController.create({
+      message: 'Fetching Readable Address...',
+      spinner: 'crescent'
+    });
+    await loading.present();
+
     try {
       const coordinates = await Geolocation.getCurrentPosition();
       const lat = coordinates.coords.latitude;
       const lng = coordinates.coords.longitude;
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-      this.http.get(url).subscribe((res: any) => {
-        if (!this.bookingData.location) {
-          this.bookingData.location = res?.display_name || `${lat}, ${lng}`;
-        }
-      });
-    } catch (e) {}
-  }
 
-  // When user clicks the address box, if it's empty, suggest current location
-  async onLocationClick() {
-    if (!this.bookingData.location) {
-      await this.getCurrentLocation();
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+
+      this.http.get(url).subscribe((res: any) => {
+        loading.dismiss();
+        if (res && res.address) {
+          const addr = res.address;
+          const cleanAddress = [
+            addr.road || '',
+            addr.suburb || addr.neighbourhood || '',
+            addr.city || addr.town || addr.village || '',
+            addr.state || ''
+          ].filter(val => !!val).join(', ');
+
+          this.bookingData.location = cleanAddress || res.display_name;
+          this.showToast('Professional Address Set!', 'success');
+        } else {
+          this.bookingData.location = `Area near ${lat.toFixed(2)}, ${lng.toFixed(2)}`;
+        }
+      }, () => {
+        loading.dismiss();
+        this.showToast('Could not fetch address details', 'warning');
+      });
+    } catch (error) {
+      loading.dismiss();
+      this.showToast('Please enable GPS', 'danger');
     }
   }
 
@@ -119,28 +161,6 @@ export class BookservicePage implements OnInit {
     this.bookingData.time = new Date(timeValue).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   }
 
-  async getCurrentLocation() {
-    const loading = await this.loadingController.create({ message: 'Fetching location...' });
-    await loading.present();
-    try {
-      const coordinates = await Geolocation.getCurrentPosition();
-      const lat = coordinates.coords.latitude;
-      const lng = coordinates.coords.longitude;
-      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-      this.http.get(url).subscribe((res: any) => {
-        loading.dismiss();
-        this.bookingData.location = res?.display_name || `${lat}, ${lng}`;
-        this.showToast('Location updated!', 'success');
-      }, () => {
-        loading.dismiss();
-        this.bookingData.location = `${lat}, ${lng}`;
-      });
-    } catch (error) {
-      loading.dismiss();
-      this.showToast('GPS Error', 'danger');
-    }
-  }
-
   async confirmBooking() {
     if (!this.bookingData.date || !this.bookingData.time || !this.bookingData.location) {
       this.showToast('Please fill all required fields.', 'warning');
@@ -168,7 +188,7 @@ export class BookservicePage implements OnInit {
   }
 
   async showToast(message: string, color: string) {
-    const toast = await this.toastController.create({ message, duration: 2000, color });
+    const toast = await this.toastController.create({ message, duration: 2500, color });
     toast.present();
   }
 }

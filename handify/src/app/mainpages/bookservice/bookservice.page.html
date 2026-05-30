@@ -88,9 +88,11 @@
           [placeholder]="translationService.translate('enterYourAddressHere')"
           [(ngModel)]="bookingData.location"
           rows="2"
-          (click)="onLocationClick()">
+          (ionBlur)="onManualAddressBlur()">
         </ion-textarea>
+        <ion-spinner name="dots" *ngIf="isSearchingLocation" slot="end"></ion-spinner>
       </ion-item>
+      <p class="helper-text" *ngIf="isSearchingLocation">Finding professional address...</p>
     </div>
 
     <ion-button expand="block" fill="outline" (click)="getCurrentLocation()" class="location-btn">
@@ -104,7 +106,7 @@
       </ion-item>
     </div>
 
-    <ion-button expand="block" class="submit-btn" (click)="confirmBooking()" [disabled]="!bookingData.date || !bookingData.time || !bookingData.location">
+    <ion-button expand="block" class="submit-btn" (click)="confirmBooking()" [disabled]="!bookingData.date || !bookingData.time || !bookingData.location || isSearchingLocation">
       BOOK NOW
     </ion-button>
   </div>
