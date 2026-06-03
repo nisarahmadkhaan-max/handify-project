@@ -15,8 +15,6 @@ export class EmployeeRegistrationPage implements OnInit {
   currentStep = 1;
   showTimePicker = false;
   pickingFor: 'from' | 'to' = 'from';
-  showReviewModal = false;
-  tempImage: string = '';
   showPassword = false;
   showConfirmPassword = false;
 
@@ -32,7 +30,6 @@ export class EmployeeRegistrationPage implements OnInit {
     cnicNumber: '',
     cnicFront: '',
     cnicBack: '',
-    selfie: '',
     emergencyName: '',
     emergencyPhone: ''
   };
@@ -61,18 +58,19 @@ export class EmployeeRegistrationPage implements OnInit {
 
   async nextStep() {
     if (this.currentStep === 1) {
-      // Email Validation
+      if (!this.employeeData.username || this.employeeData.username.length < 3) {
+        await this.showToast('Please enter your full name as per CNIC', 'warning');
+        return;
+      }
       if (!this.employeeData.email || !this.employeeData.email.toLowerCase().endsWith('@gmail.com')) {
         await this.showToast('Please fill the email (e.g. name@gmail.com)', 'warning');
         return;
       }
-      // Phone Validation
       const phoneRegex = /^[0-9]{11}$/;
       if (!this.employeeData.phone || !phoneRegex.test(this.employeeData.phone)) {
         await this.showToast('Please insert your number (11 digits required)', 'warning');
         return;
       }
-      // Password Match
       if (this.employeeData.password !== this.employeeData.confirmPassword) {
         await this.showToast('Passwords do not match', 'danger');
         return;
@@ -94,8 +92,9 @@ export class EmployeeRegistrationPage implements OnInit {
   }
 
   isStep3Valid() {
+    // Selfie check removed, only CNIC number and Front/Back photos required
     return this.employeeData.cnicNumber && this.employeeData.cnicNumber.toString().length >= 13 &&
-           this.employeeData.cnicFront && this.employeeData.cnicBack && this.employeeData.selfie;
+           this.employeeData.cnicFront && this.employeeData.cnicBack;
   }
 
   isStep4Valid() {
@@ -107,23 +106,11 @@ export class EmployeeRegistrationPage implements OnInit {
       const image = await Camera.getPhoto({ quality: 90, resultType: CameraResultType.DataUrl, source: CameraSource.Photos });
       if (image && image.dataUrl) {
         this.employeeData[field] = image.dataUrl;
-        this.showToast(`${field.replace('cnic', 'CNIC ')} Selected`, 'success');
+        this.showToast(`${field === 'cnicFront' ? 'CNIC Front' : 'CNIC Back'} Selected`, 'success');
       }
     } catch (e) { }
   }
 
-  async takeSelfie() {
-    try {
-      const image = await Camera.getPhoto({ quality: 100, resultType: CameraResultType.DataUrl, source: CameraSource.Camera });
-      if (image && image.dataUrl) {
-        this.tempImage = image.dataUrl;
-        this.showReviewModal = true;
-      }
-    } catch (e) { }
-  }
-
-  confirmPhoto() { this.employeeData.selfie = this.tempImage; this.showReviewModal = false; }
-  retakePhoto() { this.showReviewModal = false; this.takeSelfie(); }
   openPicker(t: 'from' | 'to') { this.pickingFor = t; this.showTimePicker = true; }
 
   onTimeRangeChange(event: any) {
@@ -133,7 +120,6 @@ export class EmployeeRegistrationPage implements OnInit {
   }
 
   async createAccount() {
-    // Final Phone Validation for Step 4
     const phoneRegex = /^[0-9]{11}$/;
     if (!this.employeeData.emergencyPhone || !phoneRegex.test(this.employeeData.emergencyPhone)) {
       await this.showToast('Please insert a valid 11-digit emergency contact number', 'warning');
@@ -141,17 +127,15 @@ export class EmployeeRegistrationPage implements OnInit {
     }
 
     const loading = await this.loadingController.create({
-      message: 'Verifying Documents... Please wait.'
+      message: 'Verifying Name & CNIC... Please wait.'
     });
     await loading.present();
 
-    const finalData = { ...this.employeeData, availableTime: `${this.employeeData.availableFrom} to ${this.employeeData.availableTo}` };
-
-    this.apiService.registerEmployee(finalData).subscribe({
+    this.apiService.registerEmployee(this.employeeData).subscribe({
       next: async (res: any) => {
         await loading.dismiss();
         const alert = await this.alertController.create({
-          header: 'Registration Successful',
+          header: 'Verification Successful',
           message: res.message,
           buttons: [{ text: 'Get Started', handler: () => this.router.navigate(['/tabs/tab4']) }]
         });
@@ -161,7 +145,7 @@ export class EmployeeRegistrationPage implements OnInit {
         await loading.dismiss();
         const alert = await this.alertController.create({
           header: 'Verification Failed',
-          message: err.error?.message || 'Automatic verification failed. Please ensure the image is clear.',
+          message: err.error?.message || 'Automatic verification failed. Please ensure the CNIC front photo is clear and name matches.',
           buttons: ['Try Again']
         });
         await alert.present();
