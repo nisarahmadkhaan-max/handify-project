@@ -1,50 +1,55 @@
 const Employee = require('../models/Employee');
 const User = require('../models/User');
-const Tesseract = require('tesseract.js');
+const fetch = require('node-fetch');
+const FormData = require('form-data');
 
-// Pre-initialize Tesseract Worker for speed
-let worker = null;
-const initTesseract = async () => {
-    try {
-        worker = await Tesseract.createWorker('eng');
-        console.log("🚀 Tesseract Worker Initialized & Ready");
-    } catch (err) {
-        console.error("❌ Tesseract Init Error:", err);
-    }
-};
-initTesseract();
-
+// Professional Verification using OCR.space (Free & Vercel Compatible)
 async function verifyCnicAndName(base64Image, providedNumber, providedName) {
     try {
-        if (!worker) await initTesseract();
+        console.log("--- Starting Real-time AI Verification (OCR.space) ---");
 
-        console.log("--- Starting Dual Verification (Name + Number) ---");
-        const { data: { text } } = await worker.recognize(base64Image);
+        // Use 'helloworld' as default free key or get a free one from ocr.space
+        const apiKey = process.env.OCR_SPACE_API_KEY || 'helloworld';
 
-        // 1. Check CNIC Number
-        const cleanExtractedNums = text.replace(/[^0-9]/g, '');
-        const cleanProvidedNum = providedNumber.replace(/[^0-9]/g, '');
-        const isNumberMatch = cleanExtractedNums.includes(cleanProvidedNum);
+        const formData = new FormData();
+        formData.append('base64Image', base64Image);
+        formData.append('apikey', apiKey);
+        formData.append('language', 'eng');
+        formData.append('isOverlayRequired', 'false');
 
-        // 2. Check Name (Fuzzy match - check if major parts of name exist in text)
-        const extractedTextUpper = text.toUpperCase();
-        const providedNameParts = providedName.toUpperCase().split(' ').filter(part => part.length > 2);
-
-        let matchCount = 0;
-        providedNameParts.forEach(part => {
-            if (extractedTextUpper.includes(part)) {
-                matchCount++;
-            }
+        const response = await fetch('https://api.ocr.space/parse/image', {
+            method: 'POST',
+            body: formData
         });
 
-        // If number matches and at least one part of the name matches (or majority of parts)
-        const isNameMatch = matchCount > 0;
+        const data = await response.json();
 
-        console.log("Number Match:", isNumberMatch, "| Name Match Count:", matchCount);
+        if (data && data.ParsedResults && data.ParsedResults[0]) {
+            const extractedText = data.ParsedResults[0].ParsedText.toUpperCase();
+            console.log("Extracted Text:", extractedText);
 
-        return isNumberMatch && isNameMatch;
+            // 1. Check CNIC Number Match
+            const cleanExtractedNums = extractedText.replace(/[^0-9]/g, '');
+            const cleanProvidedNum = providedNumber.replace(/[^0-9]/g, '');
+            const isNumberMatch = cleanExtractedNums.includes(cleanProvidedNum);
+
+            // 2. Check Name Match (Fuzzy)
+            const providedNameParts = providedName.toUpperCase().split(' ').filter(part => part.length > 2);
+            let matchCount = 0;
+            providedNameParts.forEach(part => {
+                if (extractedText.includes(part)) matchCount++;
+            });
+
+            console.log("Number Match:", isNumberMatch, "| Name Match Count:", matchCount);
+
+            // Return true if both match
+            return isNumberMatch && matchCount > 0;
+        }
+
+        console.error("OCR.space Error:", data.ErrorMessage);
+        return false;
     } catch (error) {
-        console.error("OCR Error:", error);
+        console.error("Verification Error:", error);
         return false;
     }
 }
@@ -57,13 +62,13 @@ exports.registerEmployee = async (req, res) => {
       emergencyName, emergencyPhone
     } = req.body;
 
-    // Use Dual Verification Logic
+    // Real-time AI Check
     const isValid = await verifyCnicAndName(cnicFront, cnicNumber, username);
 
     if (!isValid) {
         return res.status(400).json({
             success: false,
-            message: 'Verification Failed: We could not match your Name or CNIC Number from the uploaded photo. Please ensure the photo is clear and the details match exactly.'
+            message: 'Verification Failed: Details on CNIC do not match your profile. Please ensure the photo is clear and matches your name/number.'
         });
     }
 
@@ -74,7 +79,7 @@ exports.registerEmployee = async (req, res) => {
       if (existingEmployee) return res.status(400).json({ success: false, message: 'Already registered as employee' });
       if (user.role === 'user') {
         user.role = 'employee';
-        user.fullName = username; // Sync name with CNIC name
+        user.fullName = username;
         await user.save();
       }
     } else {
@@ -91,14 +96,18 @@ exports.registerEmployee = async (req, res) => {
           number: cnicNumber,
           frontImage: cnicFront,
           backImage: cnicBack,
-          selfieWithCnic: selfie || cnicFront // Fallback if selfie is removed from UI
+          selfieWithCnic: selfie || cnicFront
       },
       emergencyContact: { name: emergencyName, phoneNumber: emergencyPhone },
-      isVerified: true
+      isVerified: true // Set to true automatically since AI verified it
     });
     await employee.save();
 
-    res.status(201).json({ success: true, message: 'Identity Verified! Professional account created successfully.', isVerified: true });
+    res.status(201).json({
+        success: true,
+        message: 'Identity Verified by AI! Your professional account is now active.',
+        isVerified: true
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
