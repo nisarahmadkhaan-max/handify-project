@@ -4,107 +4,60 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const path = require('path');
 
-// Routes Imports
-const authRoutes = require('./routes/auth');
-const categoryRoutes = require('./routes/categoryRoutes');
-const serviceRoutes = require('./routes/serviceRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const employeeRoutes = require('./routes/employeeRoutes');
-const requestRoutes = require('./routes/requestRoutes');
-const notificationRoutes = require('./routes/notificationRoutes');
-const contactSupportRoutes = require('./routes/contactSupportRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-const userRoutes = require('./routes/userRoutes');
-const topupRoutes = require('./routes/topupRoutes');
-const settingsRoutes = require('./routes/settingsRoutes');
-
-// Seeders Imports
-const seedAdmin = require('./seeders/adminSeeder');
-const seedCategories = require('./seeders/categorySeeder');
-const seedServices = require('./seeders/serviceSeeder');
-const seedEmployees = require('./seeders/employeeSeeder');
-const seedSettings = require('./seeders/settingsSeeder');
-const Booking = require('./models/Booking'); // Import Booking model to clear data
-
 const app = express();
 
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'X-Total-Count']
-}));
-
+// Middleware
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Basic Routes
-app.get('/', (req, res) => res.send('Handify Backend is running!'));
+// Basic Root Route (Checks DB status)
+app.get('/', (req, res) => {
+  res.json({
+    message: "Handify API is Live!",
+    db: mongoose.connection.readyState === 1 ? "Connected" : "Connecting..."
+  });
+});
 
-// Database Connection Helper
+// Database Connection
 const connectDB = async () => {
   if (mongoose.connection.readyState >= 1) return;
-  const mongoUri = process.env.MONGODB_URI;
   try {
-    await mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-    });
-    console.log('⭐⭐⭐ SUCCESS: Connected to MongoDB ⭐⭐⭐');
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("DB Connected");
   } catch (err) {
-    console.error('❌ MONGODB CONNECTION ERROR:', err.message);
-    throw err;
+    console.error("DB Error:", err.message);
   }
 };
 
-// Updated Debug/Seed Route - No more hardcoded bookings
-app.get('/api/force-seed', async (req, res) => {
-  try {
-    await connectDB();
-    await seedAdmin();
-    await seedCategories();
-    await seedServices();
-    await seedSettings();
-
-    // Logic to clear hardcoded bookings for a fresh start
-    await Booking.deleteMany({});
-
-    res.json({ message: 'Database Cleaned & Seeded! No more hardcoded bookings.' });
-  } catch (err) {
-    console.error('Seed Error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
+// Lazy Connection Middleware
 app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ error: 'Database connection failed' });
-  }
+  await connectDB();
+  next();
 });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/services', serviceRoutes);
-app.use('/api/bookings', bookingRoutes);
-app.use('/api/employees', employeeRoutes);
-app.use('/api', requestRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/contact-support', contactSupportRoutes);
-app.use('/api/chat', chatRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/wallet', topupRoutes);
-app.use('/api/settings', settingsRoutes);
-
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
-  });
+// Dynamic Route Loading with Error Catching
+try {
+  app.use('/api/auth', require('./routes/auth'));
+  app.use('/api/categories', require('./routes/categoryRoutes'));
+  app.use('/api/services', require('./routes/serviceRoutes'));
+  app.use('/api/bookings', require('./routes/bookingRoutes'));
+  app.use('/api/employees', require('./routes/employeeRoutes'));
+  app.use('/api', require('./routes/requestRoutes'));
+  app.use('/api/notifications', require('./routes/notificationRoutes'));
+  app.use('/api/contact-support', require('./routes/contactSupportRoutes'));
+  app.use('/api/chat', require('./routes/chatRoutes'));
+  app.use('/api/users', require('./routes/userRoutes'));
+  app.use('/api/wallet', require('./routes/topupRoutes'));
+  app.use('/api/settings', require('./routes/settingsRoutes'));
+} catch (error) {
+  console.error("Critical Route Loading Error:", error.message);
 }
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  res.status(500).json({ error: "Internal Server Error", message: err.message });
+});
 
 module.exports = app;
