@@ -6,24 +6,30 @@ const FormData = require('form-data');
 // Verification function
 async function verifyCnicAndName(base64Image, providedNumber, providedName) {
     try {
-        const apiKey = process.env.OCR_SPACE_API_KEY || 'helloworld';
+        console.log("--- Starting AI Verification with New API Key ---");
+        const apiKey = process.env.OCR_SPACE_API_KEY || 'K83745730488957';
+
         const formData = new FormData();
         formData.append('base64Image', base64Image);
         formData.append('apikey', apiKey);
+        formData.append('OCREngine', '2');
 
         const response = await fetch('https://api.ocr.space/parse/image', {
             method: 'POST',
             body: formData
         });
         const data = await response.json();
+
         if (data && data.ParsedResults && data.ParsedResults[0]) {
             const extractedText = data.ParsedResults[0].ParsedText.toUpperCase();
+            console.log("Extracted Text:", extractedText);
             const cleanExtractedNums = extractedText.replace(/[^0-9]/g, '');
             const cleanProvidedNum = providedNumber.replace(/[^0-9]/g, '');
             return extractedText.includes(providedName.toUpperCase()) || cleanExtractedNums.includes(cleanProvidedNum);
         }
         return false;
     } catch (error) {
+        console.error("Verification Error:", error);
         return false;
     }
 }
