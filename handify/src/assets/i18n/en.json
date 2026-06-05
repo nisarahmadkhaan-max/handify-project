@@ -25,7 +25,7 @@
     "LOGIN": {
       "TITLE": "Welcome Back!",
       "SUBTITLE": "Please sign in using",
-      "FULL_NAME": "Full Name",
+      "FULL_NAME": "Full Name (as per CNIC)",
       "PHONE": "Phone Number",
       "REMEMBER_ME": "Remember me",
       "OR": "OR",
@@ -39,7 +39,7 @@
     "SIGNUP": {
       "TITLE": "Create Account",
       "SUBTITLE": "Please sign up using",
-      "FULL_NAME": "Full Name",
+      "FULL_NAME": "Full Name (as per CNIC)",
       "EMAIL": "Email Address",
       "PHONE": "Phone Number",
       "PASSWORD": "Create password",
@@ -157,8 +157,8 @@
   "termsOfService": "Terms of Service",
   "privacy": "Privacy",
   "editProfile": "Edit Profile",
-  "fullName": "Full Name",
-  "enterFullName": "Enter your full name",
+  "fullName": "Full Name (as per CNIC)",
+  "enterFullName": "Enter your full name as per CNIC",
   "enterEmail": "Enter your email",
   "enterPhoneNumber": "Enter your phone number",
   "enterLocation": "Enter your location",
