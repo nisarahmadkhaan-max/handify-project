@@ -19,6 +19,7 @@ export class LiveChatPage implements OnInit {
   bookingId: string = '';
   receiverId: string = '';
   receiverName: string = '';
+  receiverImage: string = '';
   currentUserId: string = '';
   loading = false;
 
@@ -31,12 +32,13 @@ export class LiveChatPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.currentUserId = this.authService.currentUserValue?.user?._id;
+    this.currentUserId = this.authService.currentUserValue?.user?._id || this.authService.currentUserValue?.user?.id;
 
     this.route.queryParams.subscribe(params => {
       this.bookingId = params['bookingId'];
       this.receiverId = params['receiverId'];
       this.receiverName = params['receiverName'] || 'Chat';
+      this.receiverImage = params['receiverImage'] || 'assets/imgs/default-avatar.png';
 
       if (this.bookingId) {
         this.loadMessages();

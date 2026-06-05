@@ -3,7 +3,16 @@
     <ion-buttons slot="start">
       <ion-back-button (click)="goBack()" text="" icon="chevron-back-outline"></ion-back-button>
     </ion-buttons>
-    <ion-title class="ion-text-center">{{ receiverName }}</ion-title>
+
+    <div class="header-profile-container">
+      <div class="avatar-wrapper">
+        <img [src]="receiverImage" alt="User Avatar" onerror="this.src='assets/imgs/default-avatar.png'" />
+      </div>
+      <div class="user-info">
+        <div class="receiver-name">{{ receiverName }}</div>
+        <span class="status-indicator">Live Chat</span>
+      </div>
+    </div>
   </ion-toolbar>
 </ion-header>
 

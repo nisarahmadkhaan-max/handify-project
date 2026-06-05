@@ -134,7 +134,8 @@ export class RequestDetailsPage implements OnInit {
         queryParams: {
           bookingId: this.requestId,
           receiverId: this.userRole === 'employee' ? this.booking.userId?._id : this.booking.employeeId?.userId?._id,
-          receiverName: this.userRole === 'employee' ? this.booking.userId?.fullName : this.booking.employeeId?.name
+          receiverName: this.userRole === 'employee' ? this.booking.userId?.fullName : this.booking.employeeId?.name,
+          receiverImage: this.userRole === 'employee' ? 'assets/imgs/default-avatar.png' : (this.booking.employeeId?.profileImage || 'assets/imgs/default-avatar.png')
         }
       });
     }

@@ -115,6 +115,12 @@
     <div class="details-card contact-card" *ngIf="booking.status !== 'pending' && booking.status !== 'cancelled'">
       <h3 class="section-title">Contact Information</h3>
       <div class="contact-flex">
+
+        <!-- Employee Profile Info (Visible to User) -->
+        <div class="profile-image-container" *ngIf="userRole === 'user'">
+           <img [src]="booking.employeeId?.profileImage || 'assets/imgs/default-avatar.png'" class="employee-avatar" />
+        </div>
+
         <div class="person-details">
           <ng-container *ngIf="userRole === 'employee'">
             <p class="role-badge">CUSTOMER</p>
@@ -124,6 +130,13 @@
           <ng-container *ngIf="userRole === 'user'">
             <p class="role-badge">PROFESSIONAL</p>
             <h4 class="person-name">{{ booking.employeeId?.name }}</h4>
+
+            <!-- Rating Display -->
+            <div class="rating-badge" *ngIf="booking.employeeId?.averageRating > 0">
+              <ion-icon name="star" color="warning"></ion-icon>
+              <span>{{ booking.employeeId?.averageRating }} ({{ booking.employeeId?.totalRatings }})</span>
+            </div>
+
             <p class="profession-text"><ion-icon name="construct-outline"></ion-icon> {{ booking.category }} Specialist</p>
             <p class="phone-text">{{ booking.employeeId?.userId?.phoneNumber }}</p>
           </ng-container>
@@ -131,9 +144,6 @@
         <div class="communication-actions" *ngIf="booking.status !== 'completed'">
           <ion-button color="success" shape="round" [href]="'tel:' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
             <ion-icon name="call" slot="icon-only"></ion-icon>
-          </ion-button>
-          <ion-button color="primary" shape="round" (click)="goToChat()">
-            <ion-icon name="chatbubble-ellipses" slot="icon-only"></ion-icon>
           </ion-button>
         </div>
       </div>
@@ -145,6 +155,13 @@
       <div class="otp-number">{{ booking.completionOTP }}</div>
       <p>Share this only when the job is fully completed.</p>
     </div>
+
+    <!-- Floating Chat Button (Bottom Right) -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="booking.status !== 'pending' && booking.status !== 'cancelled' && booking.status !== 'completed'">
+      <ion-fab-button (click)="goToChat()" color="primary">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 
     <!-- Action Buttons for Employee -->
     <div class="footer-actions" *ngIf="userRole === 'employee'">
