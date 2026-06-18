@@ -1,9 +1,9 @@
 <ion-header class="custom-header">
-  <ion-toolbar>
+  <ion-toolbar mode="ios">
     <ion-buttons slot="start">
       <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
     </ion-buttons>
-    <ion-title class="ion-text-center">{{ translationService.getTranslation('settings') }}</ion-title>
+    <ion-title>{{ translationService.getTranslation('settings') }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -140,7 +140,7 @@
       <h3 style="    text-align: center;">{{ translationService.getTranslation('aboutThisApp') }}</h3>
       <p style="    text-align: center;">
         {{ translationService.getTranslation('welcomeToMyIonicApp') }}<br>
-        {{ translationService.getTranslation('version') }}: 1.0.0<br>
+        {{ translationService.getTranslation('version') }}: 1.5<br>
         {{ translationService.getTranslation('developedBy') }}: Your Company Name<br>
         {{ translationService.getTranslation('forSupportContactUs') }}
       </p>

@@ -1,6 +1,6 @@
 <ion-header class="custom-header">
-  <ion-toolbar>
-    <ion-title class="ion-text-center">{{ translationService.getTranslation('myProfile') }}</ion-title>
+  <ion-toolbar mode="ios">
+    <ion-title>{{ translationService.getTranslation('myProfile') }}</ion-title>
     <ion-buttons slot="end">
      <ion-button (click)="editProfile()">
         <ion-icon name="create-outline"></ion-icon>
@@ -76,7 +76,7 @@
   <div class="profile-footer">
     <div class="version">{{ translationService.getTranslation('appVersion') }}: {{ appVersion }}</div>
     <div class="links">
-      <a (click)="openTerms()">{{ translationService.getTranslation('termsOfService') }}</a> | <a (click)="openPrivacy()">{{ translationService.getTranslation('privacy') }}</a>
+      <a (click)="openPrivacy()">{{ translationService.getTranslation('privacy') }}</a>
     </div>
   </div>
 </ion-content>

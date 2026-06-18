@@ -19,7 +19,7 @@ export class Tab4Page implements OnInit, OnDestroy {
     location: 'No Location Set'
   };
   
-  appVersion = '1.0';
+  appVersion = '1.5';
   currentLang = 'en';
   private userSub: Subscription | undefined;
 
@@ -82,10 +82,6 @@ export class Tab4Page implements OnInit, OnDestroy {
   logout() {
     this.authService.logout();
     this.router.navigate(['/login']);
-  }
-
-  openTerms() {
-    alert('Terms of Service');
   }
 
   openPrivacy() {

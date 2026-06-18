@@ -36,6 +36,10 @@ export class Tab3Page implements OnInit, OnDestroy {
     });
   }
 
+  goBack() {
+    this.router.navigate(['/tabs/tab1']);
+  }
+
   ngOnInit() {
     this.translationService.currentLang$.subscribe(lang => {
       this.currentLang = lang;

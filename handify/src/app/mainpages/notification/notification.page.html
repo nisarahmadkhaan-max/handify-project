@@ -1,9 +1,9 @@
 <ion-header class="custom-header">
-  <ion-toolbar>
+  <ion-toolbar mode="ios">
     <ion-buttons slot="start">
       <ion-back-button text="" icon="chevron-back-outline"></ion-back-button>
     </ion-buttons>
-    <ion-title class="ion-text-center">{{ translationService.getTranslation('notifications') }}</ion-title>
+    <ion-title>{{ translationService.getTranslation('notifications') }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="markAllAsRead()" class="mark-read-btn">
         {{ translationService.getTranslation('markAllRead') }}
