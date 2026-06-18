@@ -54,6 +54,9 @@ export class TranslationService {
   async setLanguage(lang: string) {
     await this.loadTranslations(lang);
     this.currentLang.next(lang);
+    // Set document direction based on language
+    const dir = lang === 'ur' ? 'rtl' : 'ltr';
+    document.documentElement.setAttribute('dir', dir);
   }
 
   getCurrentLang(): Observable<string> {
