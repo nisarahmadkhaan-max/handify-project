@@ -22,6 +22,7 @@ export class EmployeeRegistrationPage implements OnInit {
     username: '',
     email: '',
     phone: '',
+    profileImage: '',
     password: '',
     confirmPassword: '',
     specialization: '',
@@ -52,7 +53,8 @@ export class EmployeeRegistrationPage implements OnInit {
       this.employeeData.phone = user.phoneNumber || '';
       this.employeeData.password = 'existing_user';
       this.employeeData.confirmPassword = 'existing_user';
-      this.currentStep = 2;
+      // If user has existing profile image, you could load it here
+      this.currentStep = 1; // Start at step 1 to allow DP upload
     }
   }
 

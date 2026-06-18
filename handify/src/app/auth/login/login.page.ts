@@ -60,7 +60,7 @@ export class LoginPage implements OnInit {
     const phoneRegex = /^[0-9]{11}$/;
 
     if (this.isSignIn) {
-      // Sign In Validation - Now using Email
+      // Sign In Validation using Email
       if (!this.email || !this.email.toLowerCase().endsWith('@gmail.com')) {
         await this.showToast('Please fill the email (must be @gmail.com)');
         return;

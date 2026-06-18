@@ -1,67 +1,62 @@
-🛠️ Handify – On-Demand Home Services Platform:
-Handify is a full-stack mobile application that connects customers with verified skilled professionals such as plumbers, 
-electricians, and painters. The platform ensures a seamless, secure, 
-and AI-assisted service experience from booking to completion.
+# 🛠️ Handify - Professional On-Demand Home Services Platform
 
-🚀 Key Features:
-👤 Customer App
-⚡ Instant Booking: Browse and book services in seconds.
-💬 Real-time Chat: Communicate via text and voice messages.
-📍 Live Service Tracking: Track job status from Pending → In Progress → Completed.
-⭐ Rating & Reviews: Improve service quality through user feedback.
-🌐 Bilingual Support: English & Urdu interface support.
+Handify is a full-stack mobile application designed to bridge the gap between skilled professionals and customers. Whether you need a plumber, an electrician, or a painter, Handify provides a seamless, secure, and AI-verified platform to get the job done.
 
-🧑‍🔧 Professional (Worker) App:
-🤖 AI Identity Verification: CNIC verification using OCR technology.
-📢 Job Notifications: Receive real-time job alerts in relevant categories.
-💰 Wallet System: Track earnings and manage commissions.
-📅 Flexible Availability: Set working hours and availability.
+## 🚀 Key Features
 
-🛡️ Admin Panel:
-📊 Central Dashboard: Manage users, professionals, and services.
-💳 Financial Control: Approve and monitor wallet transactions.
-🔍 System Monitoring: Track live bookings and platform activity.
+### 👤 For Customers
+- **Easy Booking:** Browse categorized services and book in seconds.
+- **Real-time Chat:** Communicate with professionals via text and voice messages.
+- **Service Tracking:** Monitor your booking status from 'Pending' to 'Completed'.
+- **Review System:** Rate your experience to maintain service quality.
+- **Bilingual Support:** Full support for both **English** and **Urdu**.
 
-💻 Tech Stack:
-. Mobile App: Ionic Framework + Angular
-. Backend: Node.js + Express.js
-. Database: MongoDB Atlas
-. Admin Panel: React.js (React-Admin)
-. Hosting: Vercel
-. AI Integration: OCR.space API (CNIC Verification)
+### 💼 For Professionals (Employees)
+- **AI Identity Verification:** Real-time CNIC verification using **OCR technology**.
+- **Job Broadcasting:** Get notified of new jobs in your specialized category.
+- **Wallet System:** Manage earnings and pay commissions through an integrated wallet.
+- **Flexible Scheduling:** Set your own availability.
 
-⚙️ Installation & Setup:
-🔧 Backend
-cd backend
-npm install
-npm start
+### 🛡️ For Administrators
+- **Powerful Dashboard:** Manage users, employees, and services.
+- **Financial Control:** Review and approve wallet top-up requests.
+- **System Monitoring:** Oversee all live bookings and system activities.
 
-Environment Variables:
-. MONGODB_URI=
-. JWT_SECRET=
-. OCR_SPACE_API_KEY=
+## 💻 Tech Stack
 
-📱 Mobile App (Ionic):
-cd handify
-npm install
-ionic serve
+- **Mobile App:** Ionic Framework & Angular (Cross-platform)
+- **Backend:** Node.js & Express.js
+- **Database:** MongoDB Atlas (Cloud)
+- **Admin Panel:** React.js (React-Admin)
+- **Hosting:** Vercel (Backend & Admin)
+- **AI Integration:** OCR.space API for CNIC scanning
 
-Build APK:
-ionic build --prod
-npx cap sync android
+## 🛠️ Installation & Setup
 
-🖥️ Admin Panel
-cd admin
-npm install
-npm start
+### Backend
+1. Go to `backend` folder.
+2. Run `npm install`.
+3. Set up environment variables (`MONGODB_URI`, `JWT_SECRET`, `OCR_SPACE_API_KEY`).
+4. Run `npm start`.
 
-🔄 System Workflow:
-1. Customer creates a service request
-2. System broadcasts job to nearby verified professionals
-3. Professional accepts job (wallet-based access control)
-4. Chat is initiated between both parties
-5. Service begins and is tracked in real-time
-6. Completion is confirmed via OTP verification
+### Mobile App (Frontend)
+1. Go to `handify` folder.
+2. Run `npm install`.
+3. Run `ionic serve` for browser testing.
+4. To build APK: `ionic build --prod` then `npx cap sync android`.
 
+### Admin Panel
+1. Go to `admin` folder.
+2. Run `npm install`.
+3. Run `npm start`.
 
+## 📸 Project Workflow
+1. **User** posts a request.
+2. **System** broadcasts it to verified employees.
+3. **Employee** accepts the job (must have wallet balance).
+4. **Chat** opens between both parties.
+5. **Worker** starts job; timer begins.
+6. **Completion** is secured via a 4-digit OTP provided by the User.
 
+---
+Developed as a **Final Year Project** with ❤️.
