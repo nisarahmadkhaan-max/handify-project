@@ -82,16 +82,16 @@ export const EmployeeEdit = () => (
                     Basic Details
                 </Typography>
                 <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid item xs={12} md={4}>
                         <TextInput source="name" label="Full Name" disabled fullWidth />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid item xs={12} md={4}>
                         <TextInput source="service" label="Specialization" disabled fullWidth />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid item xs={12} md={4}>
                         <TextInput source="cnic.number" label="CNIC Number" disabled fullWidth />
                     </Grid>
-                    <Grid size={{ xs: 12 }}>
+                    <Grid item xs={12}>
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
                             <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mr: 2 }}>System Verification Status:</Typography>
                             <BooleanField source="isVerified" />
@@ -107,21 +107,21 @@ export const EmployeeEdit = () => (
                 Legal Documents (CNIC & Security Selfie)
             </Typography>
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid size={{ xs: 12, md: 4 }}>
+                <Grid item xs={12} md={4}>
                     <Paper elevation={0} sx={{ p: 2, textAlign: 'center', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>CNIC Front</Typography>
                         <ImagePreview source="cnic.frontImage" title="CNIC Front" />
                     </Paper>
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 4 }}>
+                <Grid item xs={12} md={4}>
                     <Paper elevation={0} sx={{ p: 2, textAlign: 'center', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>CNIC Back</Typography>
                         <ImagePreview source="cnic.backImage" title="CNIC Back" />
                     </Paper>
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 4 }}>
+                <Grid item xs={12} md={4}>
                     <Paper elevation={0} sx={{ p: 2, textAlign: 'center', border: '2px solid #fee2e2', bgcolor: '#fffafa', borderRadius: '12px' }}>
                         <Typography variant="subtitle1" fontWeight="bold" color="error" gutterBottom>Verification Selfie</Typography>
                         <ImagePreview source="cnic.selfieWithCnic" title="Selfie" />
