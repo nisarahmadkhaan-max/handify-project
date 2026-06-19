@@ -2,6 +2,7 @@
   "version": 2,
   "name": "handify-client",
   "framework": "angular",
+  "outputDirectory": "www",
   "cleanUrls": true,
   "routes": [
     { "handle": "filesystem" },
