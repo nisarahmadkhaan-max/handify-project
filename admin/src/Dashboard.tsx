@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 
-const apiUrl = 'https://handify-project.vercel.app/api';
+const apiUrl = 'https://handify-api.vercel.app/api';
 
 const DashboardStats = () => {
   const [stats, setStats] = useState({
