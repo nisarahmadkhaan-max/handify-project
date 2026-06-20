@@ -22,12 +22,12 @@
   <div class="form-container" *ngIf="selectedService">
     <!-- Final Price Display -->
     <div class="form-group pricing-box">
-      <ion-label>{{ translationService.translate('finalPrice') || 'Total Price' }}:</ion-label>
+      <ion-label>{{ translationService.translate('priceRange') }}:</ion-label>
       <div class="price-display">
         <span class="currency">Rs.</span>
         <span class="amount">{{ finalPrice }}</span>
       </div>
-      <p class="tax-info">Inclusive of all service charges</p>
+      <p class="tax-info">{{ translationService.translate('extraChargeNote') }}</p>
     </div>
 
     <!-- Date Picker -->

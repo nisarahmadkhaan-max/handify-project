@@ -146,6 +146,7 @@
   "allCategories": "تمام زمرے",
   "myRequests": "میری درخواستیں",
   "jobRequests": "کام کی درخواستیں",
+  "priceRange": "قیمت کی حد",
   "all": "تمام",
   "confirmed": "تصدیق شدہ",
   "pending": "زیر التوا",
@@ -251,6 +252,7 @@
   "message": "پیغام",
   "urgentInquiriesCall": "فوری تحقیقات کے لیے، کال کریں:",
   "trackRequestMyRequests": "اپنی درخواست کو 'میری درخواستوں' میں ٹریک کریں",
+  "extraChargeNote": "پہلے 1 گھنٹے کے بعد مزید 200 روپے فی گھنٹہ لاگو ہوں گے۔",
   "serviceHistory": "خدمت کی تاریخ",
   "rating": "درجہ بندی"
 }

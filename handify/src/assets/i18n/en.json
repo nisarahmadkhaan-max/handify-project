@@ -131,6 +131,7 @@
   "allCategories": "All Categories",
   "myRequests": "My Requests",
   "jobRequests": "Job Requests",
+  "priceRange": "Price Range",
   "all": "All",
   "confirmed": "Confirmed",
   "pending": "Pending",
@@ -236,6 +237,7 @@
   "message": "Message",
   "urgentInquiriesCall": "For Urgent Inquiries, Call:",
   "trackRequestMyRequests": "Track Your Request In 'My Requests'",
+  "extraChargeNote": "Extra Rs. 200/hr applies after the first hour.",
   "serviceHistory": "Service History",
   "rating": "Rating"
 }
