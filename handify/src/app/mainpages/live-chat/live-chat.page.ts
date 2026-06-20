@@ -88,6 +88,14 @@ export class LiveChatPage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/request-details', this.bookingId]);
+    if (this.bookingId) {
+      this.router.navigate(['/request-details', this.bookingId]);
+    } else {
+      this.router.navigate(['/tabs/tab1']);
+    }
+  }
+
+  goToRequests() {
+    this.router.navigate(['/tabs/tab3']);
   }
 }

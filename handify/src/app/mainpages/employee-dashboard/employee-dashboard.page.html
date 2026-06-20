@@ -2,6 +2,12 @@
   <ion-toolbar color="primary" mode="ios">
     <ion-title>Employee Dashboard</ion-title>
     <ion-buttons slot="end">
+      <div (click)="goToChat()" class="icon-container" style="margin-right: 12px; cursor: pointer;">
+        <ion-icon name="chatbubble-outline" style="font-size: 24px; color: white;"></ion-icon>
+      </div>
+      <div (click)="goToNoti()" class="icon-container" style="margin-right: 12px; cursor: pointer;">
+        <ion-icon name="notifications-outline" style="font-size: 24px; color: white;"></ion-icon>
+      </div>
       <ion-button (click)="switchToUser()">
         <ion-icon name="swap-horizontal-outline" slot="start"></ion-icon>
         User Mode

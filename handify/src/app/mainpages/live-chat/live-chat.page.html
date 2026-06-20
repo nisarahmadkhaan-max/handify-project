@@ -18,7 +18,17 @@
 
 <ion-content [fullscreen]="true" class="chat-content">
   <div class="chat-container">
-    <div class="messages-container">
+    <!-- If no booking ID, show a prompt to select a booking -->
+    <div *ngIf="!bookingId" class="no-booking-container">
+      <div class="no-booking-card">
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <h3>No Booking Selected</h3>
+        <p>To chat with a professional or customer, please select an active request from your list.</p>
+        <ion-button expand="block" (click)="goToRequests()">Go to My Requests</ion-button>
+      </div>
+    </div>
+
+    <div class="messages-container" *ngIf="bookingId">
       <div *ngFor="let message of messages"
            [ngClass]="{'message-container': true, 'user-message': message.senderId === currentUserId, 'agent-message': message.senderId !== currentUserId}">
         
@@ -29,7 +39,7 @@
       </div>
     </div>
     
-    <div *ngIf="!loading && messages.length === 0" class="welcome-container">
+    <div *ngIf="bookingId && !loading && messages.length === 0" class="welcome-container">
       <div class="welcome-bubble">
         <div class="welcome-text">Hi! Start chatting about your booking here.</div>
       </div>
@@ -37,7 +47,7 @@
   </div>
 </ion-content>
 
-<div class="input-container">
+<div class="input-container" *ngIf="bookingId">
   <div class="input-wrapper">
     <input style="color: #000; background-color: #fff;"
            type="text"

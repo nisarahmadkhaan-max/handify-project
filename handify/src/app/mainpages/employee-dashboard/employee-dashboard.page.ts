@@ -90,6 +90,14 @@ export class EmployeeDashboardPage implements OnInit {
     this.router.navigate(['/request-details', bookingId]);
   }
 
+  goToChat() {
+    this.router.navigate(['/live-chat']);
+  }
+
+  goToNoti() {
+    this.router.navigate(['/notification']);
+  }
+
   openWallet() { this.router.navigate(['/wallet-recharge']); }
   switchToUser() { this.router.navigate(['/tabs/tab1']); }
 
