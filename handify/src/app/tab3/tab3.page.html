@@ -1,9 +1,7 @@
 <ion-header class="custom-header">
   <ion-toolbar mode="ios">
     <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon name="chevron-back-outline"></ion-icon>
-      </ion-button>
+      <ion-back-button text="" icon="chevron-back-outline" defaultHref="/tabs/tab1"></ion-back-button>
     </ion-buttons>
     <ion-title>
       {{ userRole === 'employee' ? 'Job Requests' : translationService.getTranslation('myRequests') }}

@@ -4,7 +4,7 @@ import { RequestService, Request } from '../services/request.service';
 import { AuthService } from '../services/auth.service';
 import { TranslationService } from '../services/translation.service';
 import { Subscription } from 'rxjs';
-import { ToastController, AlertController } from '@ionic/angular';
+import { NavController, ToastController, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab3',
@@ -29,7 +29,8 @@ export class Tab3Page implements OnInit, OnDestroy {
     private authService: AuthService,
     public translationService: TranslationService,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private navCtrl: NavController
   ) { 
     this.refreshSubscription = this.requestService.onRefresh().subscribe(() => {
       this.fetchRequests();
@@ -37,7 +38,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.router.navigate(['/tabs/tab1']);
+    this.navCtrl.back();
   }
 
   ngOnInit() {
