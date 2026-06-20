@@ -108,7 +108,17 @@ export class EmployeeRegistrationPage implements OnInit {
       const image = await Camera.getPhoto({ quality: 90, resultType: CameraResultType.DataUrl, source: CameraSource.Photos });
       if (image && image.dataUrl) {
         this.employeeData[field] = image.dataUrl;
-        this.showToast(`${field === 'cnicFront' ? 'CNIC Front' : 'CNIC Back'} Selected`, 'success');
+
+        let message = '';
+        if (field === 'profileImage') {
+          message = 'Profile picture updated successfully';
+        } else if (field === 'cnicFront') {
+          message = 'CNIC Front Selected';
+        } else {
+          message = 'CNIC Back Selected';
+        }
+
+        this.showToast(message, 'success');
       }
     } catch (e) { }
   }
