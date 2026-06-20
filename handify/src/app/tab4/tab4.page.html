@@ -68,7 +68,7 @@
     <!-- Employee Mode Button - Icon color set to light (white) -->
     <button class="menu-item employee-mode" (click)="navigateTo('employee-auth')">
       <ion-icon name="briefcase-outline" color="light"></ion-icon>
-      <span>Employee Mode</span>
+      <span>{{ translationService.getTranslation('employeeMode') }}</span>
     </button>
   </div>
   
