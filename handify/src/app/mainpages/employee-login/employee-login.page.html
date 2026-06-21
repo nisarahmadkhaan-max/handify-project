@@ -1,8 +1,19 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary" mode="ios">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="employee-auth"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Employee Sign In</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="login-page">
-  <img class="logo" src="assets/logo_onboarding.png" alt="Handify Logo" />
+  <div class="logo-section">
+    <img class="logo" src="assets/logo_onboarding.png" alt="Handify Logo" />
+  </div>
+
   <div class="auth-container">
-    <!-- Sign In View -->
-    <div *ngIf="isSignIn" class="main-section">
+    <div class="main-section">
       <h2 class="welcome-title">Welcome</h2>
 
       <div class="input-container">
