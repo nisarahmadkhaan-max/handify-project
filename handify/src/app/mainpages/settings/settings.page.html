@@ -120,12 +120,6 @@
         <span class="toggle-slider"></span>
       </label>
     </div>
-
-    <div class="setting-item-column">
-      <div class="setting-label">{{ translationService.getTranslation('manualAddressEntry') }}</div>
-      <input type="text" [placeholder]="translationService.getTranslation('enterYourAddressHere')" [(ngModel)]="settings.location.manualAddress"
-        [disabled]="!settings.location.enabled || settings.location.useCurrentLocation">
-    </div>
   </div>
 
   <!-- Miscellaneous -->
