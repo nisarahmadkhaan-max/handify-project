@@ -1,3 +1,40 @@
+.custom-header {
+    ion-toolbar {
+        --background: #2F3083;
+        --color: white;
+        padding: 5px 0;
+
+        ion-title {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        ion-button {
+            --color: white;
+            font-weight: 600;
+        }
+
+        .user-mode-btn {
+            --background: rgba(255, 255, 255, 0.2);
+            --border-radius: 8px;
+            --padding-start: 8px;
+            --padding-end: 8px;
+            font-size: 11px;
+            margin-left: 5px;
+
+            span {
+                display: none; /* Default hide text on small screens */
+            }
+
+            @media (min-width: 360px) {
+                span {
+                    display: inline; /* Show text on normal screens */
+                }
+            }
+        }
+    }
+}
+
 .welcome-card {
     background: linear-gradient(135deg, #2F3083 0%, #4F509D 100%);
     color: white;
