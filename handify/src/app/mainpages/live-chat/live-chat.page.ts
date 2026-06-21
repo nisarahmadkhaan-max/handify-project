@@ -91,7 +91,12 @@ export class LiveChatPage implements OnInit {
     if (this.bookingId) {
       this.router.navigate(['/request-details', this.bookingId]);
     } else {
-      this.router.navigate(['/tabs/tab1']);
+      const userRole = this.authService.currentUserValue?.user?.role;
+      if (userRole === 'employee') {
+        this.router.navigate(['/employee-dashboard']);
+      } else {
+        this.router.navigate(['/tabs/tab1']);
+      }
     }
   }
 
