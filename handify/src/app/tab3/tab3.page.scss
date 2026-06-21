@@ -3,8 +3,12 @@
     --background: #2F3083;
     --color: white;
     padding: 12px 0;
+    box-shadow: 0 6px 12px rgba(47, 48, 131, 0.25);
   }
-  ion-title { font-weight: 600; }
+  ion-title {
+    font-size: 24px;
+    font-weight: 600;
+  }
   ion-back-button { --color: white; }
 }
 
