@@ -237,15 +237,12 @@ exports.getBookings = async (req, res) => {
       const employee = await Employee.findOne({ userId: userId });
       if (!employee) return res.status(200).json({ success: true, data: [] });
 
-      console.log(`Checking jobs for Employee: ${employee.name}, Service: ${employee.service}`);
-
       // Broaden query to ensure visibility
       query = {
         $or: [
           { employeeId: employee._id }, // Jobs accepted by this employee
           {
             status: 'pending',
-            // Try matching both category or service name if they differ
             $or: [
                 { category: { $regex: new RegExp("^" + employee.service + "$", "i") } },
                 { service: { $regex: new RegExp("^" + employee.service + "$", "i") } }

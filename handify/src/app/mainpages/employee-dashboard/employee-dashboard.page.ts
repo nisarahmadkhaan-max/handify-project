@@ -38,13 +38,24 @@ export class EmployeeDashboardPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadEmployeeData();
-    this.loadBookings();
+    this.refreshUserData();
   }
 
   ionViewWillEnter() {
-    this.loadEmployeeData();
-    this.loadBookings();
+    this.refreshUserData();
+  }
+
+  refreshUserData() {
+    this.authService.refreshProfile().subscribe({
+      next: () => {
+        this.loadEmployeeData();
+        this.loadBookings();
+      },
+      error: () => {
+        this.loadEmployeeData();
+        this.loadBookings();
+      }
+    });
   }
 
   async loadEmployeeData() {
@@ -99,7 +110,11 @@ export class EmployeeDashboardPage implements OnInit {
   }
 
   openWallet() { this.router.navigate(['/wallet-recharge']); }
-  switchToUser() { this.router.navigate(['/tabs/tab1']); }
+  switchToUser() {
+    this.authService.refreshProfile().subscribe(() => {
+      this.router.navigate(['/tabs/tab1']);
+    });
+  }
 
   openSchedule() {
     this.tempFrom = this.availableFrom;

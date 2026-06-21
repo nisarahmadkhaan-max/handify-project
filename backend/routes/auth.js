@@ -113,4 +113,14 @@ router.post('/reset-password', async (req, res) => {
 });
 
 router.put('/profile', auth, userController.updateProfile);
+
+router.get('/profile', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password');
+        res.json({ success: true, user });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 module.exports = router;

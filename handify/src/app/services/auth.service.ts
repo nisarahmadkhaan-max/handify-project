@@ -88,4 +88,15 @@ export class AuthService {
   resetPassword(data: { email: string; otp: string; newPassword: any }) {
     return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, data);
   }
+
+  refreshProfile() {
+    return this.http.get<any>(`${this.apiUrl}/auth/profile`).pipe(
+      map(res => {
+        if (res.success && res.user) {
+          this.updateCurrentUser(res.user);
+        }
+        return res;
+      })
+    );
+  }
 }
