@@ -10,10 +10,9 @@ import { AuthService } from '../../services/auth.service';
   standalone: false
 })
 export class EmployeeLoginPage implements OnInit {
-  loginData = {
-    email: '',
-    password: ''
-  };
+  isSignIn = true;
+  email = '';
+  password = '';
   showPassword = false;
 
   constructor(
@@ -26,14 +25,18 @@ export class EmployeeLoginPage implements OnInit {
 
   ngOnInit() { }
 
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
   async login() {
     // Email Validation (@gmail.com check)
-    if (!this.loginData.email || !this.loginData.email.toLowerCase().endsWith('@gmail.com')) {
+    if (!this.email || !this.email.toLowerCase().endsWith('@gmail.com')) {
       await this.showToast('Please fill the email (must be @gmail.com)', 'warning');
       return;
     }
 
-    if (!this.loginData.password) {
+    if (!this.password) {
       await this.showToast('Please enter your password', 'warning');
       return;
     }
@@ -41,10 +44,9 @@ export class EmployeeLoginPage implements OnInit {
     const loading = await this.loadingCtrl.create({ message: 'Authenticating...' });
     await loading.present();
 
-    // Now sending 'email' instead of 'phoneNumber' to match AuthService type
     this.authService.login({
-      email: this.loginData.email,
-      password: this.loginData.password
+      email: this.email,
+      password: this.password
     }).subscribe({
       next: async (res) => {
         await loading.dismiss();
@@ -53,10 +55,7 @@ export class EmployeeLoginPage implements OnInit {
       },
       error: async (err) => {
         await loading.dismiss();
-
         let errorMessage = err.error?.message || 'Login failed';
-
-        // Handling the "Please verify your self" error from backend
         if (err.status === 403 || errorMessage.toLowerCase().includes('verify')) {
           await this.showToast('Please verify your self', 'danger');
         } else {

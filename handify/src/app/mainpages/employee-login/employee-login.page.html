@@ -1,33 +1,28 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar color="primary" mode="ios">
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="employee-auth"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Employee Sign In</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="login-page">
+  <img class="logo" src="assets/logo_onboarding.png" alt="Handify Logo" />
+  <div class="auth-container">
+    <!-- Sign In View -->
+    <div *ngIf="isSignIn" class="main-section">
+      <h2 class="welcome-title">Welcome</h2>
 
-<!-- Sign In View -->
-<div *ngIf="isSignIn" class="main-section">
-  <h2 class="welcome-title">Welcome</h2>
+      <div class="input-container">
+        <ion-icon name="mail-outline"></ion-icon>
+        <ion-input [(ngModel)]="email" placeholder="Enter Email" type="email"></ion-input>
+      </div>
 
-  <div class="input-container">
-    <ion-icon name="mail-outline"></ion-icon>
-    <ion-input [(ngModel)]="email" placeholder="Enter Email" type="email"></ion-input>
-  </div>
+      <div class="input-container">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <ion-input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password"></ion-input>
+        <ion-icon class="eye-icon" [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" (click)="togglePasswordVisibility()"></ion-icon>
+      </div>
 
-  <div class="input-container">
-    <ion-icon name="lock-closed-outline"></ion-icon>
-    <ion-input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password"></ion-input>
-    <ion-icon class="eye-icon" [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" (click)="togglePasswordVisibility()"></ion-icon>
-  </div>
+      <ion-button expand="block" class="login-btn" (click)="login()">
+        LOGIN
+      </ion-button>
 
-    <ion-button expand="block" class="login-btn" (click)="login()">
-      LOGIN
-    </ion-button>
-
-    <div class="footer-link">
-      <p>Don't have an account? <span (click)="goToSignup()">Sign Up</span></p>
+      <div class="footer-link">
+        <p>Don't have an account? <span (click)="goToSignup()">Sign Up</span></p>
+      </div>
     </div>
   </div>
 </ion-content>
