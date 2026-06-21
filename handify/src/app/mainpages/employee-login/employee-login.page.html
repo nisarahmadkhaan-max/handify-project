@@ -7,27 +7,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <div class="login-container">
-    <div class="header-section">
-      <h3>Welcome Back!</h3>
-      <p>Enter your credentials to access your employee dashboard.</p>
-    </div>
+<!-- Sign In View -->
+<div *ngIf="isSignIn" class="main-section">
+  <h2 class="welcome-title">Welcome</h2>
 
-    <ion-list lines="none">
-      <ion-item class="custom-input">
-        <ion-label position="stacked">Email Address</ion-label>
-        <ion-input type="email" [(ngModel)]="loginData.email" placeholder="Enter Email"></ion-input>
-      </ion-item>
+  <div class="input-container">
+    <ion-icon name="mail-outline"></ion-icon>
+    <ion-input [(ngModel)]="email" placeholder="Enter Email" type="email"></ion-input>
+  </div>
 
-      <ion-item class="custom-input">
-        <ion-label position="stacked">Password</ion-label>
-        <ion-input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="loginData.password" placeholder="Enter password"></ion-input>
-        <ion-button slot="end" fill="clear" (click)="showPassword = !showPassword">
-          <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-list>
+  <div class="input-container">
+    <ion-icon name="lock-closed-outline"></ion-icon>
+    <ion-input [(ngModel)]="password" [type]="showPassword ? 'text' : 'password'" placeholder="Password"></ion-input>
+    <ion-icon class="eye-icon" [name]="showPassword ? 'eye-outline' : 'eye-off-outline'" (click)="togglePasswordVisibility()"></ion-icon>
+  </div>
 
     <ion-button expand="block" class="login-btn" (click)="login()">
       LOGIN
