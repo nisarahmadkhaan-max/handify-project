@@ -71,6 +71,10 @@ exports.registerEmployee = async (req, res) => {
         if (!user) {
             user = new User({ fullName: username, email, phoneNumber: phone, password, role: 'employee' });
             await user.save();
+        } else {
+            // Update existing user to employee role
+            user.role = 'employee';
+            await user.save();
         }
 
         const employee = new Employee({

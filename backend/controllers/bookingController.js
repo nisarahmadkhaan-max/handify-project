@@ -236,7 +236,14 @@ exports.getBookings = async (req, res) => {
     } else if (req.user.role === 'employee') {
       const employee = await Employee.findOne({ userId: userId });
       if (!employee) return res.status(200).json({ success: true, data: [] });
-      query = { $or: [{ employeeId: employee._id }, { status: 'pending', category: employee.service, employeeId: null }] };
+
+      // Employees see jobs they have accepted, OR pending jobs in their category
+      query = {
+        $or: [
+          { employeeId: employee._id },
+          { status: 'pending', category: employee.service }
+        ]
+      };
     }
     const bookings = await Booking.find(query).populate('userId', 'fullName email phoneNumber').populate({ path: 'employeeId', populate: { path: 'userId', select: 'fullName phoneNumber' } }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: bookings });

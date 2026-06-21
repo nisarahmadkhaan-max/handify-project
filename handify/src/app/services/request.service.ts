@@ -50,7 +50,7 @@ export class RequestService {
 
   // Employee accepts a request
   acceptRequest(id: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/bookings/${id}/accept`, {}, { headers: this.getHeaders() });
+    return this.http.post(`${this.apiUrl}/bookings/${id}/accept`, {}, { headers: this.getHeaders() });
   }
 
   // Employee rejects/ignores a broadcasted request
