@@ -55,7 +55,7 @@ async function verifyCnicAndName(base64Image, providedNumber, providedName) {
 
 exports.registerEmployee = async (req, res) => {
     try {
-        const { username, email, phone, password, specialization, cnicNumber, cnicFront } = req.body;
+        const { username, email, phone, password, specialization, cnicNumber, cnicFront, cnicBack, emergencyName, emergencyPhone, profileImage } = req.body;
         const isValid = await verifyCnicAndName(cnicFront, cnicNumber, username);
 
         // For development/demo: if OCR is being difficult, you can temporarily allow it
@@ -81,7 +81,17 @@ exports.registerEmployee = async (req, res) => {
             userId: user._id,
             name: username,
             service: specialization,
-            isVerified: true
+            profileImage: profileImage || 'assets/imgs/default-avatar.png',
+            isVerified: true,
+            cnic: {
+                number: cnicNumber,
+                frontImage: cnicFront,
+                backImage: cnicBack
+            },
+            emergencyContact: {
+                name: emergencyName,
+                phoneNumber: emergencyPhone
+            }
         });
         await employee.save();
         res.status(201).json({ success: true, message: 'Verified & Registered' });

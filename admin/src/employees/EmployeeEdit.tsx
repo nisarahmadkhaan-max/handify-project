@@ -104,27 +104,20 @@ export const EmployeeEdit = () => (
             </Paper>
 
             <Typography variant="subtitle2" color="textSecondary" sx={{ mb: 2, textTransform: 'uppercase', letterSpacing: 1 }}>
-                Legal Documents (CNIC & Security Selfie)
+                Legal Documents (CNIC)
             </Typography>
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={6}>
                     <Paper elevation={0} sx={{ p: 2, textAlign: 'center', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>CNIC Front</Typography>
                         <ImagePreview source="cnic.frontImage" title="CNIC Front" />
                     </Paper>
                 </Grid>
 
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={6}>
                     <Paper elevation={0} sx={{ p: 2, textAlign: 'center', border: '1px solid #e2e8f0', borderRadius: '12px' }}>
                         <Typography variant="subtitle1" fontWeight="bold" gutterBottom>CNIC Back</Typography>
                         <ImagePreview source="cnic.backImage" title="CNIC Back" />
-                    </Paper>
-                </Grid>
-
-                <Grid item xs={12} md={4}>
-                    <Paper elevation={0} sx={{ p: 2, textAlign: 'center', border: '2px solid #fee2e2', bgcolor: '#fffafa', borderRadius: '12px' }}>
-                        <Typography variant="subtitle1" fontWeight="bold" color="error" gutterBottom>Verification Selfie</Typography>
-                        <ImagePreview source="cnic.selfieWithCnic" title="Selfie" />
                     </Paper>
                 </Grid>
             </Grid>
