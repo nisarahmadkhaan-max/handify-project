@@ -14,7 +14,7 @@
 }
 
 .auth-container {
-    background: #000;
+    background: #2F3083;
     color: white;
     border-radius: 25px 25px 0 0;
     height: 100%;
@@ -29,15 +29,15 @@
 
 .subtitle {
     font-size: 13px;
-    color: #999;
+    color: #ccc;
     margin-bottom: 30px;
 }
 
 .input-container {
     display: flex;
     align-items: center;
-    background: #111;
-    border: 1px solid #333;
+    background: #2F3083;
+    border: 1px solid #EDF2F8;
     border-radius: 8px;
     padding: 0 15px;
     margin: 15px auto;
@@ -48,13 +48,13 @@
     ion-icon {
         font-size: 20px;
         margin-right: 12px;
-        color: #999;
+        color: white;
     }
 
     ion-input {
         --padding-start: 0;
         --color: #fff;
-        --placeholder-color: #666;
+        --placeholder-color: #999;
         --placeholder-opacity: 1;
         font-size: 15px;
     }
@@ -68,9 +68,9 @@
 }
 
 .login-btn {
-    --background: #c5e1a5;
+    --background: #EDF2F8;
     --color: #000;
-    --border-radius: 25px;
+    --border-radius: 8px;
     --box-shadow: none;
     font-weight: bold;
     width: 90%;
@@ -83,13 +83,14 @@
 
 .footer-link {
     margin-top: 20px;
-    color: #999;
+    color: #ccc;
     font-size: 14px;
 
     span {
-      color: #c5e1a5;
+      color: white;
       font-weight: bold;
       cursor: pointer;
       margin-left: 5px;
+      text-decoration: underline;
     }
 }
