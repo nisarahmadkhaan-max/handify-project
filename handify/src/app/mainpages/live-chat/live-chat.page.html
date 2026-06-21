@@ -5,8 +5,9 @@
     </ion-buttons>
 
     <div class="header-profile-container">
-      <div class="avatar-wrapper">
-        <img [src]="receiverImage" alt="User Avatar" onerror="this.src='assets/imgs/default-avatar.png'" />
+      <div class="avatar-wrapper purple-placeholder">
+        <img *ngIf="receiverImage && receiverImage !== 'assets/imgs/default-avatar.png'" [src]="receiverImage" alt="User Avatar" />
+        <ion-icon *ngIf="!receiverImage || receiverImage === 'assets/imgs/default-avatar.png'" name="person" color="light"></ion-icon>
       </div>
       <div class="user-info">
         <div class="receiver-name">{{ receiverName }}</div>
