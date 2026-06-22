@@ -44,34 +44,36 @@ const DashboardStats = () => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex', gap: 3, mb: 4, mt: 2, flexWrap: 'wrap' }}>
-      {/* Total Bookings Card */}
-      <Card sx={{ minWidth: 240, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white', borderRadius: '15px' }}>
+    <Box sx={{ display: 'flex', gap: 2, mb: 4, mt: 2, flexWrap: 'wrap' }}>
+      {/* Total Bookings Card - Simple Blue Style */}
+      <Card sx={{ minWidth: 200, backgroundColor: '#e3f2fd', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-            <ListAltIcon fontSize="large" />
-            <Typography variant="h6" sx={{ opacity: 0.9 }}>Total Bookings</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <ListAltIcon color="primary" fontSize="small" />
+            <Typography color="textSecondary" variant="subtitle2">Total Bookings</Typography>
           </Box>
-          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>{stats.totalBookings}</Typography>
+          <Typography variant="h3" sx={{ fontWeight: '500' }}>{stats.totalBookings}</Typography>
         </CardContent>
       </Card>
 
-      {/* Pending Wallets Card */}
+      {/* Pending Wallets Card - Simple Grey/Red Style */}
       <Card sx={{
-        minWidth: 240,
-        background: stats.pendingWallets > 0 ? 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)' : 'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
-        color: stats.pendingWallets > 0 ? '#b91c1c' : '#065f46',
-        borderRadius: '15px',
-        border: stats.pendingWallets > 0 ? '2px solid #ef4444' : 'none'
+        minWidth: 220,
+        backgroundColor: stats.pendingWallets > 0 ? '#ffebee' : '#f5f5f5',
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+        border: stats.pendingWallets > 0 ? '1px solid #ef5350' : 'none'
       }}>
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-            <AccountBalanceWalletIcon fontSize="large" />
-            <Typography variant="h6" sx={{ opacity: 0.9 }}>Pending Wallets</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+            <AccountBalanceWalletIcon color={stats.pendingWallets > 0 ? "error" : "disabled"} fontSize="small" />
+            <Typography color="textSecondary" variant="subtitle2">Pending Wallets</Typography>
           </Box>
-          <Typography variant="h3" sx={{ fontWeight: 'bold' }}>{stats.pendingWallets}</Typography>
+          <Typography variant="h3" sx={{ fontWeight: '500' }} color={stats.pendingWallets > 0 ? "error.main" : "text.primary"}>
+            {stats.pendingWallets}
+          </Typography>
           {stats.pendingWallets > 0 && (
-            <Typography variant="caption" sx={{ fontWeight: '600' }}>Verification required!</Typography>
+            <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Action required!</Typography>
           )}
         </CardContent>
       </Card>
@@ -81,8 +83,7 @@ const DashboardStats = () => {
 
 export const Dashboard = () => (
   <Box sx={{ p: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
-    <Typography variant="h4" sx={{ fontWeight: '800', color: '#1e293b' }}>Admin Overview</Typography>
-    <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>Welcome back! Here is what's happening today.</Typography>
+    <Typography variant="h4" sx={{ fontWeight: '700', color: '#333', mb: 1 }}>Admin Dashboard</Typography>
     <DashboardStats />
   </Box>
 );
