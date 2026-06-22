@@ -282,3 +282,13 @@ exports.getBooking = async (req, res) => {
     res.status(200).json({ success: true, data: booking });
   } catch (error) { res.status(400).json({ success: false, error: error.message }); }
 };
+
+exports.deleteBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findByIdAndDelete(req.params.id);
+    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+    res.status(200).json({ success: true, message: 'Booking deleted successfully', id: req.params.id });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+};

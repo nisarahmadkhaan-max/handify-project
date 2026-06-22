@@ -16,4 +16,7 @@ router.get('/requests/:id', auth, admin, topupController.getTopupRequestById);
 // Admin: Approve/Reject
 router.patch('/requests/:id', auth, admin, topupController.updateTopupStatus);
 
+// Admin: Delete a request
+router.delete('/requests/:id', auth, admin, topupController.deleteTopupRequest);
+
 module.exports = router;

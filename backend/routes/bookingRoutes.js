@@ -28,4 +28,7 @@ router.post('/:id/complete', auth, bookingController.completeBooking);
 // User: Rate a completed booking
 router.post('/:id/rate', auth, bookingController.rateBooking);
 
+// Admin: Delete a booking
+router.delete('/:id', auth, admin, bookingController.deleteBooking);
+
 module.exports = router;

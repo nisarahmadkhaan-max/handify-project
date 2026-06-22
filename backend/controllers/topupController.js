@@ -58,6 +58,17 @@ exports.updateTopupStatus = async (req, res) => {
   }
 };
 
+// Admin: Delete a request
+exports.deleteTopupRequest = async (req, res) => {
+  try {
+    const request = await TopupRequest.findByIdAndDelete(req.params.id);
+    if (!request) return res.status(404).json({ success: false, message: 'Request not found' });
+    res.status(200).json({ success: true, message: 'Request deleted successfully', id: req.params.id });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+};
+
 // Employee: Submit Topup Request (FIXED)
 exports.submitTopupRequest = async (req, res) => {
   try {

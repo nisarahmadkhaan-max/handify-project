@@ -97,7 +97,7 @@ export const EmployeeEdit = () => (
                             <BooleanField source="isVerified" />
                         </Box>
                         <Typography variant="caption" color="textSecondary">
-                            Note: This account is automatically verified by the system using OCR and Face Matching.
+                            Note: This account is automatically verified by the system.
                         </Typography>
                     </Grid>
                 </Grid>
