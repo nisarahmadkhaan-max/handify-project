@@ -146,6 +146,7 @@ export class EmployeeRegistrationPage implements OnInit {
     this.apiService.registerEmployee(this.employeeData).subscribe({
       next: async (res: any) => {
         await loading.dismiss();
+        localStorage.setItem('lastMode', 'employee');
         const alert = await this.alertController.create({
           header: 'Verification Successful',
           message: res.message,

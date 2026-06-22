@@ -112,6 +112,7 @@ export class EmployeeDashboardPage implements OnInit {
   openWallet() { this.router.navigate(['/wallet-recharge']); }
   switchToUser() {
     this.authService.refreshProfile().subscribe(() => {
+      localStorage.setItem('lastMode', 'user');
       this.router.navigate(['/tabs/tab1']);
     });
   }

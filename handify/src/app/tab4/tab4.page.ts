@@ -76,6 +76,9 @@ export class Tab4Page implements OnInit, OnDestroy {
   }
 
   navigateTo(route: string) {
+    if (route === 'employee-auth' || route === 'employee-dashboard') {
+      localStorage.setItem('lastMode', 'employee');
+    }
     this.router.navigate([`/${route}`]);
   }
 

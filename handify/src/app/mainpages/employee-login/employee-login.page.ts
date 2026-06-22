@@ -50,6 +50,7 @@ export class EmployeeLoginPage implements OnInit {
     }).subscribe({
       next: async (res) => {
         await loading.dismiss();
+        localStorage.setItem('lastMode', 'employee');
         this.router.navigate(['/employee-dashboard']);
         this.showToast('Logged in as Employee', 'success');
       },

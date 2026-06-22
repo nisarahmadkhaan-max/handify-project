@@ -75,9 +75,14 @@ export class AppComponent {
   async checkInitialNavigation() {
     const isLoggedIn = await this.authService.isLoggedIn();
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding') === 'true';
+    const lastMode = localStorage.getItem('lastMode') || 'user';
 
     if (isLoggedIn) {
-      this.router.navigateByUrl('/tabs/tab1');
+      if (lastMode === 'employee') {
+        this.router.navigateByUrl('/employee-dashboard');
+      } else {
+        this.router.navigateByUrl('/tabs/tab1');
+      }
     } else if (!hasSeenOnboarding) {
       this.router.navigateByUrl('/splash');
     } else {
