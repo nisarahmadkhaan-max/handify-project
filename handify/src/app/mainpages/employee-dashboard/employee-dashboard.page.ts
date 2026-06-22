@@ -102,7 +102,7 @@ export class EmployeeDashboardPage implements OnInit {
   }
 
   goToChat() {
-    this.router.navigate(['/live-chat']);
+    this.router.navigate(['/live-chat'], { queryParams: { from: 'employee' } });
   }
 
   goToNoti() {

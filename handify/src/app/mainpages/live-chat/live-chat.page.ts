@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ChatService, ChatMessage } from '../../services/chat.service';
 import { TranslationService } from '../../services/translation.service';
 import { AuthService } from '../../services/auth.service';
-import { IonContent } from '@ionic/angular';
+import { IonContent, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-live-chat',
@@ -22,13 +22,15 @@ export class LiveChatPage implements OnInit {
   receiverImage: string = '';
   currentUserId: string = '';
   loading = false;
+  from: string = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private chatService: ChatService,
     private authService: AuthService,
-    public translationService: TranslationService
+    public translationService: TranslationService,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -39,6 +41,7 @@ export class LiveChatPage implements OnInit {
       this.receiverId = params['receiverId'];
       this.receiverName = params['receiverName'] || 'Chat';
       this.receiverImage = params['receiverImage'] || 'assets/imgs/default-avatar.png';
+      this.from = params['from'];
 
       if (this.bookingId) {
         this.loadMessages();
@@ -88,15 +91,12 @@ export class LiveChatPage implements OnInit {
   }
 
   goBack() {
-    if (this.bookingId) {
+    if (this.from === 'employee') {
+      this.router.navigate(['/employee-dashboard']);
+    } else if (this.bookingId) {
       this.router.navigate(['/request-details', this.bookingId]);
     } else {
-      const userRole = this.authService.currentUserValue?.user?.role;
-      if (userRole === 'employee') {
-        this.router.navigate(['/employee-dashboard']);
-      } else {
-        this.router.navigate(['/tabs/tab1']);
-      }
+      this.navCtrl.back();
     }
   }
 
