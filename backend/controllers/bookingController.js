@@ -48,7 +48,11 @@ exports.createBooking = async (req, res) => {
 
     const savedBooking = await booking.save();
 
-    const allInCategory = await Employee.find({ service: category, isVerified: true });
+    // Notify all verified employees with matching service
+    const allInCategory = await Employee.find({
+      service: { $regex: new RegExp("^" + category + "$", "i") },
+      isVerified: true
+    });
     for (const emp of allInCategory) {
         const notification = new Notification({
             userId: emp.userId,
@@ -231,29 +235,44 @@ exports.getBookings = async (req, res) => {
   try {
     const userId = req.user.id || req.user._id;
     let query = {};
-    if (req.user.role === 'user') {
-      query = { userId: userId };
-    } else if (req.user.role === 'employee') {
+
+    if (req.user.role === 'employee') {
       const employee = await Employee.findOne({ userId: userId });
       if (!employee) return res.status(200).json({ success: true, data: [] });
 
-      // Broaden query to ensure visibility
+      const empService = (employee.service || '').trim();
+
+      // Employees see:
+      // 1. Jobs they accepted (employeeId match)
+      // 2. Pending jobs matching their service (broadcasted)
+      // 3. Jobs they created themselves (as a user)
       query = {
         $or: [
-          { employeeId: employee._id }, // Jobs accepted by this employee
+          { employeeId: employee._id },
+          { userId: userId },
           {
             status: 'pending',
             $or: [
-                { category: { $regex: new RegExp("^" + employee.service + "$", "i") } },
-                { service: { $regex: new RegExp("^" + employee.service + "$", "i") } }
+                { category: { $regex: new RegExp(empService, "i") } },
+                { service: { $regex: new RegExp(empService, "i") } }
             ]
           }
         ]
       };
+    } else {
+      // Regular users only see jobs they created
+      query = { userId: userId };
     }
-    const bookings = await Booking.find(query).populate('userId', 'fullName email phoneNumber').populate({ path: 'employeeId', populate: { path: 'userId', select: 'fullName phoneNumber' } }).sort({ createdAt: -1 });
+
+    const bookings = await Booking.find(query)
+      .populate('userId', 'fullName email phoneNumber')
+      .populate({ path: 'employeeId', populate: { path: 'userId', select: 'fullName phoneNumber' } })
+      .sort({ createdAt: -1 });
+
     res.status(200).json({ success: true, data: bookings });
-  } catch (error) { res.status(400).json({ success: false, error: error.message }); }
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
 };
 
 exports.getBooking = async (req, res) => {
