@@ -54,98 +54,65 @@
       </div>
     </div>
 
-    <!-- Time-Based Summary (Only when completed) -->
-    <div class="details-card summary-card" *ngIf="booking.status === 'completed' && booking.totalHoursWorked > 0">
-      <h3 class="section-title">Job Summary</h3>
-      <div class="summary-row">
-        <span>Total Duration:</span>
-        <span class="val">{{ booking.totalHoursWorked }} Hour(s)</span>
-      </div>
-      <div class="summary-row" *ngIf="booking.extraTimeCharges > 0">
-        <span>Extra Time Charges:</span>
-        <span class="val">Rs. {{ booking.extraTimeCharges }}</span>
-      </div>
-    </div>
-
-    <!-- Rating Display -->
-    <div class="details-card rating-card" *ngIf="booking.status === 'completed' && booking.rating > 0">
-      <h3 class="section-title">Your Rating</h3>
-      <div class="stars-display">
-        <ion-icon *ngFor="let s of [1,2,3,4,5]"
-                  [name]="s <= booking.rating ? 'star' : 'star-outline'"
-                  color="warning"></ion-icon>
-      </div>
-      <p class="review-text" *ngIf="booking.review">"{{ booking.review }}"</p>
-    </div>
-
-    <!-- Give Rating Section -->
-    <div class="details-card rating-input-card" *ngIf="userRole === 'user' && booking.status === 'completed' && booking.rating === 0">
-      <h3 class="section-title">Rate the Professional</h3>
-      <p>How was your experience with {{ booking.employeeId?.name }}?</p>
-      <div class="stars-input">
-        <ion-icon *ngFor="let star of [1,2,3,4,5]"
-                  [name]="star <= userRating ? 'star' : 'star-outline'"
-                  (click)="setRating(star)"
-                  color="warning"
-                  size="large"></ion-icon>
-      </div>
-      <ion-item lines="none" class="review-item">
-        <ion-textarea placeholder="Write a brief review (optional)" [(ngModel)]="userReview" rows="3" class="custom-textarea"></ion-textarea>
-      </ion-item>
-      <ion-button expand="block" (click)="submitRating()" [disabled]="userRating === 0">Submit Feedback</ion-button>
-    </div>
-
-    <!-- Pricing Card -->
+    <!-- Pricing Card (Simplified for User) -->
     <div class="details-card pricing-card">
-      <div class="price-row">
-        <span class="label">Base Price (1st Hour)</span>
-        <span class="price-amount">Rs. {{ booking.basePrice }}</span>
-      </div>
-      <div class="price-row extra-row" *ngIf="booking.extraTimeCharges > 0">
-        <span class="label">Extra Time Charges</span>
-        <span class="price-amount">+ Rs. {{ booking.extraTimeCharges }}</span>
-      </div>
-      <div class="total-divider" *ngIf="booking.extraTimeCharges > 0"></div>
+      <ng-container *ngIf="userRole === 'employee'">
+        <div class="price-row">
+          <span class="label">Base Price (1st Hour)</span>
+          <span class="price-amount">Rs. {{ booking.basePrice }}</span>
+        </div>
+        <div class="price-row extra-row" *ngIf="booking.extraTimeCharges > 0">
+          <span class="label">Extra Time Charges</span>
+          <span class="price-amount">+ Rs. {{ booking.extraTimeCharges }}</span>
+        </div>
+        <div class="total-divider"></div>
+      </ng-container>
+
       <div class="price-row total-row">
-        <span class="label">Total Amount</span>
+        <span class="label">{{ userRole === 'user' ? 'Total Bill' : 'Total Amount' }}</span>
         <span class="price-amount">Rs. {{ booking.finalPrice }}</span>
       </div>
-      <p class="hourly-note">*Extra Rs. {{ booking.hourlyRate }}/hr applies after the first hour.</p>
+      <p class="hourly-note" *ngIf="booking.status !== 'completed'">*Extra Rs. {{ booking.hourlyRate }}/hr applies after the first hour.</p>
     </div>
 
-    <!-- Contact Details Card -->
+    <!-- Contact Details Card (Role Based) -->
     <div class="details-card contact-card" *ngIf="booking.status !== 'pending' && booking.status !== 'cancelled'">
       <h3 class="section-title">Contact Information</h3>
       <div class="contact-flex">
 
-        <!-- Employee Profile Info (Visible to User) -->
-        <div class="profile-image-container" *ngIf="userRole === 'user'">
-           <img [src]="booking.employeeId?.profileImage || 'assets/imgs/default-avatar.png'" class="employee-avatar" />
-        </div>
-
-        <div class="person-details">
-          <ng-container *ngIf="userRole === 'employee'">
-            <p class="role-badge">CUSTOMER</p>
-            <h4 class="person-name">{{ booking.userId?.fullName }}</h4>
-            <p class="phone-text">{{ booking.userId?.phoneNumber }}</p>
-          </ng-container>
-          <ng-container *ngIf="userRole === 'user'">
+        <!-- Show Professional to User -->
+        <ng-container *ngIf="userRole === 'user'">
+          <div class="profile-image-container">
+             <img [src]="booking.employeeId?.profileImage || 'assets/imgs/default-avatar.png'" class="employee-avatar" />
+          </div>
+          <div class="person-details">
             <p class="role-badge">PROFESSIONAL</p>
             <h4 class="person-name">{{ booking.employeeId?.name }}</h4>
-
-            <!-- Rating Display -->
             <div class="rating-badge" *ngIf="booking.employeeId?.averageRating > 0">
               <ion-icon name="star" color="warning"></ion-icon>
-              <span>{{ booking.employeeId?.averageRating }} ({{ booking.employeeId?.totalRatings }})</span>
+              <span>{{ booking.employeeId?.averageRating }}</span>
             </div>
-
-            <p class="profession-text"><ion-icon name="construct-outline"></ion-icon> {{ booking.category }} Specialist</p>
             <p class="phone-text">{{ booking.employeeId?.userId?.phoneNumber }}</p>
-          </ng-container>
-        </div>
+          </div>
+        </ng-container>
+
+        <!-- Show Customer to Employee -->
+        <ng-container *ngIf="userRole === 'employee'">
+          <div class="person-details">
+            <p class="role-badge customer">CUSTOMER</p>
+            <h4 class="person-name">{{ booking.userId?.fullName }}</h4>
+            <p class="phone-text">{{ booking.userId?.phoneNumber }}</p>
+          </div>
+        </ng-container>
+
         <div class="communication-actions" *ngIf="booking.status !== 'completed'">
+          <!-- Call Button -->
           <ion-button color="success" shape="round" [href]="'tel:' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
             <ion-icon name="call" slot="icon-only"></ion-icon>
+          </ion-button>
+          <!-- WhatsApp Button -->
+          <ion-button color="success" fill="outline" shape="round" [href]="'https://wa.me/' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
+            <ion-icon name="logo-whatsapp" slot="icon-only"></ion-icon>
           </ion-button>
         </div>
       </div>
@@ -167,9 +134,8 @@
   </ng-container>
 </ion-content>
 
-<ion-footer *ngIf="booking && !loading" class="ion-no-border">
-  <!-- Show actions if job is pending OR if the user is an employee/admin -->
-  <div class="footer-actions" *ngIf="userRole === 'employee' || userRole === 'admin' || booking.status !== 'pending'">
+<ion-footer *ngIf="booking && !loading && userRole === 'employee'" class="ion-no-border">
+  <div class="footer-actions">
     <ion-button *ngIf="booking.status === 'pending'" expand="block" color="success" (click)="acceptJob()" class="confirm-btn">
       ACCEPT JOB
     </ion-button>
