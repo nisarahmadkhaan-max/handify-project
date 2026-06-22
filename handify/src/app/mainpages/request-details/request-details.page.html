@@ -5,11 +5,11 @@
         <ion-icon slot="icon-only" name="chevron-back-outline" color="light"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Request Details</ion-title>
+    <ion-title mode="ios">Request Details</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" class="ion-padding" [style.--padding-bottom]="userRole === 'employee' ? '80px' : '20px'">
   <div *ngIf="loading" class="ion-text-center ion-padding">
     <ion-spinner></ion-spinner>
     <p>Loading details...</p>
@@ -167,8 +167,9 @@
   </ng-container>
 </ion-content>
 
-<ion-footer *ngIf="booking && !loading && userRole === 'employee'" class="ion-no-border">
-  <div class="footer-actions">
+<ion-footer *ngIf="booking && !loading" class="ion-no-border">
+  <!-- Show actions if job is pending OR if the user is an employee/admin -->
+  <div class="footer-actions" *ngIf="userRole === 'employee' || userRole === 'admin' || booking.status !== 'pending'">
     <ion-button *ngIf="booking.status === 'pending'" expand="block" color="success" (click)="acceptJob()" class="confirm-btn">
       ACCEPT JOB
     </ion-button>
