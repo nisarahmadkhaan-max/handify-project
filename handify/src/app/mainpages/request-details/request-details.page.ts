@@ -212,4 +212,25 @@ export class RequestDetailsPage implements OnInit {
       this.navCtrl.back();
     }
   }
+
+  getWhatsAppLink(): string {
+    if (!this.booking) return '#';
+
+    let phone = '';
+    if (this.userRole === 'employee') {
+      phone = this.booking.userId?.phoneNumber || '';
+    } else {
+      phone = this.booking.employeeId?.userId?.phoneNumber || '';
+    }
+
+    // Clean phone number: remove spaces, dashes, and ensure it starts with 92
+    let cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('0')) {
+      cleanPhone = '92' + cleanPhone.substring(1);
+    } else if (!cleanPhone.startsWith('92')) {
+      cleanPhone = '92' + cleanPhone;
+    }
+
+    return `https://wa.me/${cleanPhone}`;
+  }
 }

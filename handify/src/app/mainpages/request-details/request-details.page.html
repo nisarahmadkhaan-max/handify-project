@@ -111,7 +111,7 @@
             <ion-icon name="call" slot="icon-only"></ion-icon>
           </ion-button>
           <!-- WhatsApp Button -->
-          <ion-button color="success" fill="outline" shape="round" [href]="'https://wa.me/' + (userRole === 'employee' ? booking.userId?.phoneNumber : booking.employeeId?.userId?.phoneNumber)">
+          <ion-button color="success" fill="outline" shape="round" [href]="getWhatsAppLink()" target="_blank">
             <ion-icon name="logo-whatsapp" slot="icon-only"></ion-icon>
           </ion-button>
         </div>
