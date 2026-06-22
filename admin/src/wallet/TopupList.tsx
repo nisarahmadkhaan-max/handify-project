@@ -2,7 +2,7 @@ import { List, Datagrid, TextField, NumberField, ImageField, SelectField, EditBu
 
 export const TopupList = () => (
     <List>
-        <Datagrid bulkActionButtons={true}>
+        <Datagrid>
             <ReferenceField source="employeeId" reference="employees">
                 <TextField source="name" />
             </ReferenceField>

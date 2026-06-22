@@ -46,7 +46,7 @@ const StatusField = (props: { label?: string, source?: string }) => {
 export const BookingList = (props: any) => {
   return (
     <List {...props} filters={<BookingFilter />} filterDefaultValues={{ status: 'pending' }}>
-      <Datagrid bulkActionButtons={true}>
+      <Datagrid>
         <TextField source="service" label="Service" />
         <NumberField source="basePrice" label="Base (Worker)" />
         <NumberField source="commissionAmount" label="Comm. (App)" />
