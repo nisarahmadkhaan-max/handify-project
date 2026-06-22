@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   List,
   Datagrid,
@@ -9,6 +8,7 @@ import {
   SearchInput,
   SelectInput,
   ShowButton,
+  DeleteButton,
   useRecordContext,
 } from 'react-admin';
 import { Chip } from '@mui/material';
@@ -46,7 +46,7 @@ const StatusField = (props: { label?: string, source?: string }) => {
 export const BookingList = (props: any) => {
   return (
     <List {...props} filters={<BookingFilter />} filterDefaultValues={{ status: 'pending' }}>
-      <Datagrid bulkActionButtons={false}>
+      <Datagrid bulkActionButtons={true}>
         <TextField source="service" label="Service" />
         <NumberField source="basePrice" label="Base (Worker)" />
         <NumberField source="commissionAmount" label="Comm. (App)" />
@@ -55,6 +55,7 @@ export const BookingList = (props: any) => {
         <StatusField label="Status" />
         <DateField source="date" label="Job Date" />
         <ShowButton label="View" />
+        <DeleteButton label="Delete" mutationMode="pessimistic" />
       </Datagrid>
     </List>
   );

@@ -1,8 +1,8 @@
-import { List, Datagrid, TextField, NumberField, ImageField, SelectField, EditButton, ReferenceField } from 'react-admin';
+import { List, Datagrid, TextField, NumberField, ImageField, SelectField, EditButton, DeleteButton, ReferenceField } from 'react-admin';
 
 export const TopupList = () => (
     <List>
-        <Datagrid rowClick="edit">
+        <Datagrid bulkActionButtons={true}>
             <ReferenceField source="employeeId" reference="employees">
                 <TextField source="name" />
             </ReferenceField>
@@ -16,6 +16,7 @@ export const TopupList = () => (
             ]} />
             <TextField source="createdAt" label="Submitted At" />
             <EditButton />
+            <DeleteButton mutationMode="pessimistic" />
         </Datagrid>
     </List>
 );
