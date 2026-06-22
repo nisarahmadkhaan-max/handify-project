@@ -1,14 +1,4 @@
 <ion-tabs (ionTabsDidChange)="setSelectedTab($event.tab)">
-  
-  <!-- Floating center tab button -->
-  <div class="center-tab-container">
-    <ion-tab-button tab="tab" class="center-tab">
-      <div class="plus-button">
-        <ion-icon name="add-circle" style="font-size: 30px;color:#fff;"></ion-icon>
-      </div>
-      <ion-label *ngIf="selectedTab === 'tab'" class="center-tab-label">Add</ion-label>
-    </ion-tab-button>
-  </div>
 
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="tab1">
@@ -19,10 +9,6 @@
     <ion-tab-button tab="tab2">
       <img style="width: 50%;" src="assets/tab3.png" />
       <ion-label *ngIf="selectedTab === 'tab2'">Categories</ion-label>
-    </ion-tab-button>
-
-    <ion-tab-button>
-      <div style="color: white;" class="spacer"></div>
     </ion-tab-button>
 
     <ion-tab-button tab="tab3">
