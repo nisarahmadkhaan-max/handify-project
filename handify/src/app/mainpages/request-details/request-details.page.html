@@ -1,7 +1,9 @@
 <ion-header class="custom-header">
   <ion-toolbar color="primary" mode="ios">
     <ion-buttons slot="start">
-      <ion-back-button (click)="closeDetails()" text="" icon="chevron-back-outline"></ion-back-button>
+      <ion-button (click)="closeDetails()">
+        <ion-icon slot="icon-only" name="chevron-back-outline" color="light"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Request Details</ion-title>
   </ion-toolbar>

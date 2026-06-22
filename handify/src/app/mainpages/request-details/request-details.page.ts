@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { TranslationService } from '../../services/translation.service';
 import { AuthService } from '../../services/auth.service';
-import { ToastController, AlertController, LoadingController } from '@ionic/angular';
+import { ToastController, AlertController, LoadingController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-request-details',
@@ -31,7 +31,8 @@ export class RequestDetailsPage implements OnInit {
     public translationService: TranslationService,
     private toastController: ToastController,
     private alertController: AlertController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private navCtrl: NavController
   ) { }
 
   ngOnInit() {
@@ -190,7 +191,13 @@ export class RequestDetailsPage implements OnInit {
   }
 
   closeDetails() {
-    if (this.userRole === 'employee') this.router.navigate(['/employee-dashboard']);
-    else this.router.navigate(['/tabs/tab3']);
+    // Re-check role from auth service to be sure
+    const currentRole = this.authService.currentUserValue?.user?.role;
+
+    if (currentRole === 'employee') {
+      this.router.navigate(['/employee-dashboard'], { replaceUrl: true });
+    } else {
+      this.navCtrl.back();
+    }
   }
 }
