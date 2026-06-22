@@ -37,7 +37,19 @@ export class RequestDetailsPage implements OnInit {
 
   ngOnInit() {
     this.translationService.currentLang$.subscribe(lang => this.currentLang = lang);
+
+    // Initial role check
     this.userRole = this.authService.currentUserValue?.user?.role;
+
+    // Refresh profile to ensure we have latest role (in case they just registered as employee)
+    this.authService.refreshProfile().subscribe({
+      next: (res) => {
+        if (res.success && res.user) {
+          this.userRole = res.user.role;
+        }
+      }
+    });
+
     this.requestId = this.route.snapshot.paramMap.get('id') || '';
     if (this.requestId) {
       this.loadBookingDetails();

@@ -164,21 +164,21 @@
         <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
       </ion-fab-button>
     </ion-fab>
-
-    <!-- Action Buttons for Employee -->
-    <div class="footer-actions" *ngIf="userRole === 'employee'">
-      <ion-button *ngIf="booking.status === 'pending'" expand="block" color="success" (click)="acceptJob()" class="confirm-btn">
-        ACCEPT JOB
-      </ion-button>
-
-      <ion-button *ngIf="booking.status === 'confirmed'" expand="block" color="tertiary" (click)="startWork()" class="confirm-btn">
-        <ion-icon name="play-outline" slot="start"></ion-icon> START WORK (START TIMER)
-      </ion-button>
-
-      <ion-button *ngIf="booking.status === 'in_progress'" expand="block" color="primary" (click)="finishJob()" class="confirm-btn">
-        <ion-icon name="checkmark-done-outline" slot="start"></ion-icon> FINISH JOB (ENTER OTP)
-      </ion-button>
-    </div>
-
   </ng-container>
 </ion-content>
+
+<ion-footer *ngIf="booking && !loading && userRole === 'employee'" class="ion-no-border">
+  <div class="footer-actions">
+    <ion-button *ngIf="booking.status === 'pending'" expand="block" color="success" (click)="acceptJob()" class="confirm-btn">
+      ACCEPT JOB
+    </ion-button>
+
+    <ion-button *ngIf="booking.status === 'confirmed'" expand="block" color="tertiary" (click)="startWork()" class="confirm-btn">
+      <ion-icon name="play-outline" slot="start"></ion-icon> START WORK (START TIMER)
+    </ion-button>
+
+    <ion-button *ngIf="booking.status === 'in_progress'" expand="block" color="primary" (click)="finishJob()" class="confirm-btn">
+      <ion-icon name="checkmark-done-outline" slot="start"></ion-icon> FINISH JOB (ENTER OTP)
+    </ion-button>
+  </div>
+</ion-footer>
