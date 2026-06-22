@@ -128,6 +128,19 @@ const myDataProvider: any = {
       })),
     };
   },
+
+  delete: async (resource: string, params: any) => {
+    let url = `${apiUrl}/${resource}/${params.id}`;
+
+    if (resource === 'wallet') {
+      url = `${apiUrl}/wallet/requests/${params.id}`;
+    }
+
+    const { json } = await httpClient(url, {
+      method: 'DELETE',
+    });
+    return { data: json };
+  },
 };
 
 const authProvider: AuthProvider = {
